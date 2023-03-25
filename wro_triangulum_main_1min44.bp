@@ -1,0 +1,343 @@
+include "wro_triangulum"
+folder "prjs" "Triangulum"
+
+Time.Reset3()
+
+Thread.Run = claw
+@speed_spindeg = 90
+@speed_movesync = 60 '60
+@speed_lf = 90 '60
+@speed_spinrobot = 50
+@speed_spin = 90
+@type = 0
+@speed_spinrobotShip = 40
+cubu[4]=0
+
+'PerfectLine(40,"left")
+'lf_intersection(@speed_lf, "off", "off", "on")
+'spinDegrees(@speed_spindeg, "right", 90, "off", "off", "off")
+'RobotSpin("left",90, @speed_spin + 30, "on", "on", "on")
+'ReactiveBreaking("left")
+'lf_cm(90,10,"off","off","on")
+'DiagonallyAlley(@speed_spin)
+'ReactiveBreaking("left")
+'lf_cm(90,10,"off","off","on")
+'Program.Delay(1000000)
+
+stangadreata(1.5, 20, "left")
+Sensor.SetMode(3,4)
+'4 7 9 12s
+MoveSync(@speed_movesync,2,"on")
+lf_cm(20,8,"on","off","on")
+'Program.Delay(100000)
+'Program.Delay(100000)
+lf_intersection_read_col(@speed_lf-50, "off", "on", "on",type)
+'LCD.Write(50,10,@type)
+If(type = 3)Then
+  Speaker.Note(50,"C4",1000)
+ElseIf(type = 2)Then
+  Speaker.Note(50,"C7",1000)
+Else
+  
+EndIf
+LCD.Clear()
+LCD.Text(1,10,10,2,type)
+'Program.Delay(10000)
+MoveSync(80,8,"on")
+reverseMoveSyncCM(4, @speed_movesync, "off", "off", "on")
+'nava impinsa la fuel, ne ducem sa luam special cubul
+RobotSpin("right",60, @speed_spin, "on", "off", "on")
+'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+PerfectLine(30, "right")'Program.Delay(100)
+lf_cm(@speed_lf,10,"on","off","on")
+lf_intersection(@speed_lf, "off", "off", "on")
+'Program.Delay(1000)
+
+'spinDegrees(@speed_spindeg, "right", 90, "off", "off", "off")
+ReactiveBreaking("left")
+
+lf_cm(@speed_lf - 50,23,"on","on","on")'era 23 inainte
+
+spinDegrees(@speed_spindeg, "left", 90, "on", "on", "on")
+'ReactiveBreaking("right")
+
+'Program.Delay(1000000)
+reverseMoveSyncCM_read(30,@speed_movesync,"on",cubu[0],cubu[1],cubu[2],cubu[3])
+LCD.Text(10,10,10,2,cubu[0])
+LCD.Text(10,50,10,2,cubu[1])
+LCD.Text(10,90,10,2,cubu[2])
+cubu[3] = 10 - cubu[0] - cubu[1] - cubu[2] 
+LCD.Text(10,130,10,2,cubu[3])
+'Program.Delay(1000000)
+'Program.Delay(5000)
+RobotSpin("left",182, @speed_spin, "on", "on", "on")
+'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+prepLowerLiftSpecialCube()
+MoveSync(@speed_movesync,3.3,"on")
+'Program.Delay(1000)
+'spinDegrees(@speed_spindeg, "left", 30, "on", "on", "on")'asta e in caz ca tb sa ma roteasc; in mod normal nu e nevoie
+'mergem mecanic ca sa luam speciala
+lowerLiftSpecialCube()
+wait_claw()
+wait_claw()
+wait_claw()
+closeClaw()
+raiseLift()'avem speciala in gheara si suntem cu fata la barca
+RobotSpin("left",83, @speed_spin, "on", "on", "on")
+StraightAlley(@speed_spin)
+ReactiveBreaking("left")
+'Program.Delay(100)
+lf_cm(@speed_lf - 30,20,"on","off","off")
+lf_cm(@speed_lf,90,"off","off","off")
+lf_intersection(@speed_lf, "off", "on", "on")
+'Program.Delay(1000)
+RobotSpin("right",80, @speed_spin, "on", "off", "on")
+PerfectLine(30, "right")
+lowerLiftSpecialCubePut()
+lf_cm(@speed_lf,13,"on","off","on")
+spinDegrees(@speed_spindeg, "left", 3, "on", "on", "on")
+MoveSync(@speed_movesync + 15,3,"on")
+resetArm()
+reverseMoveSyncCM(2, @speed_movesync + 30, "on", "on", "on")
+lf_cm(@speed_lf + 30,20,"on","on","on")
+Time.Reset2()
+While Time.Get2() < 200
+  Motor.StartSync("BC", -20, 20)
+EndWhile
+
+reverseMoveSyncCM(10, @speed_movesync + 30, "on", "on", "on")
+RobotSpin("right",160, @speed_spin, "on", "off", "on")
+PerfectLine(30, "right")
+lf_cm(@speed_lf,7,"on","off","off")
+lf_intersection(@speed_lf, "off", "off", "on")
+
+'spinDegrees(@speed_spindeg, "right", 90, "off", "off", "off")
+ReactiveBreaking("left")
+
+'Program.Delay(1000)
+lf_cm(@speed_lf,20,"on","off","on")
+lf_intersection(@speed_lf, "off", "off", "on")
+'spinDegrees(@speed_spindeg, "left", 75, "off", "off", "off") ' speciala pusa, suntem la intersectie
+ReactiveBreakingPervers("right")
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'asta e codu bun de aici decomentez pana la urmatorul marxaj
+lf_cm(@speed_lf,14,"on","on","on")'era 18
+prepForWhite()
+spinDegrees(@speed_spindeg, "left", 13, "on", "on", "on")
+MoveSync(@speed_movesync,6,"on")
+wait_claw()
+closeClaw()
+raiseLift()'avem albul in gheara
+reverseMoveSyncCM(6, @speed_movesync + 30, "on", "on", "on")
+reverseSpinDegrees(@speed_spindeg, "left", 13, "on", "on", "on")
+reverseMoveSyncCM(14, @speed_movesync + 30, "on", "on", "on")'ne dam in spate ca sa facem line follower ca sa punem alba
+RobotSpin("left",93, @speed_spin, "on", "on", "on")
+
+lf_cm(@speed_lf,20,"on","off","off")
+lf_intersection(@speed_lf, "off", "on", "on")'avem alba in gheara, o punem pe nava mica
+RobotSpin("left",80, @speed_spin, "on", "off", "on")
+PerfectLine(30, "left")
+
+lf_cm(@speed_lf,13,"on","on","on")
+putWhiteOnSmallShip()
+resetLift()
+resetClaw()
+lf_cm(@speed_lf,2,"on","on","on")
+RobotSpin("left",90, @speed_spin, "on", "off", "on")
+PerfectLine(30, "left")
+lf_cm(@speed_lf,3,"on","off","on")
+lf_intersection(@speed_lf, "off", "off", "on")
+lf_cm(@speed_lf - 30,16,"on","on","on")
+pre[0]=11.5
+pre[1]=3.8
+pre[2]=3.8
+pre[3]=11.5
+If(type = 1)Then
+  cub1 = 3
+  cub2 = 3
+ElseIf(type = 2) Then
+  cub1 = 2
+  cub2 = 2
+Else
+  cub1 = 3
+  cub2 = 2
+EndIf
+
+i=0
+While cubu[i] <> cub1
+  i = i + 1
+EndWhile
+cubu[i] = 0
+
+If(i<2)Then
+  stangadreata(pre[i], 20, "right")
+Else
+  stangadreata(pre[i], 20, "left")
+EndIf
+prepForGreen1()
+Program.Delay(100)
+fata = 3
+If i = 1 Or i = 2 Then
+  fata = fata + 5
+EndIf
+
+MoveSync(@speed_movesync - 30,fata,"on")'iau primul obiect
+lowerLift()
+wait_claw()
+wait_claw()
+closeClaw()
+wait_claw()
+raiseLift()
+reverseMoveSyncCM(fata, @speed_movesync, "on", "on", "on")
+
+'Program.Delay(300)
+
+If(i<2)Then
+  stangadreata(pre[i], -20, "left")
+Else
+  stangadreata(pre[i], -20, "right")
+EndIf
+
+lf_cm(@speed_lf,15,"on","on","on")'15 = 20 - 5
+'Program.Delay(400)
+RobotSpin("left",90, @speed_spin - 20, "on", "on", "on")
+'Program.Delay(400)
+MoveSync(@speed_movesync,26,"on")
+putGreenOnShip()
+resetClaw()'am pus primul cub verde, ma intorc cu o schema pe cinste
+raiseLift()
+spate = 16.5'aici ma dau in spate pana la primul cub, dupa ma dau in spate cu multiplii de spatiu dintre cuburi
+i=3
+While cubu[i] <> cub2
+  i = i - 1
+  spate = spate + 7.2
+EndWhile
+cubu[i] = 0
+reverseMoveSyncCM(spate, @speed_movesync, "on", "on", "on")'ma adau in spate pt al doilea cub
+RobotSpin("right",90, @speed_spin - 10, "on", "on", "on")
+MoveSync(@speed_movesync,3,"on")
+prepForGreen()
+wait_claw()
+lowerLift()
+wait_claw()
+closeClaw()
+wait_claw()
+raiseLift()
+'MoveSync(@speed_movesync,3,"on")
+'reverseMoveSyncCM(3, @speed_movesync, "on", "on", "on")'ma adau in spate pt al doilea cub 3 = 2 - 5
+RobotSpin("left",90, @speed_spin - 10, "off", "off", "on")
+MoveSync(@speed_movesync,spate - 1,"on")
+putGreenOnShip()
+raiseLift()
+resetClaw()
+spate = 17'aici ma dau in spate pana la primul cub, dupa ma dau in spate cu multiplii de spatiu dintre cuburi
+i=3
+While cubu[i] = 0
+  i = i - 1
+  spate = spate + 7.2
+EndWhile
+cubu[i] = 0
+reverseMoveSyncCM(spate, @speed_movesync, "on", "on", "on")'ma adau in spate pt al treilea cub
+RobotSpin("right",90, @speed_spin, "on", "on", "on")
+reverseMoveSyncCM(3, @speed_movesync, "on", "on", "on")
+prepForGreen()'iau ultimul cub
+lowerLift()
+wait_claw()
+wait_claw()
+closeClaw()
+wait_claw()
+raiseLift()
+If(i<2)Then
+  stangadreata(pre[i], -20, "left")
+Else
+  stangadreata(pre[i], -20, "right")
+EndIf
+lf_cm(@speed_lf - 20,15,"on","on","on")
+RobotSpin("left",150, @speed_spin - 30, "on", "off", "on")
+PerfectLine(30, "left")
+lf_cm(@speed_lf,10,"on","off","on")
+lf_intersection(@speed_lf, "off", "on", "on")
+
+'suntem la intersectia spre nava mic, am pus toate cuburile  in nava mare si avem un cub pe care il punem in nava mica
+RobotSpin("right",75, @speed_spinrobot - 10, "on", "off", "on")
+PerfectLine(30, "right")'pun cubul in timp ce iau shipul mic ca sunt smart
+lf_cm(@speed_lf,27,"on","on","on")
+RobotSpin("left",90, @speed_spinrobot - 10, "on", "on", "on")
+MoveSync(@speed_movesync,37,"on")
+RobotSpin("left",97, @speed_spinrobot, "on", "on", "on")
+MoveSync(@speed_movesync,1,"on")
+putGreenOnSmallShip()
+resetArm()
+MoveSync(@speed_movesync,2,"on")
+lowerLiftToLittleShip()
+closeClaw() ' we have little ship
+MoveSync(@speed_movesync,23,"on")'ma dau in fata ca sa pic pe linie cu robotul
+RobotSpin("left",92, @speed_spinrobotShip + 10, "off", "off", "on")
+lf_cm(@speed_lf,10,"on","off","on")'am nava in gheara si sunt pe linia de la nava mica, ma duc sa o pun
+lf_intersection(@speed_lf, "off", "on", "on")
+RobotSpin("right",90, @speed_spinrobotShip, "off", "off", "on")
+lf_cm(@speed_lf,3,"on","off","on")
+lf_cm(@speed_lf,100,"off","off","on")
+RobotSpin("right",75, @speed_spinrobotShip-10, "off", "off", "on")
+MoveSync(@speed_movesync,5,"on")
+resetClaw()
+raiseLift()
+reverseMoveSyncCM(3, @speed_movesync, "on", "on", "on")
+RobotSpin("right",75, @speed_spinrobotShip, "on", "off", "on")
+PerfectLine(30, "right")
+lf_cm(@speed_lf,10,"on","off","on")
+lf_intersection(@speed_lf - 20, "off", "off", "on")
+
+'spinDegrees(@speed_spindeg, "left", 100, "off", "off", "off")'120 tb
+ReactiveBreaking("right")
+
+'am pus nava mica cu cuburile, sunt la intersectie ca sa iau albul si sa il pun in nava mare
+
+lf_cm(@speed_lf - 40,20,"on","on","on")
+Program.Delay(1000)
+spinDegrees(@speed_spindeg, "right", 15, "on", "on", "on")
+reverseMoveSyncCM(2, @speed_movesync, "on", "on", "on") 
+
+lowerLift()
+prepForWhite()
+wait_claw()
+closeClaw()
+wait_claw()
+resetLift()'avem albul in gheara
+reverseMoveSyncCM(5, @speed_movesync, "on", "on", "on") 
+reverseSpinDegrees(@speed_spindeg, "right", 10, "on", "on", "on")
+reverseMoveSyncCM(19, @speed_movesync, "on", "on", "on")' ne dam in spate ca sa facem line follower ca sa punem alba
+RobotSpin("left",75, @speed_spin, "on", "off","on")
+PerfectLine(30, "left")
+lf_cm(@speed_lf,5,"on","off","on")
+lf_intersection(@speed_lf, "off", "on", "on")
+lf_intersection(@speed_lf, "off", "on", "on")
+lf_intersection(@speed_lf, "off", "off", "on")
+RobotSpin("right",90, @speed_spin, "on", "on", "on")
+MoveSync(@speed_movesync,2,"on")
+putWhiteOnShip()'am pus ultima alba pe nava mare
+resetArm()
+reverseMoveSyncCM(1, @speed_movesync, "on", "on", "on")'sunt in fata barcii, o iau sa o duc
+lowerLiftToLittleShip()
+wait_claw()
+wait_claw()
+wait_claw()
+closeClaw()
+RobotSpin("right",90, @speed_spin - 30, "off", "off", "on")
+lf_cm(@speed_lf + 30,150,"on","off","on")
+RobotSpin("left",60, @speed_spin, "off", "off", "on")
+MoveSync(@speed_movesync,20,"on")
+
+LCD.Clear()
+If(type = 1)Then
+  LCD.Text(1,10,10,2,"Green Green")
+ElseIf(type = 2)Then
+  LCD.Text(1,10,10,2,"Blue Blue")
+Else
+  LCD.Text(1,10,10,2,"Green Blue")
+EndIf
+
+LCD.Clear()
+LCD.Text(1,10,10,2,Time.Get3())
+
+Program.Delay(100000)
