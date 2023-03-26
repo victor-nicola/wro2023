@@ -14,7 +14,9 @@ Thread.Run = claw
 cubu[4]=0
 
 'PerfectLine(40,"left")
-'lf_intersection(@speed_lf, "off", "off", "on")
+lf_cm(90,20,"off","off","on")
+
+lf_intersection(@speed_lf - 10, "off", "off", "on") ' asta e cimbinatia god cu care iau cuburile albe, tb bagata in program
 'spinDegrees(@speed_spindeg, "right", 90, "off", "off", "off")
 'RobotSpin("left",90, @speed_spin + 30, "on", "on", "on")
 'ReactiveBreaking("left")
@@ -22,7 +24,11 @@ cubu[4]=0
 'DiagonallyAlley(@speed_spin)
 'ReactiveBreaking("left")
 'lf_cm(90,10,"off","off","on")
-'Program.Delay(1000000)
+ReactiveBreakingPerversaDeDreapta(90)
+lf_cm(80,19,"off","on","on")
+RobotSpin("right",16, @speed_spin, "on", "on", "on")
+prepForWhite()
+Program.Delay(1000000)
 
 stangadreata(1.5, 20, "left")
 Sensor.SetMode(3,4)
@@ -87,8 +93,8 @@ RobotSpin("left",83, @speed_spin, "on", "on", "on")
 StraightAlley(@speed_spin)
 ReactiveBreaking("left")
 'Program.Delay(100)
-lf_cm(@speed_lf - 30,20,"on","off","off")
-lf_cm(@speed_lf,90,"off","off","off")
+lf_cm(@speed_lf - 30,30,"on","off","off")
+lf_cm(@speed_lf,80,"off","off","off")
 lf_intersection(@speed_lf, "off", "on", "on")
 'Program.Delay(1000)
 RobotSpin("right",80, @speed_spin, "on", "off", "on")
@@ -118,31 +124,30 @@ ReactiveBreaking("left")
 lf_cm(@speed_lf,20,"on","off","on")
 lf_intersection(@speed_lf, "off", "off", "on")
 'spinDegrees(@speed_spindeg, "left", 75, "off", "off", "off") ' speciala pusa, suntem la intersectie
-ReactiveBreakingPervers("right")
+ReactiveBreakingPerversaDeDreapta(90)
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'asta e codu bun de aici decomentez pana la urmatorul marxaj
 lf_cm(@speed_lf,14,"on","on","on")'era 18
-prepForWhite()
 spinDegrees(@speed_spindeg, "left", 13, "on", "on", "on")
-MoveSync(@speed_movesync,6,"on")
+prepForWhite()
+MoveSync(@speed_movesync,3,"on")
 wait_claw()
 closeClaw()
 raiseLift()'avem albul in gheara
-reverseMoveSyncCM(6, @speed_movesync + 30, "on", "on", "on")
+reverseMoveSyncCM(3, @speed_movesync + 30, "on", "on", "on")
 reverseSpinDegrees(@speed_spindeg, "left", 13, "on", "on", "on")
-reverseMoveSyncCM(14, @speed_movesync + 30, "on", "on", "on")'ne dam in spate ca sa facem line follower ca sa punem alba
-RobotSpin("left",93, @speed_spin, "on", "on", "on")
+reverseMoveSyncCM(19, @speed_movesync + 30, "on", "on", "on")'ne dam in spate ca sa facem line follower ca sa punem alba
+RobotSpin("left",95, @speed_spin, "on", "on", "on")
 
 lf_cm(@speed_lf,20,"on","off","off")
-lf_intersection(@speed_lf, "off", "on", "on")'avem alba in gheara, o punem pe nava mica
-RobotSpin("left",80, @speed_spin, "on", "off", "on")
-PerfectLine(30, "left")
-
-lf_cm(@speed_lf,13,"on","on","on")
+lf_intersection(@speed_lf, "off", "off", "on")'avem alba in gheara, o punem pe nava mica
+ReactiveBreakingPerversaDeStanga(90)
+lf_cm(@speed_lf,18,"on","on","on")'era 13 inainte
+spinDegrees(@speed_spindeg, "left", 6, "on", "on", "on")
 putWhiteOnSmallShip()
 resetLift()
 resetClaw()
-lf_cm(@speed_lf,2,"on","on","on")
+lf_cm(@speed_lf,2,"on","on","on")     
 RobotSpin("left",90, @speed_spin, "on", "off", "on")
 PerfectLine(30, "left")
 lf_cm(@speed_lf,3,"on","off","on")
@@ -225,7 +230,7 @@ wait_claw()
 raiseLift()
 'MoveSync(@speed_movesync,3,"on")
 'reverseMoveSyncCM(3, @speed_movesync, "on", "on", "on")'ma adau in spate pt al doilea cub 3 = 2 - 5
-RobotSpin("left",90, @speed_spin - 10, "off", "off", "on")
+RobotSpin("left",90, @speed_spin - 10, "on", "on", "on")
 MoveSync(@speed_movesync,spate - 1,"on")
 putGreenOnShip()
 raiseLift()
@@ -239,7 +244,7 @@ EndWhile
 cubu[i] = 0
 reverseMoveSyncCM(spate, @speed_movesync, "on", "on", "on")'ma adau in spate pt al treilea cub
 RobotSpin("right",90, @speed_spin, "on", "on", "on")
-reverseMoveSyncCM(3, @speed_movesync, "on", "on", "on")
+reverseMoveSyncCM(1, @speed_movesync, "on", "on", "on")
 prepForGreen()'iau ultimul cub
 lowerLift()
 wait_claw()
@@ -261,7 +266,7 @@ lf_intersection(@speed_lf, "off", "on", "on")
 'suntem la intersectia spre nava mic, am pus toate cuburile  in nava mare si avem un cub pe care il punem in nava mica
 RobotSpin("right",75, @speed_spinrobot - 10, "on", "off", "on")
 PerfectLine(30, "right")'pun cubul in timp ce iau shipul mic ca sunt smart
-lf_cm(@speed_lf,27,"on","on","on")
+lf_cm(@speed_lf,26,"on","on","on")
 RobotSpin("left",90, @speed_spinrobot - 10, "on", "on", "on")
 MoveSync(@speed_movesync,37,"on")
 RobotSpin("left",97, @speed_spinrobot, "on", "on", "on")
@@ -285,32 +290,27 @@ raiseLift()
 reverseMoveSyncCM(3, @speed_movesync, "on", "on", "on")
 RobotSpin("right",75, @speed_spinrobotShip, "on", "off", "on")
 PerfectLine(30, "right")
-lf_cm(@speed_lf,10,"on","off","on")
-lf_intersection(@speed_lf - 20, "off", "off", "on")
+lf_cm(@speed_lf,5,"on","off","off")
+lf_intersection(@speed_lf, "off", "off", "on")
 
 'spinDegrees(@speed_spindeg, "left", 100, "off", "off", "off")'120 tb
-ReactiveBreaking("right")
+ReactiveBreakingPerversaDeDreapta(90)
 
 'am pus nava mica cu cuburile, sunt la intersectie ca sa iau albul si sa il pun in nava mare
 
-lf_cm(@speed_lf - 40,20,"on","on","on")
-Program.Delay(1000)
-spinDegrees(@speed_spindeg, "right", 15, "on", "on", "on")
-reverseMoveSyncCM(2, @speed_movesync, "on", "on", "on") 
-
-lowerLift()
+lf_cm(@speed_lf,14,"on","on","on")
+spinDegrees(@speed_spindeg, "right", 13, "on", "on", "on")
 prepForWhite()
+MoveSync(@speed_movesync,3,"on")
 wait_claw()
 closeClaw()
-wait_claw()
-resetLift()'avem albul in gheara
-reverseMoveSyncCM(5, @speed_movesync, "on", "on", "on") 
-reverseSpinDegrees(@speed_spindeg, "right", 10, "on", "on", "on")
-reverseMoveSyncCM(19, @speed_movesync, "on", "on", "on")' ne dam in spate ca sa facem line follower ca sa punem alba
-RobotSpin("left",75, @speed_spin, "on", "off","on")
-PerfectLine(30, "left")
+raiseLift()'avem albul in gheara
+reverseMoveSyncCM(3, @speed_movesync + 30, "on", "on", "on")
+reverseSpinDegrees(@speed_spindeg, "right", 13, "on", "on", "on")
+reverseMoveSyncCM(19, @speed_movesync + 30, "on", "on", "on")'ne dam in spate ca sa facem line follower ca sa punem alba
+RobotSpin("left",95, @speed_spin, "on", "on", "on")
 lf_cm(@speed_lf,5,"on","off","on")
-lf_intersection(@speed_lf, "off", "on", "on")
+lf_intersection(@speed_lf, "on", "on", "on")
 lf_intersection(@speed_lf, "off", "on", "on")
 lf_intersection(@speed_lf, "off", "off", "on")
 RobotSpin("right",90, @speed_spin, "on", "on", "on")

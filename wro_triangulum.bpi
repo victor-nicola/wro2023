@@ -751,56 +751,89 @@ Function MoveSync(in number speed_max,in number cm,in string end_brake)
   EndIf
 EndFunction
 
-Function ReactiveBreakingPervers(in string sideString)
+Function ReactiveBreakingPerversaDeStanga(in number vit)
   port[0] = "C"
   port[1] = "B"
   
   side = 0
   mult = 1
-  if sideString = "right" Then
-    side = 1
-    mult = -1
-  EndIf
-  
   enc = 0
   Time.Reset5()
   timer = Time.Get5()
   
-  while timer < 150 
-    Motor.StartPower(port[1 - side], 100 * mult)
-    Motor.StartPower(port[side], 100 * mult)
+  while timer < 10 
+    Motor.StartPower(port[1 - side], vit * mult)
+    Motor.StartPower(port[side], vit * mult)
     timer = Time.Get5()
   EndWhile
-  
   Motor.Stop(port[1 - side], "True")
-  while enc * mult < 700
-    Motor.StartPower(port[side], 100 * mult)
+ 
+  while enc * mult < 300
+    Motor.StartPower(port[side], vit * mult)
     enc = Motor.GetCount(port[side])
   EndWhile
-  
   Sensor.SetMode(2 - side, 0)
   s2 = Sensor.ReadPercent(2 - side)
   while s2 < @grey
-    Motor.StartPower(port[side], 100 * mult)
+    Motor.StartPower(port[side], vit * mult)
     s2 = Sensor.ReadPercent(2 - side)
   EndWhile
-  
   Sensor.SetMode(side + 1, 0)
   s1 = Sensor.ReadPercent(side + 1)
   while s1 > @grey
-    Motor.StartPower(port[side], 100 * mult)
+    Motor.StartPower(port[side], vit * mult)
     s1 = Sensor.ReadPercent(side + 1)
-  EndWhile
+  EndWhile 
+  'Sensor.SetMode(side + 1, 0)
+  's1 = Sensor.ReadPercent(side + 1)
+  'while s1 < @grey
+    'Motor.StartPower(port[side], 100 * mult)
+    's1 = Sensor.ReadPercent(side + 1)
+  'EndWhile
+  'Motor.Stop("BC", "True")
+EndFunction
+
+Function ReactiveBreakingPerversaDeDreapta(in number vit)
+  port[0] = "C"
+  port[1] = "B"
+  side = 1
+  mult = -1
+  enc = 0
+  Time.Reset5()
+  timer = Time.Get5()
   
+  while timer < 10 
+    Motor.StartPower(port[1 - side], vit * mult)
+    Motor.StartPower(port[side], vit * mult)
+    timer = Time.Get5()
+  EndWhile
+  Motor.Stop(port[1 - side], "True")
+ 
+  while enc * mult < 300
+    Motor.StartPower(port[side], vit * mult)
+    enc = Motor.GetCount(port[side])
+  EndWhile
+  Sensor.SetMode(2 - side, 0)
+  s2 = Sensor.ReadPercent(2 - side)
+  while s2 < @grey
+    Motor.StartPower(port[side], vit * mult)
+    s2 = Sensor.ReadPercent(2 - side)
+  EndWhile
   Sensor.SetMode(side + 1, 0)
   s1 = Sensor.ReadPercent(side + 1)
-  while s1 < @grey
-    Motor.StartPower(port[side], 100 * mult)
+  while s1 > @grey
+    Motor.StartPower(port[side], vit * mult)
     s1 = Sensor.ReadPercent(side + 1)
-  EndWhile
-  
-   Motor.Stop("BC", "True")  
+  EndWhile 
+  'Sensor.SetMode(side + 1, 0)
+  's1 = Sensor.ReadPercent(side + 1)
+  'while s1 < @grey
+    'Motor.StartPower(port[side], 100 * mult)
+    's1 = Sensor.ReadPercent(side + 1)
+  'EndWhile
+  'Motor.Stop("BC", "True")
 EndFunction
+
 
 Function ReactiveBreaking(in string sideString)
   port[0] = "C"
