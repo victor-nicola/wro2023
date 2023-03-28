@@ -3,7 +3,7 @@
 @left_motor = "B"
 @right_motor = "C"
 @wheel_diameter = 6.24
-@robot_diameter = 16.9 '-0.5 cm 
+@robot_diameter = 17.25 '-0.5 cm 
 @white = 60' de modificat
 @grey = 30' de modificat
 @grey_rb = 30
@@ -25,6 +25,11 @@
 @kpD = 0.5
 @optimumval = 69
 @contor_error = 5
+
+Function CircleDegToMotorDeg( in number deg, out number motorDeg )
+  motorDeg = deg * @robot_diameter / @wheel_diameter
+EndFunction
+
 Sub Claw
   error_oldA = 0
   kpA = 0.3
@@ -186,6 +191,55 @@ sub putWhiteOnSmallShip
   wait_claw()
   letALittle()
 EndSub
+
+Function ceSaUrmaresti(in number case, in number a, in number b, in number c, in number d, out number follow)
+  'case
+  '1 - 2 verde
+  '2 - 2 albastru
+  '3 - mixt
+  follow = -1
+  If case = 1 Then
+    If b = 3 And c = 3 Then
+      follow = 1
+    Else 
+      If c = 3 And d = 3 Then
+        follow = 0
+      EndIf
+    Else 
+      If a = 3 And b = 3 Then
+        follow = 2
+      EndIf
+    EndIf
+  Else 
+    If case = 2 Then
+      If b = 2 And c = 2 Then
+        follow = 1
+      Else 
+        If c = 2 And d = 2 Then
+          follow = 0
+        EndIf
+      Else
+        If a = 2 And b = 2 Then
+          follow = 2
+        EndIf
+      EndIf
+    EndIf
+  Else 
+    If case = 3 Then
+      If b + c = 5 Then
+        follow = 1              
+      Else 
+        If c + d = 5 Then
+          follow = 0
+        EndIf                
+      Else 
+        If a + b = 5 Then
+          follow = 2
+        EndIf
+      EndIf
+    EndIf
+  EndIf
+EndFunction
 
 Function stangadreata(in number cm, in number v, in string sens)
   
@@ -548,7 +602,7 @@ Function Cm2Degrees(in number cm,out number degrees)
   degrees = (360*cm) / (Math.Pi*@wheel_diameter)
 EndFunction
 
-Function RobotSpin(in string direction,in number degrees,in number speed,in string acceleration, in string decceleration, in string end_brake)
+Function RobotSpin(in string direction,in number degrees,in number speed,in string acceleration, in string deceleration, in string end_brake)
   if direction = "left" Then
     side = 1
   else 
@@ -559,72 +613,62 @@ Function RobotSpin(in string direction,in number degrees,in number speed,in stri
   '------
   kp = 1
   kd = 0
-  V0 = 10
+  V0 = 20
   '------
   errorOld = 0
-  exitCondition = 1
   '------
   diamAx = @robot_diameter
   diamRoata = @wheel_diameter
-  encoder = degrees * diamAx / diamRoata
- 
-  If encoder > 1000 Then
-    accelerationEncoder = 100
-    decelerationEncoder = 1250
-  Else
-    accelerationEncoder = 0.1 * encoder
-    decelerationEncoder = 1.25 * encoder
-  EndIf
+  circleDegToMotorDeg(degrees, encoder)
+  
+  accelerationEncoder = 0.2 * encoder
+  decelerationEncoder = 0.5 * encoder
  
   Motor.ResetCount("BC")
- 
-  While exitCondition = 1
+  
+  exit = 0
+  While exit <> 1
    
     r1 = Motor.GetCount("B")
     r2 = Motor.GetCount("C")
    
-    currentEncoder = Math.Abs(r1)
-    ' r1 is the left engine, and r2 is the right engine
-   
-    If currentEncoder < accelerationEncoder Then
-     
-      If acceleration = "on" Then
-        V = (currentEncoder / accelerationEncoder) * (speed - V0) + V0
-        V = Math.Abs(V)
-        'multiplier increases as the robot gets closer to the acceleration quota
-      Else
-        V = speed  
-      EndIf
-     
-    EndIf
-   
-    If encoder - currentEncoder < decelerationEncoder Then
-     
-      If decceleration = "on" Then
-        V = ((encoder - currentEncoder) / decelerationEncoder) * (speed - V0) + V0
-        if V < V0 Then
-          V = V0
-        EndIf
-        'multiplier decreases as the robot gets closer to the deceleration quota
-      Else
-        V = speed
-      EndIf
-     
-    EndIf
-   
+    currentEncoder = (Math.Abs(r1) + Math.Abs(r2)) / 2
+    'r1 is the left engine, and r2 is the right engine
     error = Math.Abs(r1) - Math.Abs(r2)
     P = kp * error
     D = kd * (error - errorOld)
     errorOld = error
-   
-    MotorB = V - (P + D)
-    MotorC = V + (P + D)
-   
-    Motor.StartPower("B", MotorB * side)
-    Motor.StartPower("C", MotorC * side)
-   
-    If currentEncoder > encoder Then
-      exitCondition = 0
+    
+    LCD.Clear()
+    LCD.Text(0, 1, 1, 2, currentEncoder)
+    LCD.Update()
+    
+    V = speed
+    If deceleration = "on" Then 
+      If currentEncoder >= encoder - decelerationEncoder Then
+        V = ((encoder - currentEncoder) / decelerationEncoder) * (speed - V0) + V0
+        If V < V0 Then
+          V = V0
+        EndIf
+      EndIf
+    ElseIf acceleration = "on" Then
+      V = (currentEncoder / accelerationEncoder) * (speed - V0) + V0
+      If V > speed Then
+        V = speed
+      EndIf
+    EndIf
+    
+    motorB = V + (P + D)
+    motorC = V + (P + D)
+    
+    If exit <> 1 Then
+      Motor.StartPower( "B", -motorB )
+      Motor.StartPower( "C", -motorC )
+    EndIf
+    
+    'errorLast = error
+    If currentEncoder >= encoder Then
+      exit = 1
     EndIf
    
   EndWhile

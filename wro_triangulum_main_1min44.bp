@@ -13,21 +13,14 @@ Thread.Run = claw
 @speed_spinrobotShip = 40
 cubu[4]=0
 
-'PerfectLine(40,"left")
-lf_cm(90,20,"off","off","on")
+'lf_cm(90,20,"off","off","on")
 
-lf_intersection(@speed_lf - 10, "off", "off", "on") ' asta e cimbinatia god cu care iau cuburile albe, tb bagata in program
-'spinDegrees(@speed_spindeg, "right", 90, "off", "off", "off")
-'RobotSpin("left",90, @speed_spin + 30, "on", "on", "on")
-'ReactiveBreaking("left")
-'lf_cm(90,10,"off","off","on")
-'DiagonallyAlley(@speed_spin)
-'ReactiveBreaking("left")
-'lf_cm(90,10,"off","off","on")
-ReactiveBreakingPerversaDeDreapta(90)
-lf_cm(80,19,"off","on","on")
-RobotSpin("right",16, @speed_spin, "on", "on", "on")
-prepForWhite()
+'lf_intersection(@speed_lf - 10, "off", "off", "on") ' asta e cimbinatia god cu care iau cuburile albe, tb bagata in program
+'ReactiveBreakingPerversaDeDreapta(90)
+'lf_cm(80,19,"off","on","on")
+RobotSpin("right",90, 70, "on", "on", "on")
+MoveSync(90, 20, "True")
+'prepForWhite()
 Program.Delay(1000000)
 
 stangadreata(1.5, 20, "left")
