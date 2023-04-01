@@ -3,7 +3,7 @@
 @left_motor = "B"
 @right_motor = "C"
 @wheel_diameter = 6.24
-@robot_diameter = 17.25 '-0.5 cm 
+@robot_diameter = 16.9 '-0.35 cm 
 @white = 60' de modificat
 @grey = 30' de modificat
 @grey_rb = 30
@@ -126,6 +126,14 @@ sub resetClaw
   wait_claw()
 EndSub
 
+sub clawForWhite
+  
+  @degA = -110
+  wait_claw()
+  
+EndSub
+
+
 sub prepForWhite
   @degA = -120
   wait_claw()
@@ -165,7 +173,7 @@ sub putGreenOnShip
 EndSub
 
 sub putWhiteOnShip
-  @kpD = 0.6
+  @kpD = 0.8
   @degD = 130
   wait_claw()
   wait_claw()
@@ -602,7 +610,7 @@ Function Cm2Degrees(in number cm,out number degrees)
   degrees = (360*cm) / (Math.Pi*@wheel_diameter)
 EndFunction
 
-Function RobotSpin(in string direction,in number degrees,in number speed,in string acceleration, in string deceleration, in string end_brake)
+Function RobotSpin(in string direction,in number degrees,in number speed,in string acceleration, in string deceleration, in string end_brake)  
   if direction = "left" Then
     side = 1
   else 
@@ -620,10 +628,10 @@ Function RobotSpin(in string direction,in number degrees,in number speed,in stri
   diamAx = @robot_diameter
   diamRoata = @wheel_diameter
   circleDegToMotorDeg(degrees, encoder)
-  
-  accelerationEncoder = 0.2 * encoder
-  decelerationEncoder = 0.5 * encoder
- 
+
+  accelerationEncoder = 100
+  decelerationEncoder = 250
+    
   Motor.ResetCount("BC")
   
   exit = 0
@@ -634,7 +642,7 @@ Function RobotSpin(in string direction,in number degrees,in number speed,in stri
    
     currentEncoder = (Math.Abs(r1) + Math.Abs(r2)) / 2
     'r1 is the left engine, and r2 is the right engine
-    error = Math.Abs(r1) - Math.Abs(r2)
+    error = Math.Abs(r2) - Math.Abs(r1)
     P = kp * error
     D = kd * (error - errorOld)
     errorOld = error
@@ -644,26 +652,29 @@ Function RobotSpin(in string direction,in number degrees,in number speed,in stri
     LCD.Update()
     
     V = speed
-    If deceleration = "on" Then 
-      If currentEncoder >= encoder - decelerationEncoder Then
-        V = ((encoder - currentEncoder) / decelerationEncoder) * (speed - V0) + V0
-        If V < V0 Then
-          V = V0
-        EndIf
-      EndIf
-    ElseIf acceleration = "on" Then
+    If acceleration = "on" AND  currentEncoder < accelerationEncoder Then
       V = (currentEncoder / accelerationEncoder) * (speed - V0) + V0
       If V > speed Then
         V = speed
       EndIf
     EndIf
+    If deceleration = "on" Then 
+      If currentEncoder >= encoder - decelerationEncoder Then
+        Speaker.Tone(70, 5000, 100)
+        V = ((encoder - currentEncoder) / decelerationEncoder) * (speed - V0) + V0
+        If V < V0 Then
+          V = V0
+        EndIf
+      EndIf
+    EndIf  
+    
     
     motorB = V + (P + D)
-    motorC = V + (P + D)
+    motorC = V - (P + D)
     
     If exit <> 1 Then
-      Motor.StartPower( "B", -motorB )
-      Motor.StartPower( "C", -motorC )
+      Motor.StartPower( "B", motorB * side )
+      Motor.StartPower( "C", motorC * side )
     EndIf
     
     'errorLast = error
@@ -774,7 +785,7 @@ Function MoveSync(in number speed_max,in number cm,in string end_brake)
   right_encoder = 0
   Cm2Degrees(cm,encoder)
   error_old = 0
-  flag = 1
+
   While exit_condition = 1
     left_encoder = Motor.GetCount(@left_motor)
     right_encoder = Motor.GetCount(@right_motor)
@@ -795,7 +806,7 @@ Function MoveSync(in number speed_max,in number cm,in string end_brake)
   EndIf
 EndFunction
 
-Function ReactiveBreakingPerversaDeStanga(in number vit)
+Function ReactiveBreakingPerversaDeStangaStraightAlley(in number vit)
   port[0] = "C"
   port[1] = "B"
   
@@ -805,7 +816,56 @@ Function ReactiveBreakingPerversaDeStanga(in number vit)
   Time.Reset5()
   timer = Time.Get5()
   
-  while timer < 10 
+  while timer < 350
+    Motor.StartPower(port[1 - side], vit * mult)
+    Motor.StartPower(port[side], vit * mult)
+    timer = Time.Get5()
+  EndWhile
+  Motor.Stop(port[1 - side], "True")
+  
+  'Motor.Stop("BC", "True")
+  'Program.Delay(1000)
+ 
+  while enc * mult < 100
+    Motor.StartPower(port[side], vit * mult)
+    enc = Motor.GetCount(port[side])
+  EndWhile
+  
+  'Motor.Stop("BC", "True")
+  'Program.Delay(1000)
+  
+  Sensor.SetMode(2 - side, 0)
+  s2 = Sensor.ReadPercent(2 - side)
+  while s2 < @grey
+    Motor.StartPower(port[side], vit * mult)
+    s2 = Sensor.ReadPercent(2 - side)
+  EndWhile
+  
+  'Motor.Stop("BC", "True")
+  'Program.Delay(1000)
+ 
+  Sensor.SetMode(side + 1, 0)
+  s1 = Sensor.ReadPercent(side + 1)
+  while s1 > @grey
+    Motor.StartPower(port[side], vit * mult)
+    s1 = Sensor.ReadPercent(side + 1)
+  EndWhile 
+  
+  'Motor.Stop("BC", "True")
+  'Program.Delay(1000)
+  
+EndFunction
+
+Function ReactiveBreakingPerversaDeDreaptaStraightAlley(in number vit)
+  port[0] = "C"
+  port[1] = "B"
+  side = 1
+  mult = -1
+  enc = 0
+  Time.Reset5()
+  timer = Time.Get5()
+  
+  while timer < 100 
     Motor.StartPower(port[1 - side], vit * mult)
     Motor.StartPower(port[side], vit * mult)
     timer = Time.Get5()
@@ -816,28 +876,80 @@ Function ReactiveBreakingPerversaDeStanga(in number vit)
     Motor.StartPower(port[side], vit * mult)
     enc = Motor.GetCount(port[side])
   EndWhile
+  
+  
   Sensor.SetMode(2 - side, 0)
   s2 = Sensor.ReadPercent(2 - side)
   while s2 < @grey
     Motor.StartPower(port[side], vit * mult)
     s2 = Sensor.ReadPercent(2 - side)
   EndWhile
+ 
+  
+  'Sensor.SetMode(2 - side, 0)
+  's2 = Sensor.ReadPercent(2 - side)
+  'while s2 > @grey
+    'Motor.StartPower(port[side], vit * mult)
+    's2 = Sensor.ReadPercent(2 - side)
+  'EndWhile
+  
+  
+  'Sensor.SetMode(side + 1, 0)
+  's1 = Sensor.ReadPercent(side + 1)
+  'while s1 < @grey
+    'Motor.StartPower(port[side], vit * mult)
+    's1 = Sensor.ReadPercent(side + 1)
+  'EndWhile 
+  
   Sensor.SetMode(side + 1, 0)
   s1 = Sensor.ReadPercent(side + 1)
   while s1 > @grey
     Motor.StartPower(port[side], vit * mult)
     s1 = Sensor.ReadPercent(side + 1)
   EndWhile 
-  'Sensor.SetMode(side + 1, 0)
-  's1 = Sensor.ReadPercent(side + 1)
-  'while s1 < @grey
-    'Motor.StartPower(port[side], 100 * mult)
-    's1 = Sensor.ReadPercent(side + 1)
-  'EndWhile
   'Motor.Stop("BC", "True")
 EndFunction
 
-Function ReactiveBreakingPerversaDeDreapta(in number vit)
+Function ReactiveBreakingIntersectionStanga(in number vit)
+  port[0] = "C"
+  port[1] = "B"
+  
+  side = 0
+  mult = 1
+  
+  enc = 0
+  Time.Reset5()
+  timer = Time.Get5()
+  
+  while timer < 10 
+    Motor.StartPower(port[1 - side], vit * mult)
+    Motor.StartPower(port[side], vit * mult)
+    timer = Time.Get5()
+  EndWhile
+  
+  Motor.Stop(port[1 - side], "True")
+  while enc * mult < 150
+    Motor.StartPower(port[side], vit * mult)
+    enc = Motor.GetCount(port[side])
+  EndWhile
+  
+  Sensor.SetMode(2 - side, 0)
+  s2 = Sensor.ReadPercent(2 - side)
+  while s2 < @grey
+    Motor.StartPower(port[side], vit * mult)
+    s2 = Sensor.ReadPercent(2 - side)
+  EndWhile
+  
+  
+  Sensor.SetMode(side + 1, 0)
+  s1 = Sensor.ReadPercent(side + 1)
+  while s1 > @grey
+    Motor.StartPower(port[side], vit * mult)
+    s1 = Sensor.ReadPercent(side + 1)
+  EndWhile
+EndFunction
+
+Function ReactiveBreakingIntersectionDreapta(in number vit)
   port[0] = "C"
   port[1] = "B"
   side = 1
@@ -853,74 +965,44 @@ Function ReactiveBreakingPerversaDeDreapta(in number vit)
   EndWhile
   Motor.Stop(port[1 - side], "True")
  
-  while enc * mult < 300
+  while enc * mult < 150
     Motor.StartPower(port[side], vit * mult)
     enc = Motor.GetCount(port[side])
   EndWhile
+  
+  
   Sensor.SetMode(2 - side, 0)
   s2 = Sensor.ReadPercent(2 - side)
   while s2 < @grey
     Motor.StartPower(port[side], vit * mult)
     s2 = Sensor.ReadPercent(2 - side)
   EndWhile
+ 
+  
+  'Sensor.SetMode(2 - side, 0)
+  's2 = Sensor.ReadPercent(2 - side)
+  'while s2 > @grey
+    'Motor.StartPower(port[side], vit * mult)
+    's2 = Sensor.ReadPercent(2 - side)
+  'EndWhile
+  
+  
+  'Sensor.SetMode(side + 1, 0)
+  's1 = Sensor.ReadPercent(side + 1)
+  'while s1 < @grey
+    'Motor.StartPower(port[side], vit * mult)
+    's1 = Sensor.ReadPercent(side + 1)
+  'EndWhile 
+  
   Sensor.SetMode(side + 1, 0)
   s1 = Sensor.ReadPercent(side + 1)
   while s1 > @grey
     Motor.StartPower(port[side], vit * mult)
     s1 = Sensor.ReadPercent(side + 1)
   EndWhile 
-  'Sensor.SetMode(side + 1, 0)
-  's1 = Sensor.ReadPercent(side + 1)
-  'while s1 < @grey
-    'Motor.StartPower(port[side], 100 * mult)
-    's1 = Sensor.ReadPercent(side + 1)
-  'EndWhile
   'Motor.Stop("BC", "True")
 EndFunction
 
-
-Function ReactiveBreaking(in string sideString)
-  port[0] = "C"
-  port[1] = "B"
-  
-  side = 0
-  mult = 1
-  if sideString = "right" Then
-    side = 1
-    mult = -1
-  EndIf
-  
-  enc = 0
-  Time.Reset5()
-  timer = Time.Get5()
-  
-  while timer < 150 
-    Motor.StartPower(port[1 - side], 100 * mult)
-    Motor.StartPower(port[side], 100 * mult)
-    timer = Time.Get5()
-  EndWhile
-  
-  Motor.Stop(port[1 - side], "True")
-  while enc * mult < 150
-    Motor.StartPower(port[side], 100 * mult)
-    enc = Motor.GetCount(port[side])
-  EndWhile
-  
-  Sensor.SetMode(2 - side, 0)
-  s2 = Sensor.ReadPercent(2 - side)
-  while s2 < @grey
-    Motor.StartPower(port[side], 100 * mult)
-    s2 = Sensor.ReadPercent(2 - side)
-  EndWhile
-  
-  
-  Sensor.SetMode(side + 1, 0)
-  s1 = Sensor.ReadPercent(side + 1)
-  while s1 > @grey
-    Motor.StartPower(port[side], 100 * mult)
-    s1 = Sensor.ReadPercent(side + 1)
-  EndWhile
-EndFunction
 
 Function spinDegrees(in number Vmax, in string side, in number circleDegrees, in string acceleration, in string deceleration, in string endBrake)
   
@@ -1162,6 +1244,8 @@ EndFunction
 Function StraightAlley(in number speed)
   MoveTillWhite(speed,"true")
   MoveTillBlack(speed,"true")
+  MoveSync(@speed_movesync,2,"on")
+
 EndFunction
 
 Function GayAlley(in number speed)
@@ -1284,6 +1368,7 @@ Function reverseMoveSyncCM_read(in number distance, in number V, in string end_b
   Cm2Degrees(10, deg2)
   Cm2Degrees(17, deg3)
   Cm2Degrees(24.5, deg4)
+  Cm2Degrees(1, offset)
   v1[360] = 0
   v2[360] = 0
   v3[360] = 0
@@ -1298,13 +1383,13 @@ Function reverseMoveSyncCM_read(in number distance, in number V, in string end_b
     s2 = Motor.GetCount("C") * (-1)
     CurrentEncoder = s2
     citire(col)
-    if Math.Abs(CurrentEncoder) >= deg1 and Math.Abs(CurrentEncoder) <= deg1 + dist Then  
+    if Math.Abs(CurrentEncoder) >= deg1 + offset and Math.Abs(CurrentEncoder) <= deg1 + dist + offset Then  
       v1[col]=v1[col]+1
-    ElseIf Math.Abs(CurrentEncoder) >= deg2 and Math.Abs(CurrentEncoder) <= deg2 + dist Then  
+    ElseIf Math.Abs(CurrentEncoder) >= deg2 + offset and Math.Abs(CurrentEncoder) <= deg2 + dist + offset Then  
       v2[col]=v2[col]+1
-    ElseIf Math.Abs(CurrentEncoder) >= deg3 and Math.Abs(CurrentEncoder) <= deg3 + dist Then  
+    ElseIf Math.Abs(CurrentEncoder) >= deg3 + offset and Math.Abs(CurrentEncoder) <= deg3 + dist + offset Then  
       v3[col]=v3[col]+1
-    ElseIf Math.Abs(CurrentEncoder) >= deg4 and Math.Abs(CurrentEncoder) <= deg4 + dist Then  
+    ElseIf Math.Abs(CurrentEncoder) >= deg4 + offset and Math.Abs(CurrentEncoder) <= deg4 + dist + offset Then  
       v4[col]=v4[col]+1
     EndIf  
    
