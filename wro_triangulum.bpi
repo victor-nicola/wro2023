@@ -98,6 +98,13 @@ sub lowerLiftToLittleShip
 
 EndSub
 
+sub destroyFlagLittleShip
+  @kpD = 1
+  @degD = 200
+  wait_claw()  
+EndSub
+
+
 sub resetLift
   @kpD = 0.5
   @degD = 0

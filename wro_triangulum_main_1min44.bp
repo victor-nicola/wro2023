@@ -26,6 +26,17 @@ cubu[4]=0
 'ReactiveBreakingPerversaDeStanga(90)
 'lf_cm(70,70,"off","on","on")
 
+''destroying flag
+'MoveSync(@speed_movesync,2,"on")
+'destroyFlagLittleShip()
+'wait_claw()
+'wait_claw()
+'raiseLift()
+'MoveSync(@speed_movesync,2,"on")
+'lowerLiftToLittleShip()
+'closeClaw()
+'MoveSync(@speed_movesync,2,"on")
+
 'Program.Delay(1000000)
 
 
@@ -221,26 +232,38 @@ Else
   stangadreata(pre[i], -20, "right")
 EndIf
 lf_cm(@speed_lf - 20,15,"on","on","on")
-RobotSpin("left",150, @speed_spin - 30, "on", "off", "on")
+RobotSpin("left",165, @speed_spin - 30, "on", "off", "on")
 PerfectLine(30, "left")
 lf_cm(@speed_lf,10,"on","off","on")
 lf_intersection(@speed_lf, "off", "on", "on")
-
-'suntem la intersectia spre nava mic, am pus toate cuburile  in nava mare si avem un cub pe care il punem in nava mica
-RobotSpin("right",75, @speed_spinrobot - 10, "on", "off", "on")
-PerfectLine(30, "right")'pun cubul in timp ce iau shipul mic ca sunt smart
-lf_cm(@speed_lf,26,"on","on","on")
-RobotSpin("left",90, @speed_spinrobot - 10, "on", "on", "on")
-MoveSync(@speed_movesync,37,"on")
-RobotSpin("left",97, @speed_spinrobot, "on", "on", "on")
-MoveSync(@speed_movesync,1,"on")
+lf_cm(@speed_lf,10,"off","on","on")
+RobotSpin("right",5, @speed_spinrobot, "on", "on", "on")
 putGreenOnSmallShip()
+RobotSpin("left",5, @speed_spinrobot, "on", "on", "on")
+reverseMoveSyncCM(10, @speed_movesync, "on", "on", "on")
+RobotSpin("right",60, @speed_spinrobot, "on", "on", "on")
+PerfectLine(30, "right")
+lf_cm(@speed_lf,10,"on","off","on")
+lf_intersection(@speed_lf, "off", "off", "on")
+RobotSpin("right",90, @speed_spin, "on", "on", "on")
+MoveSync(@speed_movesync,1,"on")
+lowerLiftToLittleShip()
+wait_claw()
+wait_claw()
+wait_claw()
+closeClaw()
+RobotSpin("right",90, @speed_spin - 30, "off", "off", "on")
+lf_cm(@speed_lf,60,"on","on","on")
+Program.Delay(100000)
+
+'aici am ramas
+
 resetArm()
 MoveSync(@speed_movesync,2,"on")
 lowerLiftToLittleShip()
 closeClaw() ' we have little ship
-MoveSync(@speed_movesync,23,"on")'ma dau in fata ca sa pic pe linie cu robotul
-RobotSpin("left",92, @speed_spinrobotShip + 10, "off", "off", "on")
+MoveSync(@speed_movesync,22,"on")'ma dau in fata ca sa pic pe linie cu robotul
+RobotSpin("right",92, @speed_spinrobotShip + 10, "off", "off", "on")
 lf_cm(@speed_lf,10,"on","off","on")'am nava in gheara si sunt pe linia de la nava mica, ma duc sa o pun
 lf_intersection(@speed_lf, "off", "on", "on")
 RobotSpin("right",90, @speed_spinrobotShip, "off", "off", "on")
