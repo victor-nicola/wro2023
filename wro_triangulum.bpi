@@ -100,8 +100,13 @@ EndSub
 
 sub destroyFlagLittleShip
   @kpD = 1
-  @degD = 200
+  @degD = 170
+  @degA = 80
   wait_claw()  
+  'wait_claw()  
+  'wait_claw()  
+  RobotSpin("right",30 ,100, "off", "off", "off")
+  RobotSpin("left",30 ,100, "off", "off", "on")  
 EndSub
 
 
@@ -181,7 +186,7 @@ EndSub
 
 sub putWhiteOnShip
   @kpD = 0.8
-  @degD = 130
+  @degD = 150
   wait_claw()
   wait_claw()
   wait_claw()
@@ -199,9 +204,6 @@ EndSub
 sub putWhiteOnSmallShip
   @kpD = 0.6
   @degD = 140
-  wait_claw()
-  wait_claw()
-  wait_claw()
   wait_claw()
   wait_claw()
   letALittle()
@@ -823,7 +825,7 @@ Function ReactiveBreakingPerversaDeStangaStraightAlley(in number vit)
   Time.Reset5()
   timer = Time.Get5()
   
-  while timer < 350
+  while timer < 200
     Motor.StartPower(port[1 - side], vit * mult)
     Motor.StartPower(port[side], vit * mult)
     timer = Time.Get5()
@@ -832,8 +834,9 @@ Function ReactiveBreakingPerversaDeStangaStraightAlley(in number vit)
   
   'Motor.Stop("BC", "True")
   'Program.Delay(1000)
- 
-  while enc * mult < 100
+  
+  Motor.ResetCount(port[side])
+  while enc < 150
     Motor.StartPower(port[side], vit * mult)
     enc = Motor.GetCount(port[side])
   EndWhile
@@ -841,22 +844,29 @@ Function ReactiveBreakingPerversaDeStangaStraightAlley(in number vit)
   'Motor.Stop("BC", "True")
   'Program.Delay(1000)
   
-  Sensor.SetMode(2 - side, 0)
-  s2 = Sensor.ReadPercent(2 - side)
+  Sensor.SetMode(2-side, 0)
+  s2 = Sensor.ReadPercent(2-side)
   while s2 < @grey
+    Motor.StartPower(port[2-side], vit * mult)
+    s2 = Sensor.ReadPercent(2-side)
+  EndWhile
+  
+  Sensor.SetMode(side, 0)
+  s1 = Sensor.ReadPercent(side)
+  while s1 > @grey
     Motor.StartPower(port[side], vit * mult)
-    s2 = Sensor.ReadPercent(2 - side)
+    s1 = Sensor.ReadPercent(side)
   EndWhile
   
   'Motor.Stop("BC", "True")
   'Program.Delay(1000)
  
-  Sensor.SetMode(side + 1, 0)
-  s1 = Sensor.ReadPercent(side + 1)
-  while s1 > @grey
-    Motor.StartPower(port[side], vit * mult)
-    s1 = Sensor.ReadPercent(side + 1)
-  EndWhile 
+  'Sensor.SetMode(side + 1, 0)
+  's1 = Sensor.ReadPercent(side + 1)
+  'while s1 > @grey
+    'Motor.StartPower(port[side], vit * mult)
+    's1 = Sensor.ReadPercent(side + 1)
+  'EndWhile 
   
   'Motor.Stop("BC", "True")
   'Program.Delay(1000)
@@ -915,6 +925,38 @@ Function ReactiveBreakingPerversaDeDreaptaStraightAlley(in number vit)
     s1 = Sensor.ReadPercent(side + 1)
   EndWhile 
   'Motor.Stop("BC", "True")
+EndFunction
+
+Function ReactiveBreakingIntersectionCuburi(in number vit)
+  port[0] = "C"
+  port[1] = "B"
+  
+  side = 0
+  mult = 1
+  
+  enc = 0
+  Time.Reset5()
+  timer = Time.Get5()
+  
+  while timer < 100
+    Motor.StartPower(port[1 - side], vit * mult)
+    Motor.StartPower(port[side], vit * mult)
+    timer = Time.Get5()
+  EndWhile
+  
+  Motor.Stop(port[1 - side], "True")
+  while enc < 300
+    Motor.StartPower(port[side], vit * mult)
+    enc = Motor.GetCount(port[side])
+  EndWhile
+  
+  Sensor.SetMode(2 - side, 0)
+  s2 = Sensor.ReadPercent(2 - side)
+  while s2 > @grey
+    Motor.StartPower(port[side], vit * mult)
+    s2 = Sensor.ReadPercent(2 - side)
+  EndWhile
+
 EndFunction
 
 Function ReactiveBreakingIntersectionStanga(in number vit)
@@ -1221,7 +1263,7 @@ Function MoveTillBlack(in number speed,in string break)
     s2 = Sensor.ReadPercent(2)
     Motor.StartPower(@left_motor,-speed)
     Motor.StartPower(@right_motor,speed)    
-    if(s1 < @grey or s2 < @grey)Then
+    if(s1 < @grey And s2 < @grey)Then
       exit_condition = 0
     EndIf
   EndWhile
@@ -1239,7 +1281,7 @@ Function MoveTillWhite(in number speed,in string break)
     s2 = Sensor.ReadPercent(2)
     Motor.StartPower(@left_motor,-speed)
     Motor.StartPower(@right_motor,speed)    
-    if(s1 > @grey or s2 > @grey)Then
+    if(s1 > @grey And s2 > @grey)Then
       exit_condition = 0
     EndIf
   EndWhile
@@ -1249,9 +1291,9 @@ Function MoveTillWhite(in number speed,in string break)
 EndFunction
 
 Function StraightAlley(in number speed)
-  MoveTillWhite(speed,"true")
-  MoveTillBlack(speed,"true")
-  MoveSync(@speed_movesync,2,"on")
+  MoveTillWhite(speed,"false")
+  MoveTillBlack(speed,"false")
+  MoveSync(@speed_movesync,0.5,"on")
 
 EndFunction
 
@@ -1370,12 +1412,12 @@ Function reverseMoveSyncCM_read(in number distance, in number V, in string end_b
   
   
   Motor.ResetCount("BC")
-  Cm2Degrees(2, dist)
+  Cm2Degrees(1, dist)
   Cm2Degrees(3, deg1)
   Cm2Degrees(10, deg2)
   Cm2Degrees(17, deg3)
   Cm2Degrees(24.5, deg4)
-  Cm2Degrees(1, offset)
+  Cm2Degrees(2, offset)
   v1[360] = 0
   v2[360] = 0
   v3[360] = 0

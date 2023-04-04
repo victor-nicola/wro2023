@@ -12,20 +12,25 @@ Thread.Run = claw
 @type = 0
 @speed_spinrobotShip = 40
 cubu[4]=0
+handle = EV3File.OpenWrite("daterobot.txt")
 
-'lf_cm(80,20,"off","off","on")
-
+'StraightAlley(90)
+'ReactiveBreakingPerversaDeStangaStraightAlley(90)
+'lf_cm(60,15,"off","off","on")
 'lf_intersection(@speed_lf - 20, "off", "off", "on") ' asta e cimbinatia god cu care iau cuburile albe, tb bagata in program
+'ReactiveBreakingIntersectionStanga(90)
 'ReactiveBreakingIntersectionDreapta(90)
-'lf_cm(80,80,"off","on","on")
+'lf_cm(80,10,"off","on","on")
 'RobotSpin("right",90, 90, "off", "on", "on") 'MERE PERFECT
 'MoveSync(90, 20, "off")
 'prepForWhite()
 
-'StraightAlley(@speed_spin - 10)
-'ReactiveBreakingPerversaDeStanga(90)
-'lf_cm(70,70,"off","on","on")
-
+'StraightAlley(60)
+'Motor.Stop("BC","true")
+'Program.Delay(1000)
+'ReactiveBreakingPerversaDeStangaStraightAlley(70)
+'lf_cm(70,10,"off","on","on")
+'lf_intersection(@speed_lf - 20, "off", "no", "on")
 ''destroying flag
 'MoveSync(@speed_movesync,2,"on")
 'destroyFlagLittleShip()
@@ -37,7 +42,26 @@ cubu[4]=0
 'closeClaw()
 'MoveSync(@speed_movesync,2,"on")
 
-'Program.Delay(1000000)
+'closeClaw()
+lf_cm(90,10,"on","off","off")
+lf_intersection(@speed_lf, "on", "on", "on")
+lf_cm(90,34,"on","off","on")
+destroyFlagLittleShip()
+lowerLiftToLittleShip()
+closeClaw()
+reverseMoveSyncCM(2, @speed_movesync, "off", "off", "on")
+RobotSpin("left",30, @speed_spin, "off", "off", "on")
+MoveSync(70,50,"off")
+resetArm()
+reverseMoveSyncCM(15, @speed_movesync, "off", "off", "on")
+
+RobotSpin("right",120, @speed_spin, "on", "off", "on")'180 - unghiu anteruior
+'Program.Delay(1000)
+lf_cm(70,55,"on","off","off")
+reverseMoveSyncCM(100,100, "off", "off", "on")
+
+
+Program.Delay(1000000)
 
 
 
@@ -64,8 +88,10 @@ ElseIf(type = 2)Then
 Else
   
 EndIf
+final = Text.Append("Primele doua cuburi ",type)
+EV3File.WriteLine(handle, final)
 LCD.Clear()
-LCD.Text(1,10,10,2,type)
+LCD.Text(1,70,10,2,type)
 'Program.Delay(10000)
 MoveSync(80,8,"on")
 reverseMoveSyncCM(4, @speed_movesync, "off", "off", "on")
@@ -85,7 +111,7 @@ lf_cm(@speed_lf - 50,18,"on","on","on")'era 23 inainte
 spinDegrees(@speed_spindeg, "left", 90, "on", "on", "on")
 'ReactiveBreaking("right")
 MoveSync(@speed_movesync,25,"on")
-RobotSpin("left",50, @speed_spin, "on", "on", "on")
+RobotSpin("left",53, @speed_spin, "on", "on", "on")
 prepForWhite()
 wait_claw()
 lowerLift()
@@ -93,14 +119,24 @@ wait_claw()
 closeClaw()
 wait_claw()
 raiseLift()
-RobotSpin("right",47, @speed_spin, "on", "on", "on")
+RobotSpin("right",50, @speed_spin, "on", "on", "on")
 reverseMoveSyncCM(25, @speed_movesync, "on", "on", "on")
-reverseMoveSyncCM_read(30,@speed_movesync,"on",cubu[0],cubu[1],cubu[2],cubu[3])
-LCD.Text(10,10,10,2,cubu[0])
-LCD.Text(10,50,10,2,cubu[1])
-LCD.Text(10,90,10,2,cubu[2])
+'Program.Delay(10000)
+reverseMoveSyncCM_read(30,30,"on",cubu[0],cubu[1],cubu[2],cubu[3])
+LCD.Text(1,50,10,2,cubu[0])
+LCD.Text(1,50,50,2,cubu[1])
+LCD.Text(1,50,90,2,cubu[2])
+LCD.Text(1,50,130,2,cubu[3])
+final = " "
+final = Text.Append(final,cubu[0])
+final = Text.Append(final," ")
+final = Text.Append(final,cubu[1])
+final = Text.Append(final," ")
+final = Text.Append(final,cubu[2])
+final = Text.Append(final," ")
+final = Text.Append(final,cubu[3])
+EV3File.WriteLine(handle, final)
 cubu[3] = 10 - cubu[0] - cubu[1] - cubu[2] 
-LCD.Text(10,130,10,2,cubu[3])
 'Program.Delay(5000)
 RobotSpin("left",165, @speed_spin, "on", "on", "on")
 '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -115,17 +151,19 @@ wait_claw()
 closeClaw()
 raiseLift()'avem speciala in gheara si suntem cu fata la barca
 RobotSpin("left",83, @speed_spin, "on", "on", "on")
-StraightAlley(@speed_spin)
-ReactiveBreakingPerversaDeStangaStraightAlley(70)
+StraightAlley(90)
+ReactiveBreakingPerversaDeStangaStraightAlley(90)
 'Program.Delay(100)
 'suntem pe linia neagra inainte de prima intersectie, mergem sa punem cuburile colorate pe nava mare si nava mica
-lf_cm(@speed_lf,10,"on","off","on")
+lf_cm(@speed_lf - 30,10,"on","off","on")
+'Program.Delay(1000)
 lf_intersection(@speed_lf - 10, "off", "on", "on")
-RobotSpin("left",90, @speed_spin, "on", "on", "on")
+RobotSpin("left",60, @speed_spin, "on", "on", "on")
+PerfectLine(90,"left")
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'Program.Delay(1000)
-lf_cm(@speed_lf - 30,20,"off","on","on")
-reverseMoveSyncCM(13, @speed_movesync - 30, "on", "on", "on")
+lf_cm(@speed_lf - 30,25,"on","on","on")
+reverseMoveSyncCM(18, @speed_movesync - 30, "on", "on", "on")
 
 pre[0]=11.5
 pre[1]=3.8
@@ -167,7 +205,7 @@ wait_claw()
 closeClaw()
 wait_claw()
 raiseLift()
-reverseMoveSyncCM(fata, @speed_movesync, "on", "on", "on")
+reverseMoveSyncCM(fata+2, @speed_movesync, "on", "on", "on")
 
 'Program.Delay(300)
 
@@ -239,22 +277,75 @@ lf_intersection(@speed_lf, "off", "on", "on")
 lf_cm(@speed_lf,10,"off","on","on")
 RobotSpin("right",5, @speed_spinrobot, "on", "on", "on")
 putGreenOnSmallShip()
+resetArm()
 RobotSpin("left",5, @speed_spinrobot, "on", "on", "on")
 reverseMoveSyncCM(10, @speed_movesync, "on", "on", "on")
 RobotSpin("right",60, @speed_spinrobot, "on", "on", "on")
 PerfectLine(30, "right")
 lf_cm(@speed_lf,10,"on","off","on")
-lf_intersection(@speed_lf, "off", "off", "on")
+lf_intersection(@speed_lf, "off", "on", "on")
 RobotSpin("right",90, @speed_spin, "on", "on", "on")
 MoveSync(@speed_movesync,1,"on")
 lowerLiftToLittleShip()
 wait_claw()
+closeClaw()
+RobotSpin("right",90, @speed_spin, "off", "off", "on")
+lf_cm(@speed_lf + 10,60,"on","on","on")
+resetClaw()
+resetLift()
+lf_cm(@speed_lf,20,"on","off","on")
+reverseMoveSyncCM(5, @speed_movesync, "off", "on", "on")'ma adau in spate pt al treilea cub
+RobotSpin("right",90, @speed_spinrobot, "on", "on", "on")
+MoveSync(@speed_movesync,36,"on")
+RobotSpin("right",95, @speed_spinrobot, "off", "on", "on")
+MoveSync(@speed_movesync,2,"on")
+destroyFlagLittleShip()
 wait_claw()
 wait_claw()
 closeClaw()
-RobotSpin("right",90, @speed_spin - 30, "off", "off", "on")
+MoveSync(@speed_movesync,18,"on")
+RobotSpin("right",90, @speed_spinrobot, "off", "on", "on")
+lf_cm(@speed_lf,10,"on","on","on")
+lf_intersection(@speed_lf, "off", "on", "on")
+RobotSpin("right",90, @speed_spinrobot, "off", "on", "on")
 lf_cm(@speed_lf,60,"on","on","on")
+resetArm()
+reverseMoveSyncCM(5, @speed_movesync, "on", "on", "on")
+RobotSpin("left",60, @speed_spin, "on", "on", "on")
+PerfectLine(90, "left")
+lf_cm(@speed_lf,20,"on","on","on")
+spinDegrees(@speed_spindeg, "left", 8, "on", "on", "on")
+MoveSync(@speed_movesync,3,"on")
+prepForWhite()
+wait_claw()
+closeClaw()
+raiseLift()
+reverseMoveSyncCM(3, @speed_movesync + 30, "on", "on", "on")
+reverseSpinDegrees(@speed_spindeg, "left", 8, "on", "on", "on")
+reverseMoveSyncCM(20, @speed_movesync + 30, "on", "on", "on")'ne dam in spate ca sa facem line follower ca sa punem alba
+RobotSpin("right",90, @speed_spin, "on", "on", "on")
+reverseMoveSyncCM(3, @speed_movesync + 30, "on", "on", "on")
+lf_cm(@speed_lf,5,"on","on","on")
+reverseMoveSyncCM(8, @speed_movesync + 30, "on", "on", "on")
+
+putWhiteOnSmallShip()
+resetClaw()
+lf_cm(@speed_lf,5,"on","on","on")
+lowerLiftToLittleShip()
+closeClaw()
+lf_cm(@speed_lf + 10,37,"off","on","on")
+
+
+
+
+
+
+EV3File.WriteLine(handle, Time.Get3())
+
+
 Program.Delay(100000)
+'-----------------------------------------------------------------------------------------------------------------------------
+
 
 'aici am ramas
 
@@ -281,16 +372,13 @@ lf_intersection(@speed_lf, "off", "off", "on")
 
 'spinDegrees(@speed_spindeg, "left", 100, "off", "off", "off")'120 tb
 ReactiveBreakingPerversaDeDreaptaStraightAlley(90)
-
-'am pus nava mica cu cuburile, sunt la intersectie ca sa iau albul si sa il pun in nava mare
-
 lf_cm(@speed_lf,14,"on","on","on")
 spinDegrees(@speed_spindeg, "right", 13, "on", "on", "on")
 prepForWhite()
 MoveSync(@speed_movesync,3,"on")
 wait_claw()
 closeClaw()
-raiseLift()'avem albul in gheara
+raiseLift()
 reverseMoveSyncCM(3, @speed_movesync + 30, "on", "on", "on")
 reverseSpinDegrees(@speed_spindeg, "right", 13, "on", "on", "on")
 reverseMoveSyncCM(19, @speed_movesync + 30, "on", "on", "on")'ne dam in spate ca sa facem line follower ca sa punem alba
@@ -325,5 +413,6 @@ EndIf
 
 LCD.Clear()
 LCD.Text(1,10,10,2,Time.Get3())
+
 
 Program.Delay(100000)
