@@ -3,7 +3,7 @@
 @left_motor = "B"
 @right_motor = "C"
 @wheel_diameter = 6.24
-@robot_diameter = 16.9 '-0.35 cm 
+@robot_diameter = 17.25 '-0.35 cm 
 @white = 60' de modificat
 @grey = 30' de modificat
 @grey_rb = 30
@@ -90,7 +90,7 @@ Sub lowerLiftSpecialCubePut
 EndSub
 
 sub lowerLiftToLittleShip
-  @kpD = 0.5
+  @kpD = 0.4
   @degD = 190
   wait_claw()
   wait_claw()
@@ -98,7 +98,15 @@ sub lowerLiftToLittleShip
 
 EndSub
 
-sub destroyFlagLittleShip
+sub destroyFlagLittleShipOne
+  @kpD = 0.7
+  @degD = 190
+  wait_claw()  
+  'wait_claw()  
+  'wait_claw()   
+EndSub
+
+sub destroyFlagLittleShipTwo
   @kpD = 1
   @degD = 170
   @degA = 80
@@ -149,6 +157,7 @@ EndSub
 sub prepForWhite
   @degA = -120
   wait_claw()
+  wait_claw()
   @kpD = 0.6
   @degD = 180'se coboara la unghiul optim ca sa luam cuburile
   wait_claw()
@@ -186,7 +195,7 @@ EndSub
 
 sub putWhiteOnShip
   @kpD = 0.8
-  @degD = 150
+  @degD = 152
   wait_claw()
   wait_claw()
   wait_claw()
@@ -260,17 +269,13 @@ EndFunction
 
 Function stangadreata(in number cm, in number v, in string sens)
   
-  gr = Math.ArcCos((1 - (cm / @robot_diameter))) * 2 * (@robot_diameter / @wheel_diameter) * (180 / Math.Pi)
+  gr = Math.ArcCos((1 - (cm / 17.25))) * 2 * (17.25 / @wheel_diameter) * (180 / Math.Pi)
   if sens = "left" Then
     Motor.Move("C", v, gr, "True")
-    Program.Delay(100)
     Motor.Move("B", -v, gr, "True")
-    Program.Delay(100)
   Else
     Motor.Move("B", -v, gr, "True")
-    Program.Delay(100)
     Motor.Move("C", v, gr, "True")
-    Program.Delay(100)
   EndIf
   
 EndFunction
@@ -629,7 +634,7 @@ Function RobotSpin(in string direction,in number degrees,in number speed,in stri
   'left is side = 1 and right is side = -1
   '------
   kp = 1
-  kd = 0
+  kd = 0.1
   V0 = 20
   '------
   errorOld = 0
@@ -637,10 +642,17 @@ Function RobotSpin(in string direction,in number degrees,in number speed,in stri
   diamAx = @robot_diameter
   diamRoata = @wheel_diameter
   circleDegToMotorDeg(degrees, encoder)
-
+  
+  
   accelerationEncoder = 100
-  decelerationEncoder = 250
-    
+  If 0.1 * encoder < accelerationEncoder Then
+    accelerationEncoder = 0.1 * encoder
+  EndIf
+  decelerationEncoder = 750
+  If 0.75 * encoder < decelerationEncoder Then
+    decelerationEncoder = 0.75 * encoder
+  EndIf
+  
   Motor.ResetCount("BC")
   
   exit = 0
@@ -977,7 +989,7 @@ Function ReactiveBreakingIntersectionStanga(in number vit)
   EndWhile
   
   Motor.Stop(port[1 - side], "True")
-  while enc * mult < 150
+  while enc * mult < 300
     Motor.StartPower(port[side], vit * mult)
     enc = Motor.GetCount(port[side])
   EndWhile
@@ -1588,7 +1600,7 @@ Function RotateTillBlack(in number speed,in string direction)
   
   Motor.Stop(@Stop_motor,"true")
   Time.Reset1()
-  time = 300
+  time = 100
   error = 0
   error_old = 0
   error_sum = 0
