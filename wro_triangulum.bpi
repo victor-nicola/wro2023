@@ -30,6 +30,10 @@ Function CircleDegToMotorDeg( in number deg, out number motorDeg )
   motorDeg = deg * @robot_diameter / @wheel_diameter
 EndFunction
 
+Function MotorDegToCircleDeg( in number motorDeg, out number deg )
+  deg = motorDeg * @wheel_diameter / @robot_diameter
+EndFunction
+
 Sub Claw
   error_oldA = 0
   kpA = 0.3
@@ -99,8 +103,8 @@ sub lowerLiftToLittleShip
 EndSub
 
 sub destroyFlagLittleShipOne
-  @kpD = 0.7
-  @degD = 190
+  @kpD = 10
+  @degD = 140
   wait_claw()  
   'wait_claw()  
   'wait_claw()   
@@ -269,19 +273,20 @@ EndFunction
 
 Function stangadreata(in number cm, in number v, in string sens)
   
-  gr = Math.ArcCos((1 - (cm / 17.25))) * 2 * (17.25 / @wheel_diameter) * (180 / Math.Pi)
+  gr = Math.ArcCos((1 - (cm / 17.25))) * (17.25 / @wheel_diameter) * (180 / Math.Pi)
+  MotorDegToCircleDeg(gr,codex)
+  
   if sens = "left" Then
-    Motor.Move("C", v, gr, "True")
+    spinDegrees(v, "right",codex, "off", "off", "on")
     Program.Delay(100)
-    Motor.Move("B", -v, gr, "True")
+    spinDegrees(v, "left",codex, "off", "off", "on")
     Program.Delay(100)
 
   Else
-    Motor.Move("B", -v, gr, "True")
+    spinDegrees(v, "left",codex, "off", "off", "on")
     Program.Delay(100)
-    Motor.Move("C", v, gr, "True")
+    spinDegrees(v, "right",codex, "off", "off", "on")
     Program.Delay(100)
-
   EndIf
   
 EndFunction
@@ -1070,7 +1075,6 @@ Function ReactiveBreakingIntersectionDreapta(in number vit)
   'Motor.Stop("BC", "True")
 EndFunction
 
-
 Function spinDegrees(in number Vmax, in string side, in number circleDegrees, in string acceleration, in string deceleration, in string endBrake)
   
   ' ----------
@@ -1082,6 +1086,15 @@ Function spinDegrees(in number Vmax, in string side, in number circleDegrees, in
   diamAx = @robot_diameter
   diamRoata = @wheel_diameter
   encoder = circleDegrees * 2 * @robot_diameter / @wheel_diameter
+  accelerationEncoder = 100
+  If 0.1 * encoder < accelerationEncoder Then
+    accelerationEncoder = 0.1 * encoder
+  EndIf
+  decelerationEncoder = 750
+  If 0.75 * encoder < decelerationEncoder Then
+    decelerationEncoder = 0.75 * encoder
+  EndIf
+  
   Motor.ResetCount("BC")
   While exitCondition = 1
    
@@ -1096,29 +1109,22 @@ Function spinDegrees(in number Vmax, in string side, in number circleDegrees, in
       currentEncoder = Math.Abs(r1)
     EndIf
    
-    If currentEncoder < @acceleration_encoder Then
-     
-      If acceleration = "on" Then
-        V = (currentEncoder / @acceleration_encoder) * (Vmax - v0) + v0
-        V = Math.Abs(V)
-        'multiplier increases as the robot gets closer to the acceleration quota
-      Else
-        V = Vmax  
-      EndIf
-     
-    EndIf
-   
-    If encoder - currentEncoder < @deceleration_encoder Then
-     
-      If deceleration = "on" Then
-        V = ((encoder - currentEncoder) / @deceleration_encoder) * (Vmax - v0) + v0
-        V = Math.Abs(V)
-        'multiplier decreases as the robot gets closer to the deceleration quota
-      Else
+    V = Vmax
+    If acceleration = "on" AND  currentEncoder < accelerationEncoder Then
+      V = (currentEncoder / accelerationEncoder) * (Vmax - V0) + V0
+      If V > Vmax Then
         V = Vmax
       EndIf
-     
     EndIf
+    If deceleration = "on" Then 
+      If currentEncoder >= encoder - decelerationEncoder Then
+        Speaker.Tone(70, 5000, 100)
+        V = ((encoder - currentEncoder) / decelerationEncoder) * (Vmax - V0) + V0
+        If V < V0 Then
+          V = V0
+        EndIf
+      EndIf
+    EndIf  
    
     If side = "right" Then
       Motor.StartPower("C", V)
@@ -1447,30 +1453,34 @@ Function reverseMoveSyncCM_read(in number distance, in number V, in string end_b
     
     'read the sensors only one time in the loop!
     s1 = Motor.GetCount("B") * (-1)
-    s2 = Motor.GetCount("C") * (-1)
+    s2 = Motor.GetCount("C")
     CurrentEncoder = s2
     citire(col)
     if Math.Abs(CurrentEncoder) >= deg1 + offset and Math.Abs(CurrentEncoder) <= deg1 + dist + offset Then  
+     
       v1[col]=v1[col]+1
     ElseIf Math.Abs(CurrentEncoder) >= deg2 + offset and Math.Abs(CurrentEncoder) <= deg2 + dist + offset Then  
+      
       v2[col]=v2[col]+1
-    ElseIf Math.Abs(CurrentEncoder) >= deg3 + offset and Math.Abs(CurrentEncoder) <= deg3 + dist + offset Then  
+    ElseIf Math.Abs(CurrentEncoder) >= deg3 + offset and Math.Abs(CurrentEncoder) <= deg3 + dist + offset Then
+      
       v3[col]=v3[col]+1
-    ElseIf Math.Abs(CurrentEncoder) >= deg4 + offset and Math.Abs(CurrentEncoder) <= deg4 + dist + offset Then  
+    ElseIf Math.Abs(CurrentEncoder) >= deg4 + offset and Math.Abs(CurrentEncoder) <= deg4 + dist + offset Then
+      
       v4[col]=v4[col]+1
     EndIf  
-   
+    
     'PD controller for sync movement
    
-    error = s1 + s2
+    error = s1 - s2
     P = kp * error
     D = kd * (error - error_old)
     MotorB = (V + (P + D) )
-    MotorC = -1 * (V - (P + D))
+    MotorC = (V - (P + D))
     error_old = error
    
     Motor.StartPower("B", MotorB)
-    Motor.StartPower("C", MotorC)
+    Motor.StartPower("C", -MotorC)
    
     'exit condition for line follower: encoder
     If Math.Abs(CurrentEncoder) > encoder Then
