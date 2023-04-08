@@ -272,10 +272,16 @@ Function stangadreata(in number cm, in number v, in string sens)
   gr = Math.ArcCos((1 - (cm / 17.25))) * 2 * (17.25 / @wheel_diameter) * (180 / Math.Pi)
   if sens = "left" Then
     Motor.Move("C", v, gr, "True")
+    Program.Delay(100)
     Motor.Move("B", -v, gr, "True")
+    Program.Delay(100)
+
   Else
     Motor.Move("B", -v, gr, "True")
+    Program.Delay(100)
     Motor.Move("C", v, gr, "True")
+    Program.Delay(100)
+
   EndIf
   
 EndFunction
@@ -1424,12 +1430,12 @@ Function reverseMoveSyncCM_read(in number distance, in number V, in string end_b
   
   
   Motor.ResetCount("BC")
-  Cm2Degrees(1, dist)
+  Cm2Degrees(2, dist)
   Cm2Degrees(3, deg1)
   Cm2Degrees(10, deg2)
   Cm2Degrees(17, deg3)
   Cm2Degrees(24.5, deg4)
-  Cm2Degrees(2, offset)
+  Cm2Degrees(1, offset)
   v1[360] = 0
   v2[360] = 0
   v3[360] = 0

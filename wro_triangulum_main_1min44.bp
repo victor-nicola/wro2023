@@ -136,7 +136,7 @@ handle = EV3File.OpenWrite("daterobot.txt")
 'DEASUPRA E TESTING DUMB NWORD
 
 
-stangadreata(1.5, 20, "left")
+stangadreata(1.5, 40, "left")
 Sensor.SetMode(3,4)
 '4 7 9 12s
 MoveSync(@speed_movesync,2,"on")
@@ -250,9 +250,9 @@ EndWhile
 cubu[i] = 0
 
 If(i<2)Then
-  stangadreata(pre[i], 50, "right")
+  stangadreata(pre[i], 30, "right")
 Else
-  stangadreata(pre[i], 50, "left")
+  stangadreata(pre[i], 30, "left")
 EndIf
 prepForGreen1()
 Program.Delay(100)
@@ -273,9 +273,9 @@ reverseMoveSyncCM(fata+2, @speed_movesync, "on", "on", "on")
 'Program.Delay(300)
 
 If(i<2)Then
-  stangadreata(pre[i], -50, "left")
+  stangadreata(pre[i], -30, "left")
 Else
-  stangadreata(pre[i], -50, "right")
+  stangadreata(pre[i], -30, "right")
 EndIf
 
 lf_cm(@speed_lf - 10,15,"on","on","on")'15 = 20 - 5
@@ -328,9 +328,9 @@ closeClaw()
 wait_claw()
 raiseLift()
 If(i<2)Then
-  stangadreata(pre[i], -50, "left")
+  stangadreata(pre[i], -30, "left")
 Else
-  stangadreata(pre[i], -50, "right")
+  stangadreata(pre[i], -30, "right")
 EndIf
 lf_cm(@speed_lf - 20,15,"on","on","on")
 RobotSpin("left",165, @speed_spin - 30, "on", "off", "on")
