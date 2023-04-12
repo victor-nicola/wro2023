@@ -22,9 +22,11 @@
 @TimeBetween = 300
 @degA = 0
 @degD = 0
+@auxD = 0
 @kpD = 0.5
 @optimumval = 69
 @contor_error = 5
+@stegulet_pervers = 0
 
 Function CircleDegToMotorDeg( in number deg, out number motorDeg )
   motorDeg = deg * @robot_diameter / @wheel_diameter
@@ -47,16 +49,22 @@ Sub Claw
   While(1 = 1)
     encoder = Motor.GetCount("A")
     error = degA - encoder
+    err1 = degA - encoder
     PA = error * kpA
     DA = (error - error_oldA) * kdA
     error_oldA = error
     Motor.StartPower("A",PA + DA)
     encoder = Motor.GetCount("D")
     error = degD - encoder
+    err2 = degD - encoder
+    @auxD = encoder
     PD = error * kpD
     DD = (error - error_oldD) * kdD
     error_oldD = error
     Motor.StartPower("D",PD + DD)
+    if(err1 < 10 And err1 > -10 And err2 < 10 And err2 > -10 )Then
+      @stegulet_pervers = 0
+    EndIf
   EndWhile
 EndSub
 
@@ -65,7 +73,9 @@ EndSub
 
 Sub wait_claw
   Time.Reset1()
-  While Time.Get1() < @TimeBetween
+  @stegulet_pervers = 1
+  While Time.Get1() < @TimeBetween 'And @stegulet_pervers = 1
+    
   EndWhile
 EndSub
 
@@ -75,9 +85,46 @@ sub raiseLift
   wait_claw()
 EndSub
 
+sub raiseLiftalittle
+  @kpD = 5
+  @degD = @auxD-10
+  wait_claw()
+EndSub
+
+sub aslowaspossible
+  @kpD = 0.3
+  @degD = 200
+  wait_claw()
+  wait_claw()
+EndSub
+
+sub raiseLiftsuper
+  @kpD = 5
+  @degD = 110
+  wait_claw()
+EndSub
+
 Sub lowerLift
   @kpD = 0.6
   @degD = 200'se coboara la unghiul optim ca sa luam cuburile
+  wait_claw()
+EndSub
+
+Sub lowerLiftslow
+  @kpD = 0.4
+  @degD = 200'se coboara la unghiul optim ca sa luam cuburile
+  wait_claw()
+  wait_claw()
+  wait_claw()
+EndSub
+
+Sub lowerLiftsLowAndLower
+  @kpD = 0.4
+  @degD = 230'se coboara la unghiul optim ca sa luam cuburile
+  wait_claw()
+  wait_claw()
+  wait_claw()
+  wait_claw()
   wait_claw()
 EndSub
 
@@ -102,9 +149,19 @@ sub lowerLiftToLittleShip
 
 EndSub
 
+sub lowerLiftToBigShip
+  @kpD = 0.4
+  @degD = 190
+  wait_claw()
+  wait_claw()
+  wait_claw()
+
+EndSub
+
 sub destroyFlagLittleShipOne
-  @kpD = 10
-  @degD = 140
+  @kpD = 0.5
+  @degD = 130
+  wait_claw()
   wait_claw()  
   'wait_claw()  
   'wait_claw()   
@@ -112,13 +169,15 @@ EndSub
 
 sub destroyFlagLittleShipTwo
   @kpD = 1
-  @degD = 170
-  @degA = 80
+  @degD = 143
+  '@degA = 80
+  wait_claw()  
+  wait_claw()  
   wait_claw()  
   'wait_claw()  
   'wait_claw()  
-  RobotSpin("right",30 ,100, "off", "off", "off")
-  RobotSpin("left",30 ,100, "off", "off", "on")  
+  'RobotSpin("right",30 ,100, "off", "off", "off")
+  'RobotSpin("left",30 ,100, "off", "off", "on")  
 EndSub
 
 
@@ -177,8 +236,26 @@ Sub prepForGreen
   wait_claw()
 EndSub
 
+sub letALittleMore
+  @degA = -115
+  wait_claw()
+  wait_claw()
+EndSub
+
 sub letALittle
   @degA = -130
+  wait_claw()
+  wait_claw()
+EndSub
+
+sub letALittleMedium
+  @degA = -132
+  wait_claw()
+  wait_claw()
+EndSub
+
+sub letALot
+  @degA = -80
   wait_claw()
   wait_claw()
 EndSub
@@ -234,10 +311,10 @@ Function ceSaUrmaresti(in number case, in number a, in number b, in number c, in
     Else 
       If c = 3 And d = 3 Then
         follow = 0
-      EndIf
-    Else 
-      If a = 3 And b = 3 Then
-        follow = 2
+      Else 
+        If a = 3 And b = 3 Then
+          follow = 2
+        EndIf
       EndIf
     EndIf
   Else 
@@ -247,26 +324,27 @@ Function ceSaUrmaresti(in number case, in number a, in number b, in number c, in
       Else 
         If c = 2 And d = 2 Then
           follow = 0
-        EndIf
-      Else
-        If a = 2 And b = 2 Then
-          follow = 2
-        EndIf
-      EndIf
-    EndIf
-  Else 
-    If case = 3 Then
-      If b + c = 5 Then
-        follow = 1              
-      Else 
-        If c + d = 5 Then
-          follow = 0
-        EndIf                
-      Else 
-        If a + b = 5 Then
-          follow = 2
+        Else
+          If a = 2 And b = 2 Then
+            follow = 2
+          EndIf
         EndIf
       EndIf
+    
+    Else 
+      If case = 3 Then
+        If b + c = 5 Then
+          follow = 1              
+        Else 
+          If c + d = 5 Then
+            follow = 0
+          Else 
+            If a + b = 5 Then
+              follow = 2
+            EndIf
+          EndIf
+        EndIf
+      EndIf  
     EndIf
   EndIf
 EndFunction
@@ -1390,7 +1468,7 @@ Function reverseMoveSyncCM(in number distance, in number Vmax, in string acceler
    
     'PD controller for sync movement
    
-    error = s1 + s2
+    error = s1 + s2 'AM TE GAND SA OMOR UN COPIL COPAC ________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     P = kp * error
     D = kd * (error - error_old)
     MotorB = (V + (P + D) )
@@ -1436,16 +1514,24 @@ Function reverseMoveSyncCM_read(in number distance, in number V, in string end_b
   
   
   Motor.ResetCount("BC")
-  Cm2Degrees(2, dist)
+  Cm2Degrees(3, dist)
   Cm2Degrees(3, deg1)
   Cm2Degrees(10, deg2)
   Cm2Degrees(17, deg3)
   Cm2Degrees(24.5, deg4)
-  Cm2Degrees(1, offset)
+  Cm2Degrees(2, offset)
   v1[360] = 0
   v2[360] = 0
   v3[360] = 0
   v4[360] = 0
+  stop1 = 0
+  stop2 = 0
+  stop3 = 0
+  stop4 = 0
+  start1 = 0
+  start2 = 0
+  start3 = 0
+  start4 = 0
   Sensor.SetMode(3, 4)
   While exit_condition = 1
     
@@ -1457,18 +1543,57 @@ Function reverseMoveSyncCM_read(in number distance, in number V, in string end_b
     CurrentEncoder = s2
     citire(col)
     if Math.Abs(CurrentEncoder) >= deg1 + offset and Math.Abs(CurrentEncoder) <= deg1 + dist + offset Then  
-     
+      'if(stop1 = 0)Then
+        'stop1 = 1
+        'Motor.Stop("BC","true")
+        'Program.Delay(1000)
+      'EndIf
       v1[col]=v1[col]+1
     ElseIf Math.Abs(CurrentEncoder) >= deg2 + offset and Math.Abs(CurrentEncoder) <= deg2 + dist + offset Then  
-      
+      'if(stop2 = 0)Then
+        'stop2 = 1
+        'Motor.Stop("BC","true")
+        'Program.Delay(1000)
+      'EndIf
       v2[col]=v2[col]+1
     ElseIf Math.Abs(CurrentEncoder) >= deg3 + offset and Math.Abs(CurrentEncoder) <= deg3 + dist + offset Then
-      
+      'if(stop3 = 0)Then
+        'stop3 = 1
+        'Motor.Stop("BC","true")
+        'Program.Delay(1000)
+      'EndIf
       v3[col]=v3[col]+1
     ElseIf Math.Abs(CurrentEncoder) >= deg4 + offset and Math.Abs(CurrentEncoder) <= deg4 + dist + offset Then
-      
+      if(stop4 = 0)Then
+        stop4 = 1
+        Motor.Stop("BC","true")
+        Program.Delay(1000)
+      EndIf
       v4[col]=v4[col]+1
+    'Else 
+       'if(start1 = 0 AND stop1 = 1)Then
+        'start1 = 1
+        'Motor.Stop("BC","true")
+        'Program.Delay(1000)
+      'EndIf
+      'if(start2 = 0 AND stop2 = 1)Then
+        'start2 = 1
+        'Motor.Stop("BC","true")
+        'Program.Delay(1000)
+      'EndIf
+      'if(start3 = 0 AND stop3 = 1)Then
+        'start3 = 1
+        'Motor.Stop("BC","true")
+        'Program.Delay(1000)
+      'EndIf
+      'if(start4 = 0 AND stop4 = 1)Then
+        'start4 = 1
+        'Motor.Stop("BC","true")
+        'Program.Delay(1000)
+      'EndIf
     EndIf  
+   
+    
     
     'PD controller for sync movement
    
