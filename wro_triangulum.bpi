@@ -151,7 +151,7 @@ EndSub
 
 sub lowerLiftToBigShip
   @kpD = 0.4
-  @degD = 190
+  @degD = 173
   wait_claw()
   wait_claw()
   wait_claw()
@@ -160,7 +160,7 @@ EndSub
 
 sub destroyFlagLittleShipOne
   @kpD = 0.5
-  @degD = 130
+  @degD = 128.5
   wait_claw()
   wait_claw()  
   'wait_claw()  
@@ -1519,7 +1519,7 @@ Function reverseMoveSyncCM_read(in number distance, in number V, in string end_b
   Cm2Degrees(10, deg2)
   Cm2Degrees(17, deg3)
   Cm2Degrees(24.5, deg4)
-  Cm2Degrees(2, offset)
+  Cm2Degrees(-1, offset)
   v1[360] = 0
   v2[360] = 0
   v3[360] = 0
@@ -1564,11 +1564,11 @@ Function reverseMoveSyncCM_read(in number distance, in number V, in string end_b
       'EndIf
       v3[col]=v3[col]+1
     ElseIf Math.Abs(CurrentEncoder) >= deg4 + offset and Math.Abs(CurrentEncoder) <= deg4 + dist + offset Then
-      if(stop4 = 0)Then
-        stop4 = 1
-        Motor.Stop("BC","true")
-        Program.Delay(1000)
-      EndIf
+      'if(stop4 = 0)Then
+        'stop4 = 1
+        'Motor.Stop("BC","true")
+        'Program.Delay(1000)
+      'EndIf
       v4[col]=v4[col]+1
     'Else 
        'if(start1 = 0 AND stop1 = 1)Then

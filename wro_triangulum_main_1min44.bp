@@ -274,6 +274,7 @@ handle = EV3File.OpenWrite("daterobot.txt")
 'lf_cm(@speed_lf - 20,15,"on","on","on")
 'RobotSpin("left",165, @speed_spin - 30, "on", "off", "on")
 
+
 'Program.Delay(100000)
 
 
@@ -302,15 +303,260 @@ EV3File.WriteLine(handle, final)
 LCD.Clear()
 LCD.Text(1,70,10,2,type)
 'Program.Delay(10000)
-MoveSync(80,8,"on")
-reverseMoveSyncCM(4, @speed_movesync, "off", "off", "on")
-'nava impinsa la fuel, ne ducem sa luam special cubul
-RobotSpin("right",60, @speed_spin, "on", "off", "on")
-'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-PerfectLine(30, "right")'Program.Delay(100)
-lf_cm(@speed_lf,20,"on","off","on")
-lf_intersection(@speed_lf - 30, "off", "on", "on")
+MoveSync(80,7.5,"on")
+reverseMoveSyncCM(5, @speed_movesync - 10, "off", "off", "on")
+lowerLiftToBigShip()
+closeClaw()
+RobotSpin("right",80, @speed_spin, "off", "off", "on")
+
+
+lf_cm(@speed_lf - 10,20,"off","on","off")
+resetArm()
+lf_cm(@speed_lf,35.5,"on","off","off")
+reverseMoveSyncCM(5, @speed_movesync - 10, "on", "on", "on")
+
 'Program.Delay(1000)
+RobotSpin("left",60, @speed_spin, "off", "off", "on")
+PerfectLine(@speed_spin, "left")
+
+
+lf_cm(@speed_lf - 50,22,"on","on","on")'era 23 inainte
+spinDegrees(@speed_spindeg, "left", 90, "on", "on", "on")
+reverseMoveSyncCM_read(30,30,"on",cubu[0],cubu[1],cubu[2],cubu[3])
+final = " "
+final = Text.Append(final,cubu[0])
+final = Text.Append(final," ")
+final = Text.Append(final,cubu[1])
+final = Text.Append(final," ")
+final = Text.Append(final,cubu[2])
+final = Text.Append(final," ")
+final = Text.Append(final,cubu[3])
+EV3File.WriteLine(handle, final)
+'cubu[3] = 10 - cubu[0] - cubu[1] - cubu[2]
+MoveSync(@speed_movesync,13,"on")
+spinDegrees(@speed_spindeg, "left", 90, "on", "on", "on")
+lf_cm(@speed_lf - 30,5,"on","off","on")'era 23 inainte
+lf_intersection(@speed_lf - 30, "off", "on", "on")
+RobotSpin("left",150, @speed_spin, "off", "off", "on")
+PerfectLine(@speed_spin, "left")
+ceSaUrmaresti(type,cubu[0],cubu[1],cubu[2],cubu[3],follow)
+pre[0]=12.75
+pre[1]=4.2
+pre[2]=2.6
+pre[3]=11
+if(follow <> -1)Then
+ 
+  lf_cm(20,12,"on","on","on")
+  if(follow  = 2)Then
+    stangadreata(7,30,"left")
+    MoveSync(@speed_movesync,1,"on")
+  Else    
+    if(follow  = 1)Then
+      lf_cm(40,16,"on","on","on")
+    Else    
+      stangadreata(7,30,"right")
+      MoveSync(@speed_movesync,1,"on")
+    EndIf
+  EndIf
+  resetClaw()
+
+  lowerLiftsLowAndLower()
+  wait_claw()
+  closeClaw()
+  wait_claw()
+  raiseLiftsuper()'am luat 2 cuburi
+  if(follow  = 2)Then
+    reverseMoveSyncCM(1, @speed_movesync, "off", "off", "on")
+    stangadreata(7,-30,"right")
+  Else    
+    if(follow  = 1)Then
+      reverseMoveSyncCM(16, @speed_movesync, "off", "off", "on")
+    Else    
+      reverseMoveSyncCM(1, @speed_movesync, "off", "off", "on")
+      stangadreata(7,-30,"left")
+    EndIf
+  EndIf
+  'm am intors la pozitie fixata doar cand am luat 2 cuburi in gheara, ma duc sa le pun
+  lf_cm(@speed_lf - 30,13,"on","off","on")
+  spinDegrees(@speed_spindeg, "left", 90, "on", "on", "on")
+  MoveSync(@speed_movesync,7.5,"on")
+  spinDegrees(@speed_spindeg, "left", 95, "on", "on", "on")
+  
+  
+  putGreenOnShip()
+  letALot()
+  resetLift()
+  resetClaw()  
+  
+  RobotSpin("right",85, @speed_spin, "off", "on", "on")
+  Program.Delay(100)
+  StraightAlley(90)
+  MoveSync(@speed_movesync,@wheel2sensor_distance-3,"on")
+  RobotSpin("left",60, @speed_spin, "on", "off", "off")
+  PerfectLine(@speed_spin, "left")
+  
+  lf_cm(@speed_lf - 30,3,"on","off","on")
+  lf_intersection(@speed_lf - 30, "off", "on", "on")
+  
+  RobotSpin("left",145, @speed_spin, "on", "off", "off")
+  PerfectLine(@speed_spin, "left")
+  
+  
+  if(follow  = 2)Then
+    cubu[3]=0
+    cubu[2]=0
+  Else    
+    if(follow  = 1)Then
+      cubu[2]=0
+      cubu[1]=0
+    Else    
+      cubu[1]=0
+      cubu[0]=0
+    EndIf
+  EndIf
+Else  
+  lf_cm(@speed_lf - 30,31,"on","on","on")
+  reverseMoveSyncCM(18, @speed_movesync - 30, "on", "on", "on")
+  If(type = 1)Then
+    cub1 = 3
+    cub2 = 3
+  ElseIf(type = 2) Then
+    cub1 = 2
+    cub2 = 2
+  Else
+    cub1 = 3
+    cub2 = 2
+  EndIf
+
+  i=0
+  While cubu[i] <> cub1
+    i = i + 1
+  EndWhile
+  cubu[i] = 0
+
+  If(i<2)Then
+    stangadreata(pre[i], 30, "right")
+  Else
+    stangadreata(pre[i], 30, "left")
+  EndIf
+  if i = 1 or i = 2 Then
+    letALittleMedium()
+  Else
+    prepForGreen1()
+  EndIf
+
+  Program.Delay(100)
+  fata = 0
+  If i = 1 Or i = 2 Then
+    fata = fata + 6
+  EndIf
+
+  MoveSync(@speed_movesync - 30,fata,"on")'iau primul obiect
+  lowerLiftslow()
+
+
+  'Program.Delay(100000)
+  wait_claw()
+  wait_claw()
+  closeClaw()
+  wait_claw()
+  raiseLift()
+  reverseMoveSyncCM(fata+3, @speed_movesync, "on", "on", "on")
+
+  'Program.Delay(300)
+
+  If(i<2)Then
+    stangadreata(pre[i], -30, "left")
+  Else
+    stangadreata(pre[i], -30, "right")
+  EndIf
+  RobotSpin("left",140, @speed_spin, "on", "off", "off")
+  PerfectLine(@speed_spin, "left")
+EndIf
+
+i=0
+While cubu[i] = 0
+  i = i + 1
+EndWhile
+cubu[i] = 0
+
+lf_cm(@speed_lf - 30,10,"on","on","on")
+
+If(i<2)Then
+  stangadreata(pre[i], 30, "right")
+Else
+  stangadreata(pre[i], 30, "left")
+EndIf
+
+if i = 1 or i = 2 Then
+  letALittleMedium()
+Else
+  prepForGreen1()
+EndIf
+
+Program.Delay(100)
+fata = 0
+If i = 1 Or i = 2 Then
+  fata = fata + 6
+EndIf
+
+MoveSync(@speed_movesync - 30,fata,"on") 
+lowerLiftslow()
+
+
+'Program.Delay(100000)
+wait_claw()
+wait_claw()
+closeClaw()
+wait_claw()
+raiseLift()
+reverseMoveSyncCM(fata+3, @speed_movesync, "on", "on", "on")
+
+'Program.Delay(300)
+
+If(i<2)Then
+  stangadreata(pre[i], -30, "left")
+Else
+  stangadreata(pre[i], -30, "right")
+EndIf
+
+raiseLiftsuper()
+lf_cm(@speed_lf - 30,10,"on","off","on")
+RobotSpin("left",140, @speed_spin, "on", "off", "off")
+PerfectLine(@speed_spin, "left")
+
+lf_cm(@speed_lf - 30,5,"on","off","on")
+lf_intersection(@speed_lf - 30, "off", "on", "on")
+lf_cm(@speed_lf,12,"off","on","on")
+
+
+raiseLiftsuper()
+RobotSpin("left",30, @speed_spin + 10, "off", "off", "on")
+destroyFlagLittleShipOne()
+'MoveSync(@speed_movesync,2,"on")
+RobotSpin("right",70, @speed_spin + 10, "off", "off", "on")
+RobotSpin("left",43, @speed_spin + 10, "off", "on", "on")
+
+
+
+'RobotSpin("left",10, @speed_spinrobot, "on", "on", "on")
+putGreenOnSmallShip()
+letALittleMedium()
+
+'resetLift()
+'resetClaw()
+resetLift()
+resetClaw()
+RobotSpin("right",10, @speed_spinrobot, "on", "on", "on")
+
+reverseMoveSyncCM(10, @speed_movesync, "on", "on", "on")
+
+Program.Delay(1000000000)
+
+
+
+
+
 
 'spinDegrees(@speed_spindeg, "right", 90, "off", "off", "off")
 RobotSpin("left",60, @speed_spin, "on", "off", "off")
@@ -404,6 +650,7 @@ if(follow <> -1)Then
     if(follow  = 2)Then
       stangadreata(7,30,"left")
       MoveSync(@speed_movesync,1,"on")
+        
     Else    
       if(follow  = 1)Then
         lf_cm(40,16,"on","on","on")
