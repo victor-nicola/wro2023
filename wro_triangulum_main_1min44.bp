@@ -274,6 +274,57 @@ handle = EV3File.OpenWrite("daterobot.txt")
 'lf_cm(@speed_lf - 20,15,"on","on","on")
 'RobotSpin("left",165, @speed_spin - 30, "on", "off", "on")
 
+'type = 1 
+'cubu[0] = 2
+'cubu[1] = 3
+'cubu[2] = 2
+'cubu[3] = 3
+
+'follow = -1
+'ceSaUrmaresti(type,cubu[0],cubu[1],cubu[2],cubu[3],follow)
+'if(follow = -1)Then
+  'treiCaz(type,cubu[0],cubu[1],cubu[2],cubu[3],follow)  
+'EndIf
+
+'if ( follow  = -1 )Then
+  ''luam cub cu cub pentru barca mare si dupa inca un cub pentru cea mica
+'ElseIf (follow < 4)Then
+  ''luam doua cuburi pentru barca mare si dupa inca un cub pentru cea mica  
+'Else    
+  ''luam un cub pentru barca mica si dupa inca doua cuburi pentru cea mare  
+'EndIf
+'pre[0]=12.75
+'pre[1]=4.2
+'pre[2]=2.6
+'pre[3]=11
+
+'lf_cm(@speed_lf - 30,5,"on","off","on")'era 23 inainte
+'lf_intersection(@speed_lf - 30, "off", "on", "on")
+'lf_cm(@speed_lf - 30,10,"on","on","on")
+'reverseMoveSyncCM(4, @speed_movesync - 10, "off", "off", "on")
+
+''Program.Delay(3000)
+
+'Motor.ResetCount("A")
+
+'stangadreata(pre[1]+1.25, 30, "right")
+'closeClaw()
+'wait_claw()
+'lowerLift()
+'wait_claw()
+'wait_claw()
+'MoveSync(30,9,"on")
+''era 23 inainte
+'reverseMoveSyncCM(1, 20, "off", "off", "on")
+'raiseLift()
+'resetClaw()
+'wait_claw()
+'lowerLiftsLowAndLower()
+'wait_claw()
+'closeFor2Cubes()
+'wait_claw()
+'reverseMoveSyncCM(3, 20, "off", "off", "on")
+'raiseLift()
 
 'Program.Delay(100000)
 
@@ -281,15 +332,14 @@ handle = EV3File.OpenWrite("daterobot.txt")
 'DE AICI INCEPE PROGRAMU SMART NWORD
 'DEASUPRA E TESTING DUMB NWORD
 
-
-stangadreata(1.5, 40, "left")
 Sensor.SetMode(3,4)
 '4 7 9 12s
-MoveSync(@speed_movesync,2,"on")
-lf_cm(20,8,"on","off","on")
+lf_cm(20,10,"on","off","off")
 'Program.Delay(100000)
 'Program.Delay(100000)
-lf_intersection_read_col(@speed_lf-50, "off", "on", "on",type)
+lf_intersection_read_col(@speed_lf-50, "off", "off", "on",type)
+Motor.Stop("BC","true")
+Program.Delay(3000)
 'LCD.Write(50,10,@type)
 If(type = 3)Then
   Speaker.Note(50,"C4",1000)
@@ -303,20 +353,18 @@ EV3File.WriteLine(handle, final)
 LCD.Clear()
 LCD.Text(1,70,10,2,type)
 'Program.Delay(10000)
-MoveSync(80,7.5,"on")
-reverseMoveSyncCM(5, @speed_movesync - 10, "off", "off", "on")
+MoveSync(50,7.5,"off")
+reverseMoveSyncCM(5, @speed_movesync - 10, "on", "off", "on")
 lowerLiftToBigShip()
 closeClaw()
-RobotSpin("right",80, @speed_spin, "off", "off", "on")
-
-
-lf_cm(@speed_lf - 10,20,"off","on","off")
+RobotSpin("right",80, @speed_spin, "off", "on", "off")'avem nava mare in gheara, ne rotim la 90 in dreapta ca sa facem treaba
+lf_cm(@speed_lf - 10,20,"off","on","on")
 resetArm()
 lf_cm(@speed_lf,35.5,"on","off","off")
 reverseMoveSyncCM(5, @speed_movesync - 10, "on", "on", "on")
 
 'Program.Delay(1000)
-RobotSpin("left",60, @speed_spin, "off", "off", "on")
+RobotSpin("left",60, @speed_spin, "off", "off", "off")'suntem la prima intersectie, ne rotim in stanga ca sa citim cuburile
 PerfectLine(@speed_spin, "left")
 
 
@@ -338,57 +386,52 @@ spinDegrees(@speed_spindeg, "left", 90, "on", "on", "on")
 lf_cm(@speed_lf - 30,5,"on","off","on")'era 23 inainte
 lf_intersection(@speed_lf - 30, "off", "on", "on")
 RobotSpin("left",150, @speed_spin, "off", "off", "on")
-PerfectLine(@speed_spin, "left")
+PerfectLine(@speed_spin, "left")'suntem cu rotile pe intersectie, cu fata la cuburi, incepem sa le luam
 ceSaUrmaresti(type,cubu[0],cubu[1],cubu[2],cubu[3],follow)
+
 pre[0]=12.75
 pre[1]=4.2
 pre[2]=2.6
 pre[3]=11
-if(follow <> -1)Then
+if(follow <> -1)Then'daca putem sa luam 2 cuburi
  
-  lf_cm(20,12,"on","on","on")
-  if(follow  = 2)Then
+  lf_cm(20,12,"on","on","on")'mergem in fata
+  if(follow  = 2)Then'daca sunt 2 cuburi pe partea stanga
     stangadreata(7,30,"left")
     MoveSync(@speed_movesync,1,"on")
   Else    
-    if(follow  = 1)Then
-      lf_cm(40,16,"on","on","on")
+    if(follow  = 1)Then 'pe mijloc, mai mergem putin in fata pentru ca pe celelalte 2 parti stangadreapta parcurge distanta 
+      lf_cm(40,16,"on","on","on")'pe care o facem noi aici
     Else    
-      stangadreata(7,30,"right")
+      stangadreata(6,30,"right")
       MoveSync(@speed_movesync,1,"on")
     EndIf
   EndIf
-  resetClaw()
-
+  resetClaw()'sunt in fata celor 2 cuburi, cobor bratul si inchid ghiara sa le iau
   lowerLiftsLowAndLower()
   wait_claw()
   closeClaw()
   wait_claw()
   raiseLiftsuper()'am luat 2 cuburi
-  if(follow  = 2)Then
+  if(follow  = 2)Then ' ne punem inapoi pe linia principala ca sa fim pe aceeasi pozitie in toate cazurile
     reverseMoveSyncCM(1, @speed_movesync, "off", "off", "on")
     stangadreata(7,-30,"right")
-  Else    
-    if(follow  = 1)Then
+  Elseif(follow  = 1)Then
       reverseMoveSyncCM(16, @speed_movesync, "off", "off", "on")
-    Else    
+  Else    
       reverseMoveSyncCM(1, @speed_movesync, "off", "off", "on")
       stangadreata(7,-30,"left")
-    EndIf
   EndIf
   'm am intors la pozitie fixata doar cand am luat 2 cuburi in gheara, ma duc sa le pun
-  lf_cm(@speed_lf - 30,13,"on","off","on")
+  lf_cm(@speed_lf - 30,13,"on","off","on")'aici mergem in fata de la pozitia fixata, daca le punem prea in fata sau prea in spate de aici modificam
   spinDegrees(@speed_spindeg, "left", 90, "on", "on", "on")
   MoveSync(@speed_movesync,7.5,"on")
   spinDegrees(@speed_spindeg, "left", 95, "on", "on", "on")
-  
-  
-  putGreenOnShip()
+  putGreenOnShip()'punem cele 2 cuburi
   letALot()
   resetLift()
   resetClaw()  
-  
-  RobotSpin("right",85, @speed_spin, "off", "on", "on")
+  RobotSpin("right",85, @speed_spin, "off", "on", "on")'ne rotim la dreapta ca sa ajungem din nou pe linie
   Program.Delay(100)
   StraightAlley(90)
   MoveSync(@speed_movesync,@wheel2sensor_distance-3,"on")
@@ -400,8 +443,8 @@ if(follow <> -1)Then
   
   RobotSpin("left",145, @speed_spin, "on", "off", "off")
   PerfectLine(@speed_spin, "left")
-  
-  
+  'suntem din nou cu rotile pe linie, ne ducem sa luam si al treilea cub, dar tot in cazul in care putem lua 2 cuburi suntem
+
   if(follow  = 2)Then
     cubu[3]=0
     cubu[2]=0
@@ -414,7 +457,7 @@ if(follow <> -1)Then
       cubu[0]=0
     EndIf
   EndIf
-Else  
+Else ' daca nu putem sa luam 2 cuburi, va trebui sa le luam pe rand
   lf_cm(@speed_lf - 30,31,"on","on","on")
   reverseMoveSyncCM(18, @speed_movesync - 30, "on", "on", "on")
   If(type = 1)Then
@@ -429,7 +472,7 @@ Else
   EndIf
 
   i=0
-  While cubu[i] <> cub1
+  While cubu[i] <> cub1 ' calculam care e primul cub pe care tb sa il luam
     i = i + 1
   EndWhile
   cubu[i] = 0
@@ -448,7 +491,7 @@ Else
   Program.Delay(100)
   fata = 0
   If i = 1 Or i = 2 Then
-    fata = fata + 6
+    fata = fata + 2
   EndIf
 
   MoveSync(@speed_movesync - 30,fata,"on")'iau primul obiect
@@ -461,7 +504,7 @@ Else
   closeClaw()
   wait_claw()
   raiseLift()
-  reverseMoveSyncCM(fata+3, @speed_movesync, "on", "on", "on")
+  reverseMoveSyncCM(fata, @speed_movesync, "on", "on", "on")
 
   'Program.Delay(300)
 
@@ -469,18 +512,69 @@ Else
     stangadreata(pre[i], -30, "left")
   Else
     stangadreata(pre[i], -30, "right")
+  EndIf'sunt pe linia neagra, cu primul obiect in mana
+  lf_cm(@speed_lf,5,"on","on","on")
+  reverseMoveSyncCM(32, @speed_movesync, "on", "on", "on")'ma dau in spate ca sa pun obiectul
+  RobotSpin("right",90, @speed_spin, "on", "off", "off")
+  putGreenOnShip()
+  resetArm()
+  RobotSpin("left",60, @speed_spin, "on", "off", "off")
+  PerfectLine(@speed_spin, "left")'sunt inapoi cu rotile pe linie, ma duc sa iau al doilea cub
+  lf_cm(@speed_lf - 30,31,"on","on","on")
+  reverseMoveSyncCM(18, @speed_movesync - 30, "on", "on", "on")
+  i=0
+  While cubu[i] <> cub1 ' calculam care e al doilea cub pe care tb sa il luam
+    i = i + 1
+  EndWhile
+  cubu[i] = 0
+  If(i<2)Then
+    stangadreata(pre[i], 30, "right")
+  Else
+    stangadreata(pre[i], 30, "left")
   EndIf
-  RobotSpin("left",140, @speed_spin, "on", "off", "off")
-  PerfectLine(@speed_spin, "left")
+  if i = 1 or i = 2 Then
+    letALittleMedium()
+  Else
+    prepForGreen1()
+  EndIf
+
+  Program.Delay(100)
+  fata = 0
+  If i = 1 Or i = 2 Then
+    fata = fata + 2
+  EndIf
+
+  MoveSync(@speed_movesync - 30,fata,"on")'iau al doilea obiect
+  lowerLiftslow()
+  wait_claw()
+  wait_claw()
+  closeClaw()
+  wait_claw()
+  raiseLift()
+  reverseMoveSyncCM(fata, @speed_movesync, "on", "on", "on")
+  If(i<2)Then
+    stangadreata(pre[i], -30, "left")
+  Else
+    stangadreata(pre[i], -30, "right")
+  EndIf'sunt pe linia neagra, cu al doilea obiect in mana
+  lf_cm(@speed_lf,5,"on","on","on")
+  reverseMoveSyncCM(32, @speed_movesync, "on", "on", "on")'ma dau in spate ca sa pun obiectul
+  RobotSpin("right",90, @speed_spin, "on", "off", "off")
+  reverseMoveSyncCM(5, @speed_movesync, "on", "on", "on")
+  putGreenOnShip()
+  resetArm()
+  lf_cm(@speed_lf,5,"on","on","on")
+  RobotSpin("left",90, @speed_spin, "on", "off", "off")
+  PerfectLine(@speed_spin, "left")'pozitie finala
 EndIf
 
-i=0
+i=0'sunt cu rotiile pe linie, prima intersectie, cu fata la cuburile verzi si albastre, ma duc sa iau al treilea cub
 While cubu[i] = 0
   i = i + 1
 EndWhile
 cubu[i] = 0
 
-lf_cm(@speed_lf - 30,10,"on","on","on")
+lf_cm(@speed_lf - 30,13,"on","on","on")
 
 If(i<2)Then
   stangadreata(pre[i], 30, "right")
@@ -497,7 +591,7 @@ EndIf
 Program.Delay(100)
 fata = 0
 If i = 1 Or i = 2 Then
-  fata = fata + 6
+  fata = fata + 2
 EndIf
 
 MoveSync(@speed_movesync - 30,fata,"on") 
@@ -507,10 +601,10 @@ lowerLiftslow()
 'Program.Delay(100000)
 wait_claw()
 wait_claw()
-closeClaw()
+closeClaw()'am luat al  treilea cub yay 
 wait_claw()
 raiseLift()
-reverseMoveSyncCM(fata+3, @speed_movesync, "on", "on", "on")
+reverseMoveSyncCM(fata, @speed_movesync, "on", "on", "on")
 
 'Program.Delay(300)
 
@@ -548,8 +642,11 @@ letALittleMedium()
 resetLift()
 resetClaw()
 RobotSpin("right",10, @speed_spinrobot, "on", "on", "on")
-
 reverseMoveSyncCM(10, @speed_movesync, "on", "on", "on")
+
+
+
+
 
 Program.Delay(1000000000)
 

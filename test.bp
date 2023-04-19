@@ -1,0 +1,200 @@
+include "wro_triangulum"
+folder "prjs" "Triangulum"
+
+Time.Reset3()
+
+Thread.Run = claw
+
+@speed_spindeg = 90
+@speed_movesync = 60 
+@speed_lf = 90 
+@speed_spinrobot = 50
+@speed_spin = 90
+@type = 0
+@speed_spinrobotShip = 40
+cubu[3] = 0
+
+handle = EV3File.OpenWrite("daterobot.txt")
+
+
+MoveSync(20,1,"off")
+
+'@degA = 120
+'@degD = 180
+
+lf_cm(20,10,"on","off","on")
+lf_intersection_read_col(20, "off", "off", "on",type)
+
+
+final = Text.Append("Primele doua cuburi ",type)
+EV3File.WriteLine(handle, final)
+
+MoveSync(50,8.5,"off")
+reverseMoveSyncCM(8.5, 30, "on", "on", "on")
+
+lowerLiftToBigShip()
+closeClaw()
+
+RobotSpin("right",80, @speed_spin - 20, "off", "off", "on")'avem nava mare in gheara, ne rotim la 90 in
+Program.Delay(300)
+@degA = 200
+
+lf_cm(@speed_lf - 20,40,"off","off","off")
+lf_intersection(@speed_lf - 20, "off", "off", "on")
+resetArm()
+lf_cm(@speed_lf - 20,35,"on","on","on")
+reverseMoveSyncCM(19,50, "on", "off", "on")
+
+'reverseMoveSyncCM(26.5,30,"on","on","on")
+reverseSpinDegrees(50,"left",90,"on","on","on")
+
+lf_cm(@speed_lf - 50,31,"on","on","on")'era 22 inainte
+spinDegrees(@speed_spindeg, "left", 90, "on", "on", "on")
+
+reverseMoveSyncCM_read(35,30,"on",cubu[0],cubu[1],cubu[2],cubu[3])
+
+final = " "
+final = Text.Append(final,cubu[0])
+final = Text.Append(final," ")
+final = Text.Append(final,cubu[1])
+final = Text.Append(final," ")
+final = Text.Append(final,cubu[2])
+final = Text.Append(final," ")
+final = Text.Append(final,cubu[3])
+EV3File.WriteLine(handle, final)
+cubu[3] = 10 - cubu[0] - cubu[1] - cubu[2] 
+
+RobotSpin("right",80, @speed_spin, "off", "off", "off")
+RobotSpin("right",10, 20, "on", "on", "on")
+Program.Delay(200)
+
+
+StraightAlley(50)
+'Program.Delay(300)
+MoveSync(50,7,"on")
+'Program.Delay(300)
+PerfectLine(@speed_spin, "left")
+
+
+'type  = 1 
+'cubu[0] = 3 
+'cubu[1] = 2
+'cubu[2] = 3
+'cubu[3] = 2
+
+pre[0] = 11
+pre[1] = 4.6
+pre[2] = 4.6
+pre[3] = 11
+
+lf_cm(@speed_lf,10,"on","off","off")
+lf_intersection(@speed_lf, "off", "on", "on")
+
+RobotSpin("left",60, @speed_spin, "off", "on", "on")
+PerfectLine(@speed_spin, "left")
+
+
+lf_cm(@speed_lf - 30,31,"on","on","on")
+reverseMoveSyncCM(22, @speed_movesync - 30, "on", "on", "on")
+
+If(type = 1)Then
+  cub1 = 3
+  cub2 = 3
+ElseIf(type = 2) Then
+  cub1 = 2
+  cub2 = 2
+Else
+  cub1 = 3
+  cub2 = 2
+EndIf
+
+i=0
+While cubu[i] <> cub1 ' calculam care e primul cub pe care tb sa il luam
+  i = i + 1
+EndWhile
+cubu[i] = 0
+
+If(i<2)Then
+  stangadreata(pre[i], 30, "right")
+Else
+  stangadreata(pre[i], 30, "left")
+EndIf
+
+closeClaw()
+
+fata = 3
+If i = 1 Or i = 2 Then
+  fata = fata + 5
+EndIf
+
+
+MoveSync(@speed_movesync - 30,fata,"on")
+
+closeClaw()
+lowerLiftsLowAndLower()
+
+reverseMoveSyncCM(24, @speed_movesync, "on", "on", "on")
+Program.Delay(300)
+TakecubeUnderYou()
+
+RobotSpin("right",90, 40, "off", "on", "on")
+
+distanta = 2 + i * 7.5
+
+lf_cm(30,distanta,"on","on","on")
+
+putGreenOnShip()
+resetLift()
+
+reverseMoveSyncCM(12.5, @speed_movesync, "on", "on", "on")
+
+
+
+RobotSpin("left",60, @speed_spin, "off", "on", "on")
+PerfectLine(@speed_spin, "left")
+
+
+lf_cm(@speed_lf - 30,20,"on","on","on")
+reverseMoveSyncCM(16, @speed_movesync - 30, "on", "on", "on")
+
+
+i=0
+While cubu[i] <> cub2 ' calculam care e al doilea cub pe care tb sa il luam
+  i = i + 1
+EndWhile
+cubu[i] = 0
+
+If(i<2)Then
+  stangadreata(pre[i], 30, "right")
+Else
+  stangadreata(pre[i], 30, "left")
+EndIf
+
+closeClaw()
+
+fata = 3
+If i = 1 Or i = 2 Then
+  fata = fata + 5
+EndIf
+
+
+MoveSync(@speed_movesync - 30,fata,"on")
+
+closeClaw()
+lowerLiftsLowAndLower()
+
+reverseMoveSyncCM(25, @speed_movesync, "on", "on", "on")
+Program.Delay(300)
+TakecubeUnderYou()
+
+RobotSpin("right",90, 40, "off", "on", "on")
+
+distanta = 7 + i * 7.5 
+
+lf_cm(30,distanta + 5,"on","on","on")
+reverseMoveSyncCM(5, @speed_movesync, "on", "on", "on")
+
+GreenCubeFall()
+
+reverseMoveSyncCM(15.5, @speed_movesync, "on", "on", "on")
+

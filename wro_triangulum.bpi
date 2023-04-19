@@ -47,6 +47,9 @@ Sub Claw
   @degD = 0
   Motor.ResetCount("DA")
   While(1 = 1)
+    if Buttons.Current = "U" Then
+      resetClaw()
+    EndIf
     encoder = Motor.GetCount("A")
     error = degA - encoder
     err1 = degA - encoder
@@ -69,7 +72,26 @@ Sub Claw
 EndSub
 
 'A motor mediu de prindere
-'D motor mare de invartire
+'D motor mare de invartir
+
+sub closeFor2Cubes
+  kpA = 0.3
+  @degA = 300
+  degD  = 200
+  wait_claw()
+  wait_claw()
+  wait_claw()
+  degD  = 165
+  degA = 0
+  Program.Delay(1000)
+  wait_claw()
+  @kpA = 0.3
+  @degA = 500
+  wait_claw()
+  wait_claw()
+  wait_claw()
+EndSub
+
 
 Sub wait_claw
   Time.Reset1()
@@ -77,6 +99,13 @@ Sub wait_claw
   While Time.Get1() < @TimeBetween 'And @stegulet_pervers = 1
     
   EndWhile
+EndSub
+
+sub prepForTwoCubes
+  @degA = 130
+  wait_claw()
+  wait_claw()
+  wait_claw()
 EndSub
 
 sub raiseLift
@@ -88,6 +117,12 @@ EndSub
 sub raiseLiftalittle
   @kpD = 5
   @degD = @auxD-10
+  wait_claw()
+EndSub
+
+sub raiseLiftaMore
+  @kpD = 5
+  @degD = @auxD-50
   wait_claw()
 EndSub
 
@@ -106,7 +141,7 @@ EndSub
 
 Sub lowerLift
   @kpD = 0.6
-  @degD = 200'se coboara la unghiul optim ca sa luam cuburile
+  @degD = 160'se coboara la unghiul optim ca sa luam cuburile
   wait_claw()
 EndSub
 
@@ -119,11 +154,12 @@ Sub lowerLiftslow
 EndSub
 
 Sub lowerLiftsLowAndLower
-  @kpD = 0.4
-  @degD = 230'se coboara la unghiul optim ca sa luam cuburile
+  @kpD = 1
+  @degD = 90'se coboara la unghiul optim ca sa luam cuburile
   wait_claw()
-  wait_claw()
-  wait_claw()
+  'Program.Delay(1000)
+  @kpD = 0.2
+  @degD = 260
   wait_claw()
   wait_claw()
 EndSub
@@ -150,8 +186,8 @@ sub lowerLiftToLittleShip
 EndSub
 
 sub lowerLiftToBigShip
-  @kpD = 0.4
-  @degD = 173
+  @kpD = 1
+  @degD = 148
   wait_claw()
   wait_claw()
   wait_claw()
@@ -160,7 +196,7 @@ EndSub
 
 sub destroyFlagLittleShipOne
   @kpD = 0.5
-  @degD = 128.5
+  @degD = 110
   wait_claw()
   wait_claw()  
   'wait_claw()  
@@ -193,10 +229,11 @@ Sub prepLowerLiftSpecialCube
 EndSub
 
 Sub closeClaw
-  @degA = -250
-  wait_claw()
-  @degA = -500 ' de modificat
+  @kpA = 0.2
+  @degA = 400
+  wait_claw() 
 EndSub
+
 
 sub resetArm
   @degA = 0
@@ -217,6 +254,22 @@ sub clawForWhite
 EndSub
 
 
+sub TakecubeUnderYou
+  raiseLiftaMore()
+
+  wait_claw()
+  resetClaw()
+
+  wait_claw()
+  lowerLift()
+
+  wait_claw()
+  closeClaw()
+
+  wait_claw()
+  raiseLiftsuper()
+EndSub
+
 sub prepForWhite
   @degA = -120
   wait_claw()
@@ -227,7 +280,7 @@ sub prepForWhite
 EndSub
 
 Sub prepForGreen1
-  @degA = -130
+  @degA = 150
   wait_claw()
 EndSub
 
@@ -268,7 +321,15 @@ EndSub
 
 sub putGreenOnShip
   @kpD = 0.6
-  @degD = 145
+  @degD = 140
+  wait_claw()
+  wait_claw()
+ letALittleless()
+EndSub
+
+sub GreenCubeFall
+  @kpD = 1
+  @degD = 125
   wait_claw()
   wait_claw()
  letALittleless()
@@ -348,6 +409,22 @@ Function ceSaUrmaresti(in number case, in number a, in number b, in number c, in
     EndIf
   EndIf
 EndFunction
+
+Function treiCaz(in number case, in number a, in number b, in number c, in number d, out number follow)
+  'case
+  '1 - 2 verde
+  '2 - 2 albastru
+  '3 - mixt
+  follow = -1
+  if( a == 4 - case AND c == 4 - case)Then
+    follow = 4
+  Else  
+    if( b == 4 - case AND d == 4 - case)Then
+      follow = 5
+    EndIf      
+  EndIf    
+EndFunction
+
 
 Function stangadreata(in number cm, in number v, in string sens)
   
@@ -430,10 +507,11 @@ EndFunction
 
 Function lf_intersection_read_col(in number speed_max,in string acceleration,in string deceleration,in string end_brake,out number type)
   
-  Cm2Degrees(3.5,prim_st)
-  Cm2Degrees(6,prim_dr)
-  Cm2Degrees(8.5,doi_st)
-  Cm2Degrees(10.5,doi_dr)
+  
+  Cm2Degrees(10,prim_st) '3.5 +6.5
+  Cm2Degrees(12.5,prim_dr)'6
+  Cm2Degrees(15,doi_st)'8.5
+  Cm2Degrees(17,doi_dr)'10.5
   
   frec[360] = 0
   
