@@ -1,0 +1,294 @@
+include "wro_triangulum"
+folder "prjs" "Triangulum"
+
+Time.Reset3()
+
+Thread.Run = claw
+@speed_spindeg = 70
+@speed_movesync = 50 '60
+@speed_lf = 50 '60
+@speed_spinrobot = 50
+@speed_spin = 90
+@type = 0
+@speed_spinrobotShip = 40
+cubu[4]=0
+
+
+'reverseMoveSyncCM(5, 60, "on", "on", "on")
+'RobotSpin("left",35, @speed_spin - 40, "on", "on", "on")'ne rotim la 90 de la nava mare
+'MoveSync(speed_movesync,43,"on")
+'resetClaw()
+'wait_claw()
+'raiseLift()
+'RobotSpin("right",120, @speed_spin, "off", "on", "on")
+'kpD = 0.2
+'@degD = 155
+'wait_claw()
+'Program.Delay(1000)
+'closeClaw()
+'wait_claw()
+'lowerLiftSpecialCubePut()
+'lf_cm(speed_lf,50,"on","off","on")
+
+'lf_cm(speed_lf,0.1,"on","off","on")
+'lowerLift()
+'wait_claw()
+'wait_claw()
+'raiseLiftsuper()
+'wait_claw()
+'Program.Delay(100000)
+
+
+
+
+
+handle = EV3File.OpenWrite("daterobot.txt")
+Sensor.SetMode(3,4)
+lf_cm(speed_lf,10,"on","off","off")
+lf_intersection_read_col(speed_lf, "off", "off", "on",type)
+Motor.Stop("BC","true")
+If(type = 3)Then
+  Speaker.Note(50,"C4",1000)
+ElseIf(type = 2)Then
+  Speaker.Note(50,"C7",1000)
+Else
+  
+EndIf
+final = Text.Append("Primele doua cuburi ",type)
+EV3File.WriteLine(handle, final)
+LCD.Clear()
+LCD.Text(1,70,10,2,type)
+MoveSync(speed_movesync,8,"on")
+reverseMoveSyncCM(2, @speed_movesync, "on", "off", "on")
+lowerLiftSpecialCube()
+wait_claw()
+closeClaw()
+wait_claw()
+raiseLift()
+reverseMoveSyncCM(3, @speed_movesync, "on", "off", "on")
+RobotSpin("right",70, @speed_spin, "off", "on", "off")'ne rotim la 90 de la nava mare
+lf_cm(@speed_lf+20,20,"on","off","off")
+lf_intersection(@speed_lf+20, "off", "off", "off")
+lf_cm(@speed_lf + 20,10,"off","off","off")
+lf_intersection(@speed_lf+20, "off", "on", "on")
+lowerLift()
+resetClaw()
+wait_claw_but_slower()
+resetLift()
+wait_claw_but_slower()
+RobotSpin("left",75, @speed_spin, "off", "on", "off")
+PerfectLine(@speed_spin, "left")
+lf_cm(@speed_lf,24,"on","on","on")
+@kpA = 1
+prepForWhite()
+@degD = 110
+spinDegrees(@speed_spindeg, "left", 8, "on", "on", "on")
+MoveSync(@speed_movesync,1,"on")
+wait_claw()
+lowerLift()
+wait_claw()
+closeClaw()
+wait_claw()
+@kpD = 3
+@degD = 130
+reverseMoveSyncCM(1, @speed_movesync + 30, "on", "on", "on")
+reverseSpinDegrees(@speed_spindeg, "left", 8, "on", "on", "on")
+reverseMoveSyncCM(24, @speed_movesync + 30, "off", "on", "on")
+RobotSpin("left",70, @speed_spin, "on", "on", "on")
+PerfectLine(30, "left")
+Program.Delay(300)
+
+lf_cm(@speed_lf,15,"on","off","on")
+lf_intersection(@speed_lf, "off", "on", "on")
+RobotSpin("left",70, @speed_spin, "on", "on", "on")
+PerfectLine(30, "left")
+Program.Delay(300)
+@degD = 135
+lf_cm(@speed_lf + 20,12,"on","on","on")
+spinDegrees(30, "right", 3, "off", "on", "on")
+@kpA = 0.3
+Program.Delay(300)
+
+letALittle()
+wait_claw()
+reverseSpinDegrees(@speed_spindeg, "right", 3, "on", "on", "on")
+reverseMoveSyncCM(2, @speed_movesync + 30, "off", "off", "on")
+resetLift()
+
+RobotSpin("left",160, @speed_spin, "on", "on", "on")
+PerfectLine(30, "left")
+Program.Delay(300)
+
+reverseMoveSyncCM(3, @speed_movesync, "off", "on", "on")
+
+
+lf_cm(@speed_lf,3,"on","off","on")
+lf_intersection(@speed_lf, "on", "on", "on")
+lf_cm(@speed_lf,22,"on","on","on")'era 23 inainte
+spinDegrees(@speed_spindeg, "left", 91, "on", "on", "on")
+reverseMoveSyncCM_read(30,30,"on",cubu[0],cubu[1],cubu[2],cubu[3])
+final = " "
+final = Text.Append(final,cubu[0])
+final = Text.Append(final," ")
+final = Text.Append(final,cubu[1])
+final = Text.Append(final," ")
+final = Text.Append(final,cubu[2])
+final = Text.Append(final," ")
+final = Text.Append(final,cubu[3])
+EV3File.WriteLine(handle, final)
+MoveSync(50,12.5,"on")
+spinDegrees(@speed_spindeg, "left", 90, "on", "on", "on")
+
+lf_cm(@speed_lf,3,"on","off","on")
+lf_intersection(@speed_lf, "off", "off", "on")
+
+RobotSpin("left",160, @speed_spin, "on", "on", "on")
+PerfectLine(30, "left")
+Program.Delay(300)
+
+pre[0]=11.5
+pre[1]=4
+pre[2]=4
+pre[3]=11.5
+
+lf_cm(@speed_lf - 30,12,"on","on","on")
+reverseMoveSyncCM(6, @speed_movesync, "on", "on", "on")
+
+If(type = 1)Then
+  cub1 = 3
+  cub2 = 3
+  i=0
+  While cubu[i] = cub1  
+    i = i + 1
+  EndWhile
+ElseIf(type = 2) Then
+  cub1 = 2
+  cub2 = 2
+  i=0
+  While cubu[i] = cub1  
+    i = i + 1
+  EndWhile
+Else
+  cub1 = 3
+  cub2 = 2
+  x=0
+  While cubu[x] = cub1  
+    x = x + 1
+  EndWhile
+  y=0
+  While cubu[y] = cub2  
+    y = y + 1
+  EndWhile
+  i=0
+  While i = x OR i = y  
+    i = i + 1
+  EndWhile
+EndIf
+
+
+cubu[i] = 0
+
+If(i<2)Then
+  stangadreata(pre[i], 30, "right")
+Else
+  stangadreata(pre[i], 30, "left")
+EndIf
+
+Program.Delay(100)
+fata = 5
+If i = 1 Or i = 2 Then
+  fata = 1
+EndIf
+
+reverseMoveSyncCM(fata, 30, "on", "on", "on")
+TakecubeUnderYou()
+
+MoveSync(30,fata,"on")
+If(i<2)Then
+  stangadreata(pre[i], -30, "left") 
+Else
+  stangadreata(pre[i], -30, "right")
+EndIf
+
+RobotSpin("left",180, @speed_spin, "on", "on", "on")
+'PerfectLine(30, "left")
+Program.Delay(300)
+
+lf_cm(@speed_lf - 20,16.5,"on","on","on")
+spinDegrees(30, "left", 8, "off", "on", "on")
+@degD = 135
+@kpA = 0.3
+Program.Delay(300)
+
+'@kpA = 2
+letALittle()
+wait_claw()
+@kpD = 4
+raiseLift()
+wait_claw()
+reverseSpinDegrees(@speed_spindeg, "left", 8, "on", "on", "on")
+raiseLiftsuper()
+
+@kpD = 0.4
+
+@degA = 90
+lf_cm(@speed_lf,2,"on","on","on")'iau barca mica si o pun cu speciala
+lowerLift()
+wait_claw()
+wait_claw()
+@degA = 90
+wait_claw()
+wait_claw()
+closeClaw()
+reverseMoveSyncCM(14, 30, "on", "on", "on")
+RobotSpin("left",90, @speed_spin - 10, "off", "on", "off")
+lf_cm(speed_lf,10,"on","off","off")
+lf_intersection(@speed_lf, "off", "off", "off")
+lf_cm(@speed_lf + 20,8,"off","on","on")
+wait_claw()
+resetClaw()
+wait_claw()
+raiseLift()
+wait_claw()
+lf_cm(@speed_lf,8.5,"on","on","on")
+wait_claw()
+lowerLift()
+wait_claw()
+closeClaw()
+wait_claw()
+raiseLiftsuper()
+wait_claw()
+lf_cm(@speed_lf + 20,10,"off","on","on")
+lf_intersection(@speed_lf, "off", "on", "on")
+MoveSync(speed_movesync,3,"on")
+reverseMoveSyncCM(28, 30, "on", "on", "on")
+lowerLift()
+resetClaw()
+raiseLift()
+RobotSpin("left",45, @speed_spin, "on", "on", "on")
+MoveSync(speed_movesync,35,"on")
+RobotSpin("right",135, @speed_spin, "on", "on", "on")
+lf_cm(@speed_lf,3,"on","on","on")
+
+@kpD = 0.2
+@degD = 150
+wait_claw()
+wait_claw()
+wait_claw()
+closeClaw()
+wait_claw()
+wait_claw()
+wait_claw()
+lowerLiftSpecialCubePut()
+lf_cm(@speed_lf,42,"on","on","on")
+resetClaw()
+raiseLiftsuper()
+lf_cm(@speed_lf,2,"on","on","on")
+spinDegrees(@speed_spindeg, "left", 90, "on", "on", "on")
+reverseSpinDegrees(@speed_spindeg, "left", 90, "on", "on", "on")
+reverseMoveSyncCM(28, 30, "on", "on", "on")
+
+LCD.Clear()
+LCD.Write(20,20,Time.Get3())
+
+Program.Delay(100000)

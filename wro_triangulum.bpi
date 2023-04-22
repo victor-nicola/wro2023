@@ -23,6 +23,7 @@
 @degA = 0
 @degD = 0
 @auxD = 0
+@auxA = 0
 @kpD = 0.5
 @optimumval = 69
 @contor_error = 5
@@ -53,6 +54,7 @@ Sub Claw
     encoder = Motor.GetCount("A")
     error = degA - encoder
     err1 = degA - encoder
+    @auxA = encoder
     PA = error * kpA
     DA = (error - error_oldA) * kdA
     error_oldA = error
@@ -68,6 +70,9 @@ Sub Claw
     if(err1 < 10 And err1 > -10 And err2 < 10 And err2 > -10 )Then
       @stegulet_pervers = 0
     EndIf
+    if((degD > 170 AND @auxD > 170 ) OR (degA > 170 And @auxA > 170 ))Then
+      @stegulet_pervers = 0
+    EndIf    
   EndWhile
 EndSub
 
@@ -96,7 +101,15 @@ EndSub
 Sub wait_claw
   Time.Reset1()
   @stegulet_pervers = 1
-  While Time.Get1() < @TimeBetween 'And @stegulet_pervers = 1
+  While Time.Get1() < @TimeBetween And @stegulet_pervers = 1
+    
+  EndWhile
+EndSub
+
+Sub wait_claw_but_slower
+  Time.Reset1()
+  @stegulet_pervers = 1
+  While Time.Get1() < @TimeBetween
     
   EndWhile
 EndSub
@@ -110,7 +123,7 @@ EndSub
 
 sub raiseLift
   @kpD = 5
-  @degD = 130
+  @degD = 120
   wait_claw()
 EndSub
 
@@ -147,7 +160,7 @@ EndSub
 
 Sub lowerLiftslow
   @kpD = 0.4
-  @degD = 200'se coboara la unghiul optim ca sa luam cuburile
+ @degA = 90
   wait_claw()
   wait_claw()
   wait_claw()
@@ -172,7 +185,7 @@ EndSub
 
 Sub lowerLiftSpecialCubePut
   @kpD = 4
-  @degD = 145'se coboara(*urca acum ca suntem smecheri) la unghiul optim ca sa punem speciala
+  @degD = 140'se coboara(*urca acum ca suntem smecheri) la unghiul optim ca sa punem speciala
   wait_claw()
 EndSub
 
@@ -255,27 +268,27 @@ EndSub
 
 
 sub TakecubeUnderYou
-  raiseLiftaMore()
-
-  wait_claw()
-  resetClaw()
-
-  wait_claw()
-  lowerLift()
-
-  wait_claw()
-  closeClaw()
-
-  wait_claw()
-  raiseLiftsuper()
+  @degA = 190
+@degD = 160
+wait_claw_but_slower()
+wait_claw_but_slower()
+reverseMoveSyncCM(10, @speed_movesync - 30, "on", "on", "on")
+@kpD = 4
+@degD = 140
+@degA = 140
+wait_claw_but_slower()
+wait_claw_but_slower()
+@degD = 160
+wait_claw_but_slower()
+@kpA = 1
+@degA = 220
+wait_claw_but_slower()
+wait_claw_but_slower()
+raiseLift()
 EndSub
 
 sub prepForWhite
-  @degA = -120
-  wait_claw()
-  wait_claw()
-  @kpD = 0.6
-  @degD = 180'se coboara la unghiul optim ca sa luam cuburile
+  @degA = 130
   wait_claw()
 EndSub
 
@@ -285,18 +298,18 @@ Sub prepForGreen1
 EndSub
 
 Sub prepForGreen
-  @degA = -125
+  @degA = 125
   wait_claw()
 EndSub
 
 sub letALittleMore
-  @degA = -115
+  @degA = 115
   wait_claw()
   wait_claw()
 EndSub
 
 sub letALittle
-  @degA = -130
+  @degA = 130
   wait_claw()
   wait_claw()
 EndSub
@@ -314,7 +327,7 @@ sub letALot
 EndSub
 
 sub letALittleless
-  @degA = -135
+  @degA = 170
   wait_claw()
   wait_claw()
 EndSub

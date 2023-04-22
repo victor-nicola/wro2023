@@ -16,6 +16,11 @@ cubu[3] = 0
 
 handle = EV3File.OpenWrite("daterobot.txt")
 
+'lf_cm(75,100,"off","off","on")
+
+
+
+'Program.Delay(10000000)
 
 MoveSync(20,1,"off")
 
