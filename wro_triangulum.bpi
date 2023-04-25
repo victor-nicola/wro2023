@@ -39,11 +39,11 @@ EndFunction
 
 Sub Claw
   error_oldA = 0
-  kpA = 0.3
-  kdA = 0.1
+  @kpA = 0.3
+  @kdA = 0.1
   error_oldD = 0
-  @kpD = 0.5
-  kdD = 0.1
+  @kpD = 1
+  @kdD = 10
   @degA = 0
   @degD = 0
   Motor.ResetCount("DA")
@@ -101,11 +101,16 @@ EndSub
 Sub wait_claw
   Time.Reset1()
   @stegulet_pervers = 1
-  While Time.Get1() < @TimeBetween And @stegulet_pervers = 1
+  While Time.Get1() < @TimeBetween' And @stegulet_pervers = 1
     
   EndWhile
 EndSub
-
+Function wait_claw_specific(in number timp)
+  Time.Reset1()
+  While Time.Get1() < timp
+    
+  EndWhile
+EndFunction
 Sub wait_claw_but_slower
   Time.Reset1()
   @stegulet_pervers = 1
@@ -268,23 +273,26 @@ EndSub
 
 
 sub TakecubeUnderYou
+  @kdD = 50
   @degA = 190
-@degD = 160
-wait_claw_but_slower()
-wait_claw_but_slower()
-reverseMoveSyncCM(10, @speed_movesync - 30, "on", "on", "on")
-@kpD = 4
-@degD = 140
-@degA = 140
-wait_claw_but_slower()
-wait_claw_but_slower()
-@degD = 160
-wait_claw_but_slower()
-@kpA = 1
-@degA = 220
-wait_claw_but_slower()
-wait_claw_but_slower()
-raiseLift()
+  @degD = 200
+  wait_claw_specific(1000)
+  @kdD = 10
+
+  reverseMoveSyncCM(10, @speed_movesync - 30, "on", "on", "on")
+  @kpD = 4
+  @degD = 140
+  @kpA = 0.5
+  @degA = 140
+  wait_claw_specific(200)
+  
+  @degD = 160
+  wait_claw_specific(100)
+  
+  @kpA = 1
+  @degA = 250
+  wait_claw_specific(200)
+  raiseLift()
 EndSub
 
 sub prepForWhite
