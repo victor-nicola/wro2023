@@ -138,11 +138,7 @@ sub raiseLiftalittle
   wait_claw()
 EndSub
 
-sub raiseLiftaMore
-  @kpD = 5
-  @degD = @auxD-50
-  wait_claw()
-EndSub
+
 
 sub aslowaspossible
   @kpD = 0.3
@@ -358,7 +354,7 @@ EndSub
 
 sub putWhiteOnShip
   @kpD = 0.8
-  @degD = 152
+  @degD = 150
   wait_claw()
   wait_claw()
   wait_claw()
