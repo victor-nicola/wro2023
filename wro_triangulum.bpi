@@ -201,7 +201,7 @@ EndSub
 
 sub lowerLiftToBigShip
   @kpD = 1
-  @degD = 148
+  @degD = 180
   wait_claw()
   wait_claw()
   wait_claw()
@@ -269,6 +269,7 @@ EndSub
 
 
 sub TakecubeUnderYou
+  @kpD = 0.5
   @kdD = 50
   @degA = 190
   @degD = 200
@@ -282,8 +283,8 @@ sub TakecubeUnderYou
   @degA = 140
   wait_claw_specific(200)
   
-  @degD = 160
-  wait_claw_specific(100)
+  @degD = 170
+  wait_claw_specific(400)
   
   @kpA = 1
   @degA = 250
@@ -341,7 +342,7 @@ sub putGreenOnShip
   @degD = 140
   wait_claw()
   wait_claw()
- letALittleless()
+ letALittleMore()
 EndSub
 
 sub GreenCubeFall
@@ -349,7 +350,7 @@ sub GreenCubeFall
   @degD = 125
   wait_claw()
   wait_claw()
- letALittleless()
+ resetClaw()
 EndSub
 
 sub putWhiteOnShip
@@ -525,10 +526,10 @@ EndFunction
 Function lf_intersection_read_col(in number speed_max,in string acceleration,in string deceleration,in string end_brake,out number type)
   
   
-  Cm2Degrees(10,prim_st) '3.5 +6.5
-  Cm2Degrees(12.5,prim_dr)'6
-  Cm2Degrees(15,doi_st)'8.5
-  Cm2Degrees(17,doi_dr)'10.5
+  Cm2Degrees(8,prim_st) '3.5 +6.5
+  Cm2Degrees(11,prim_dr)'6
+  Cm2Degrees(13,doi_st)'8.5
+  Cm2Degrees(16,doi_dr)'10.5
   
   frec[360] = 0
   
@@ -758,6 +759,55 @@ EndFunction
 Function lf_cm(in number speed_max,in number cm,in string acceleration,in string deceleration,in string end_brake)
   
   kp = 0.5
+  kd = @kd
+  exit_condition = 1
+  Motor.ResetCount(@stop_motor)
+  Sensor.SetMode(1,0)
+  Sensor.SetMode(2,0)
+  left_encoder = 0
+  right_encoder = 0
+  Cm2Degrees(cm,encoder)
+  error_old = 0
+  flag = 1
+  While exit_condition = 1
+    left_encoder = Motor.GetCount(@left_motor)
+    right_encoder = Motor.GetCount(@right_motor)
+    left_encoder=left_encoder*-1
+    current_encoder = (left_encoder + right_encoder) / 2
+    s1 = Sensor.ReadPercent(1)
+    s2 = Sensor.ReadPercent(2)
+    error = s1 - s2
+    P = kp * error
+    D = kd * (error - error_old)
+    If acceleration = "on" Then
+      speed=(current_encoder / @acceleration_encoder) * (speed_max - @speed_0) + @speed_0
+      If speed > speed_max Then
+        speed = speed_max
+      EndIf
+    Else  
+      speed = speed_max
+    EndIf
+    If deceleration = "on" And (encoder - current_encoder) <= @deceleration_encoder Then
+      speed = ((encoder - current_encoder) / @deceleration_encoder) * (speed_max - @speed_0) + @speed_0
+      If speed < @speed_0 Then
+        speed = @speed_0
+      EndIf
+    EndIf
+    Motor.StartPower(@left_motor,-(speed + (P + D)))
+    Motor.StartPower(@right_motor,(speed - (P + D)))
+    error_old = error
+    If current_encoder > encoder Then
+      exit_condition = 0
+    EndIf
+  EndWhile
+  If end_brake = "on" Then
+    Motor.Stop("BC","True")
+  EndIf
+EndFunction
+
+Function lf_cm_cu_cub(in number speed_max,in number cm,in string acceleration,in string deceleration,in string end_brake)
+  
+  kp = 0.25
   kd = @kd
   exit_condition = 1
   Motor.ResetCount(@stop_motor)

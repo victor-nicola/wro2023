@@ -56,6 +56,8 @@ cubu[4]=0
 'closeClaw()
 'reverseMoveSyncCM(14, 30, "on", "on", "on")
 '@degA = 90
+
+
 'Program.Delay(100000)
 
 
@@ -130,9 +132,13 @@ spinDegrees(30, "right", 8, "off", "on", "on")
 @kpA = 0.1
 Program.Delay(300)
 
+
 letALittle()
 wait_claw()
+@degD = 130
+wait_claw()
 closeClaw()
+wait_claw()
 reverseSpinDegrees(@speed_spindeg, "right", 8, "on", "on", "on")
 reverseMoveSyncCM(2, @speed_movesync + 30, "off", "off", "on")
 resetLift()
@@ -233,16 +239,16 @@ Else
 EndIf
 
 RobotSpin("left",180, @speed_spin, "on", "on", "on")
-Program.Delay(1000000)
 'PerfectLine(30, "left")
 Program.Delay(300)
 
-lf_cm(@speed_lf - 20,16.5,"on","on","on")
+lf_cm_cu_cub(@speed_lf - 20,16.5,"on","on","on")
 spinDegrees(30, "left", 5, "off", "on", "on")
+@kpD = 0.3
 @degD = 140
 @kpA = 0.1
 Program.Delay(300)
-
+@kpD = 1
 '@kpA = 2
 letALittle()
 wait_claw()
@@ -257,7 +263,7 @@ lf_cm(@speed_lf,2,"on","on","on")'iau barca mica si o pun cu speciala
 @kpA = 10
 @degA = 80
 wait_claw()
-@degD = 190
+@degD = 200
 wait_claw()
 wait_claw()
 closeClaw()
@@ -272,7 +278,7 @@ resetClaw()
 wait_claw()
 raiseLift()
 wait_claw()
-lf_cm(@speed_lf,8.5,"on","on","on")
+lf_cm(@speed_lf - 30,8.5,"on","on","on")
 wait_claw()
 lowerLift()
 wait_claw()
@@ -307,14 +313,14 @@ resetClaw()
 resetLift()
 lf_cm(@speed_lf,10,"on","on","on")
 Time.Reset7()
-While(Time.Get7() < 500)
-  Motor.StartSync("BC", -80, 0)
+While(Time.Get7() < 250)
+  Motor.StartSync("BC", -80, 80)
 EndWhile
-
-RobotSpin("right",110, @speed_spin, "on", "on", "on")'aici ma rotesc cat e necesar ca sa fac diagonala si sa plec
+reverseMoveSyncCM(10, 30, "off", "off", "off")
+RobotSpin("right",135, @speed_spin, "on", "on", "on")'aici ma rotesc cat e necesar ca sa fac diagonala si sa plec
 'vreau sa fie cam la 45 fata de orizontala
 StraightAlley(70)
-MoveSync(speed_movesync,5,"on")
+MoveSync(speed_movesync,3,"on")
 PerfectLine(30, "left")
 lf_cm(@speed_lf,15,"on","off","off")
 lf_intersection(@speed_lf, "off", "on", "on")
@@ -322,67 +328,154 @@ RobotSpin("right",75, @speed_spin, "off", "on", "off")
 PerfectLine(@speed_spin, "right")
 resetClaw()
 lf_cm(@speed_lf,26,"on","on","on")
+lowerLift()
+wait_claw()
+wait_claw()
 closeClaw()'am luat cubul alb, ma rotesc la stanga ca sa il pun, dupa niste calibrari
-reverseMoveSyncCM(20, 30, "off", "off", "off")
-lf_cm(@speed_lf,10,"on","on","on")
+raiseLift()
+reverseMoveSyncCM(26, 30, "off", "off", "off")
 RobotSpin("left",75, @speed_spin, "on", "on", "on")
-RobotSpin("left",15, 20, "on", "on", "on")
+PerfectLine(30, "left")
+lf_cm(80,10,"on","off","off")
+lf_intersection(90, "off", "off", "off")
+lf_cm(90,10,"off","off","off")
+lf_intersection(80, "off", "on", "on")
 Program.Delay(300)
-MoveSync(speed_movesync,88,"on")
-putWhiteOnShip()'am pus alba, le pun si pe celelalte 2
-raiseLift()
-resetClaw()
-spate = 19'aici ma dau in spate pana la primul cub, dupa ma dau in spate cu multiplii de spatiu dintre cuburi
-i=3
-While cubu[i] <> cub1
-  i = i - 1
-  spate = spate + 7.2
-EndWhile
-cubu[i] = 0
-reverseMoveSyncCM(spate, @speed_movesync, "on", "on", "on")'ma adau in spate pt al doilea cub
-RobotSpin("right",86, @speed_spin - 10, "off", "on", "on")
-MoveSync(@speed_movesync,2,"on")'vad sambata cu cat tre sa il modific ca sa prind cubul
-TakecubeUnderYou()
-RobotSpin("left",90, @speed_spin - 10, "off", "on", "on")'pun primul cub, ma intorc dupa al doilea
-MoveSync(@speed_movesync,spate,"on")
-putGreenOnShip()
-raiseLift()
-resetClaw()
-
-spate = 19
-i=3
-While cubu[i] <> cub2
-  i = i - 1
-  spate = spate + 7.2
-EndWhile
-cubu[i] = 0
-reverseMoveSyncCM(spate, @speed_movesync, "on", "on", "on")'ma adau in spate pt al doilea cub
-RobotSpin("right",90, @speed_spin - 10, "off", "on", "on")
-MoveSync(@speed_movesync,12,"on")'10 pt ca la takecubeunderyou merg 10 in spate
-TakecubeUnderYou()
-MoveSync(@speed_movesync,5,"on")'ca sa il pun in "mijloc"
-RobotSpin("left",90, @speed_spin - 10, "off", "on", "on")'pun primul cub, ma intorc dupa al doilea
-MoveSync(@speed_movesync,spate,"on")
-putGreenOnShip()
-raiseLift()
-resetClaw()
-RobotSpin("left",90, @speed_spin - 10, "off", "on", "on")'ma duc sa iau si sa pun nava mare
-StraightAlley(70)
-MoveSync(speed_movesync,5,"on")
-PerfectLine(30, "right")
-lf_cm(@speed_lf,10,"on","off","off")
-lf_intersection(@speed_lf, "off", "on", "on")
-RobotSpin("right",90, @speed_spin, "on", "on", "on")
-reverseMoveSyncCM(3, @speed_movesync, "on", "on", "on")
-lowerLiftToLittleShip()
-closeClaw()
 RobotSpin("right",80, @speed_spin, "on", "on", "on")
-lf_cm(@speed_lf,10,"on","on","on")
+MoveSync(speed_movesync,4,"on")
+putWhiteOnShip()'am pus alba pe nava mare
 resetClaw()
+raiseLift()
+reverseMoveSyncCM(5, @speed_movesync, "on", "on", "on")
+lowerLiftToBigShip()
+closeClaw()
+RobotSpin("right",100, @speed_spin - 20, "on", "off", "on")
+Program.Delay(200)
+RobotSpin("left",20, @speed_spin - 20, "off", "off", "on")
+lf_cm(@speed_lf, 15,"on","on","on")
+resetClaw()
+raiseLift()
+lf_intersection(@speed_lf, "on", "on", "on")
+lf_cm(@speed_lf,24,"on","off","off")
+reverseMoveSyncCM(24, @speed_movesync, "on", "on", "on")
+RobotSpin("left",75, @speed_spin, "on", "on", "on")
+PerfectLine(30, "left")
+
+pre[0]=11
+pre[1]=3.5
+pre[2]=3.5
+pre[3]=11
+'lf_cm_cu_cub(@speed_lf - 30,20,"on","on","on")
+'reverseMoveSyncCM(15, @speed_movesync - 30, "on", "on", "on")
+
+
+If(type = 1)Then
+  cub1 = 3
+  cub2 = 3
+ElseIf(type = 2) Then
+  cub1 = 2
+  cub2 = 2
+Else
+  cub1 = 3
+  cub2 = 2
+EndIf
+
+i=0
+While cubu[i] <> cub1 ' calculam care e primul cub pe care tb sa il luam
+  i = i + 1
+EndWhile
+cubu[i] = 0
+
+fata = 9
+If i = 1 Or i = 2 Then
+  fata = 15
+EndIf
+
+
+lf_cm_cu_cub(@speed_lf - 30,fata,"on","on","on")
+Program.Delay(100)
+
+If(i<2)Then
+  stangadreata(pre[i], 60, "right")
+Else
+  stangadreata(pre[i], 60, "left")
+EndIf
+
+closeClaw()
+
+TakecubeUnderYou()
+reverseMoveSyncCM(14, @speed_movesync, "on", "on", "on")
+
+RobotSpin("right",90, 40, "off", "on", "on")
+
+distanta = 6 + i * 7.5
+if i = 0 Then
+  lf_cm_cu_cub(30,13,"on","on","on")
+  reverseMoveSyncCM(7, @speed_movesync, "on", "on", "on")
+Else
+  lf_cm_cu_cub(30,distanta,"on","on","on")
+
+  EndIf
+
+
+putGreenOnShip()
 resetLift()
-lf_cm(@speed_lf,160,"on","on","on")
-RobotSpin("left",45, @speed_spin - 10, "off", "on", "on")
-MoveSync(@speed_movesync,30,"on")
+
+reverseMoveSyncCM(14, @speed_movesync, "on", "on", "on")
+
+
+
+RobotSpin("left",75, @speed_spin, "off", "on", "on")
+PerfectLine(@speed_spin, "left")
+Program.Delay(300)
+
+'lf_cm_cu_cub(@speed_lf - 30,20,"on","on","on")
+'reverseMoveSyncCM(15, @speed_movesync - 30, "on", "on", "on")
+
+
+i=0
+While cubu[i] <> cub2 ' calculam care e al doilea cub pe care tb sa il luam
+  i = i + 1
+EndWhile
+cubu[i] = 0
+
+
+fata = 7
+If i = 1 Or i = 2 Then
+  fata = 15 '15
+EndIf
+
+lf_cm_cu_cub(@speed_lf - 30,fata,"on","on","on")
+
+
+If(i<2)Then
+  stangadreata(pre[i], 60, "right")
+Else
+  stangadreata(pre[i], 60, "left")
+EndIf
+
+closeClaw()
+
+TakecubeUnderYou()
+reverseMoveSyncCM(14, @speed_movesync, "on", "on", "on")
+
+RobotSpin("right",85, 40, "off", "on", "on")
+
+distanta = 8 + i * 7.5 
+ 
+lf_cm_cu_cub(30,distanta,"on","on","on")
+'reverseMoveSyncCM(5, @speed_movesync, "on", "on", "on")
+
+GreenCubeFall()
+resetLift()
+
+
+
+lf_cm_cu_cub(@speed_lf + 20,85,"on","on","on")
+reverseMoveSyncCM(6, @speed_movesync, "on", "on", "on")
+RobotSpin("left",50, @speed_spin - 10, "off", "on", "on")
+lowerLift()
+MoveSync(@speed_movesync,15,"on")
 
 'reverseSpinDegrees(@speed_spindeg, "left", 90, "on", "on", "on")
 'reverseMoveSyncCM(28, 30, "on", "on", "on")
