@@ -201,9 +201,7 @@ EndSub
 
 sub lowerLiftToBigShip
   @kpD = 1
-  @degD = 180
-  wait_claw()
-  wait_claw()
+  @degD = 165
   wait_claw()
 
 EndSub
@@ -269,10 +267,10 @@ EndSub
 
 
 sub TakecubeUnderYou
-  @kpD = 0.5
+  @kpD = 0.6
   @kdD = 50
   @degA = 190
-  @degD = 200
+  @degD = 220
   wait_claw_specific(1000)
   @kdD = 10
 
@@ -293,7 +291,7 @@ sub TakecubeUnderYou
 EndSub
 
 sub prepForWhite
-  @degA = 130
+  @degA = 140
   wait_claw()
 EndSub
 
@@ -347,7 +345,7 @@ EndSub
 
 sub GreenCubeFall
   @kpD = 1
-  @degD = 125
+  @degD = 120
   wait_claw()
   wait_claw()
  resetClaw()
@@ -357,9 +355,7 @@ sub putWhiteOnShip
   @kpD = 0.8
   @degD = 150
   wait_claw()
-  wait_claw()
-  wait_claw()
-  letALittleless()
+  resetClaw()
 EndSub
 
 sub putGreenOnSmallShip
