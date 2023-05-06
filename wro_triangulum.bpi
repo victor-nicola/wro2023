@@ -201,7 +201,7 @@ EndSub
 
 sub lowerLiftToBigShip
   @kpD = 1
-  @degD = 165
+  @degD = 160
   wait_claw()
 
 EndSub
@@ -269,6 +269,7 @@ EndSub
 sub TakecubeUnderYou
   @kpD = 0.6
   @kdD = 50
+  @kpA = 5
   @degA = 190
   @degD = 220
   wait_claw_specific(1000)
@@ -277,16 +278,17 @@ sub TakecubeUnderYou
   reverseMoveSyncCM(10, @speed_movesync - 30, "on", "on", "on")
   @kpD = 4
   @degD = 140
-  @kpA = 0.5
+  wait_claw_specific(100)
+  @kpA = 5
   @degA = 140
-  wait_claw_specific(200)
+  wait_claw_specific(100)
   
   @degD = 170
   wait_claw_specific(400)
   
-  @kpA = 1
+  @kpA = 5
   @degA = 250
-  wait_claw_specific(200)
+  wait_claw_specific(300)
   raiseLift()
 EndSub
 
@@ -345,7 +347,7 @@ EndSub
 
 sub GreenCubeFall
   @kpD = 1
-  @degD = 120
+  @degD = 130
   wait_claw()
   wait_claw()
  resetClaw()
@@ -442,9 +444,10 @@ EndFunction
 
 Function stangadreata(in number cm, in number v, in string sens)
   
-  gr = Math.ArcCos((1 - (cm / 17.25))) * (17.25 / @wheel_diameter) * (180 / Math.Pi)
-  MotorDegToCircleDeg(gr,codex)
+  robot_diameter = 17.25
   
+  gr = Math.ArcCos((1 - (cm / robot_diameter))) * (robot_diameter / @wheel_diameter) * (180 / Math.Pi)
+  MotorDegToCircleDeg(gr,codex)
   if sens = "left" Then
     spinDegrees(v, "right",codex, "off", "off", "on")
     Program.Delay(100)
