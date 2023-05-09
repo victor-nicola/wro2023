@@ -169,7 +169,7 @@ EndSub
 
 Sub lowerLiftsLowAndLower
   @kpD = 0.6
-  @degD = 180
+  @degD = 190
   wait_claw()
 
 EndSub
@@ -182,7 +182,7 @@ EndSub
 
 Sub lowerLiftSpecialCubePut
   @kpD = 4
-  @degD = 140'se coboara(*urca acum ca suntem smecheri) la unghiul optim ca sa punem speciala
+  @degD = 145'se coboara(*urca acum ca suntem smecheri) la unghiul optim ca sa punem speciala
   wait_claw()
 EndSub
 
@@ -197,7 +197,7 @@ EndSub
 
 sub lowerLiftToBigShip
   @kpD = 1
-  @degD = 168.5
+  @degD = 158
   wait_claw()
   wait_claw()
 
