@@ -168,19 +168,15 @@ Sub lowerLiftslow
 EndSub
 
 Sub lowerLiftsLowAndLower
-  @kpD = 1
-  @degD = 90'se coboara la unghiul optim ca sa luam cuburile
+  @kpD = 0.6
+  @degD = 180
   wait_claw()
-  'Program.Delay(1000)
-  @kpD = 0.2
-  @degD = 260
-  wait_claw()
-  wait_claw()
+
 EndSub
 
 Sub lowerLiftSpecialCube
   @kpD = 0.6
-  @degD = 152
+  @degD = 160
   wait_claw()
 EndSub
 
@@ -201,7 +197,8 @@ EndSub
 
 sub lowerLiftToBigShip
   @kpD = 1
-  @degD = 160
+  @degD = 168.5
+  wait_claw()
   wait_claw()
 
 EndSub
@@ -242,6 +239,13 @@ EndSub
 
 Sub closeClaw
   @kpA = 0.2
+  @degA = 400
+  wait_claw() 
+EndSub
+
+
+Sub closeClawForSpeciala
+  @kpA = 1
   @degA = 400
   wait_claw() 
 EndSub
