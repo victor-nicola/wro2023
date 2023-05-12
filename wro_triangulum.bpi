@@ -176,7 +176,7 @@ EndSub
 
 Sub lowerLiftSpecialCube
   @kpD = 0.6
-  @degD = 160
+  @degD = 155
   wait_claw()
 EndSub
 
@@ -269,6 +269,28 @@ sub clawForWhite
   
 EndSub
 
+sub TakeTwoCubesUnderYou
+  @kpD = 0.4
+  @degD = 210
+  wait_claw_specific(1000)
+  @kdD = 10
+  reverseMoveSyncCM(10, @speed_movesync - 30, "on", "on", "on")
+  @kpD = 4
+  @degD = 145
+  wait_claw_specific(100)
+  @kpA = 5
+  @degA = 30
+  wait_claw_specific(100)
+  
+  @degD = 170
+  wait_claw_specific(400)
+  
+  @kpA = 5
+  @degA = 250
+  wait_claw_specific(300)
+  raiseLift()  
+EndSub
+
 
 sub TakecubeUnderYou
   @kpD = 0.6
@@ -281,7 +303,7 @@ sub TakecubeUnderYou
 
   reverseMoveSyncCM(10, @speed_movesync - 30, "on", "on", "on")
   @kpD = 4
-  @degD = 140
+  @degD = 145
   wait_claw_specific(100)
   @kpA = 5
   @degA = 140
@@ -411,17 +433,16 @@ Function ceSaUrmaresti(in number case, in number a, in number b, in number c, in
           EndIf
         EndIf
       EndIf
-    
     Else 
       If case = 3 Then
-        If b + c = 5 Then
-          follow = 1              
+        If a + b = 5 Then
+          follow = 2              
         Else 
           If c + d = 5 Then
             follow = 0
-          Else 
-            If a + b = 5 Then
-              follow = 2
+          Else   
+            If b + c = 5 Then
+              follow = 1    
             EndIf
           EndIf
         EndIf
@@ -1336,13 +1357,13 @@ Function spinDegrees(in number Vmax, in string side, in number circleDegrees, in
     EndIf
    
     V = Vmax
-    If acceleration = "on" AND  currentEncoder < accelerationEncoder Then
+    If acceleration = "on" AND currentEncoder < accelerationEncoder Then
       V = (currentEncoder / accelerationEncoder) * (Vmax - V0) + V0
       If V > Vmax Then
         V = Vmax
       EndIf
     EndIf
-    If deceleration = "on" Then 
+    If deceleration = "on" Then
       If currentEncoder >= encoder - decelerationEncoder Then
         Speaker.Tone(70, 5000, 100)
         V = ((encoder - currentEncoder) / decelerationEncoder) * (Vmax - V0) + V0
@@ -1350,8 +1371,8 @@ Function spinDegrees(in number Vmax, in string side, in number circleDegrees, in
           V = V0
         EndIf
       EndIf
-    EndIf  
-   
+    EndIf
+    
     If side = "right" Then
       Motor.StartPower("C", V)
     Else
