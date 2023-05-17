@@ -307,29 +307,46 @@ luat[3] = 0
 
 ceSaUrmaresti(type, cubu[3], cubu[2], cubu[1], cubu[0], follow)
 
-if follow = 0 Then
+if follow = 2 Then
   luat[2] = 1
   luat[3] = 1
-ElseIf follow = 2 Then
+ElseIf follow = 0 Then
   luat[0] = 1
   luat[1] = 1
 Elseif follow = 1 Then
   luat[1] = 1
   luat[2] = 1
+Else
+  if cubu[1] = cubu[2] then 
+    if cubu[1] = cub1 Then
+      luat[1] = 1
+      luat[2] = 1
+    Else
+      luat[0] = 1
+      luat[3] = 1
+    EndIf
+  Else
+    pos = 0
+    if cubu[pos] <> cub1 Then
+      pos = 1
+    EndIf
+    luat[pos] = 1
+    luat[pos + 2] = 1
+  EndIf
 EndIf
 
 if follow <> -1 Then
-  if follow = 1 Then
-    lf_cm(@speed_lf,14,"on","on","on")
-    @kpA = 1
-    @degA = 170'deschud gheara ca sa iau ambele cuburi de odata
-    wait_claw()
-    TakeTwoCubesUnderYou()
-  Elseif follow = 2 Then
+  'if follow = 1 Then
+    'lf_cm(@speed_lf,17,"on","on","on")
+    '@kpA = 1
+    '@degA = 170'deschud gheara ca sa iau ambele cuburi de odata
+    'wait_claw()
+    'TakeTwoCubesUnderYou()
+  if follow = 2 Then
     lf_cm(@speed_lf,4,"on","on","on")'-12 fata de primul
     wait_claw()
     stangadreata(8, 60, "right")
-    lowerLift()
+    lowerLiftsLowAndLower()
     wait_claw()
     wait_claw()
     closeClaw()
@@ -369,8 +386,8 @@ if follow <> -1 Then
   'punem primul cub in nava miccccccccccccccccccccccccccccccccccccccccccccccccccccca
   @kpA = 0.1
   putGreenOnSmallShip()
-  resetClaw()
-  raiseLift()
+  prepForGreen()
+  raiseLiftLittle()
   reverseMoveSyncCM(2, @speed_movesync + 30, "off", "off", "on")
 Else
   lf_cm(@speed_lf - 30,10,"on","on","on")
@@ -564,10 +581,11 @@ reverseMoveSyncCM(2, @speed_movesync, "on", "on", "on")
 RobotSpin("right",100, @speed_spin - 30, "on", "off", "on")
 Program.Delay(200)
 RobotSpin("left",20, @speed_spin - 20, "off", "off", "on")
-lf_cm(@speed_lf, 10,"on","on","on")
+lf_cm(@speed_lf, 3,"on","on","on")
 resetClaw()
 resetLift()
 'raiseLift()
+lf_cm(@speed_lf, 7,"on","on","on")
 lf_intersection(@speed_lf + 30, "on", "off", "off")
 lf_cm(@speed_lf + 30,33,"off","off","on")
 reverseMoveSyncCM(25, @speed_movesync, "off", "on", "on")

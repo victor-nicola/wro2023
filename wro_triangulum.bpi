@@ -132,6 +132,12 @@ sub raiseLift
   wait_claw()
 EndSub
 
+sub raiseLiftLittle
+  @kpD = 5
+  @degD = 140
+  wait_claw()
+EndSub
+
 sub raiseLiftalittle
   @kpD = 5
   @degD = @auxD-10
