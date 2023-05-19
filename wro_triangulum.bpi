@@ -134,7 +134,7 @@ EndSub
 
 sub raiseLiftLittle
   @kpD = 5
-  @degD = 140
+  @degD = 145
   wait_claw()
 EndSub
 
@@ -353,7 +353,7 @@ sub letALittleMore
 EndSub
 
 sub letALittle
-  @degA = 130
+  @degA = 125
   wait_claw()
   wait_claw()
 EndSub
