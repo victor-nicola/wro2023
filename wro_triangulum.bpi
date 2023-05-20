@@ -359,7 +359,7 @@ sub letALittle
 EndSub
 
 sub letALittleMedium
-  @degA = -132
+  @degA = 120
   wait_claw()
   wait_claw()
 EndSub
@@ -371,7 +371,7 @@ sub letALot
 EndSub
 
 sub letALittleless
-  @degA = 170
+  @degA = 145
   wait_claw()
   wait_claw()
 EndSub
@@ -404,7 +404,7 @@ sub putGreenOnSmallShip
   @degD = 140
   wait_claw()
   wait_claw()
-  letALittleMore()
+  letALittleless()
 EndSub
 
 sub putWhiteOnSmallShip
@@ -563,10 +563,10 @@ EndFunction
 Function lf_intersection_read_col(in number speed_max,in string acceleration,in string deceleration,in string end_brake,out number type)
   
   
-  Cm2Degrees(8,prim_st) '3.5 +6.5
-  Cm2Degrees(11,prim_dr)'6
-  Cm2Degrees(13,doi_st)'8.5
-  Cm2Degrees(16,doi_dr)'10.5
+  Cm2Degrees(10,prim_st) '3.5 +6.5
+  Cm2Degrees(13,prim_dr)'6
+  Cm2Degrees(15,doi_st)'8.5
+  Cm2Degrees(18,doi_dr)'10.5
   
   frec[360] = 0
   
