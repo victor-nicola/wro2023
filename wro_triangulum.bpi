@@ -259,8 +259,10 @@ EndSub
 
 Sub closeClawForSpeciala
   @kpA = 1
+  @kdA = 100
   @degA = 400
   wait_claw() 
+  @kdA = 0.1
 EndSub
 
 
@@ -381,7 +383,7 @@ sub putGreenOnShip
   @degD = 140
   wait_claw()
   wait_claw()
- letALittleMore()
+ letALittleMedium()
 EndSub
 
 sub GreenCubeFall
@@ -559,6 +561,8 @@ Function lf_intersection(in number speed_max,in string acceleration,in string de
     Motor.Stop("BC","True")
   EndIf
 EndFunction
+
+
 
 Function lf_intersection_read_col(in number speed_max,in string acceleration,in string deceleration,in string end_brake,out number type)
   
@@ -1956,3 +1960,18 @@ Function PerfectLine(in number speed,in string direction)
   RotateTillWhite(speed,direction)
   RotateTillBlack(speed,direction)
 EndFunction
+
+Function ArcSin(in number radius, in number degrees, in number speed, in string direction)
+  encoder = 2 * (radius + @robot_diameter / 2) / @wheel_diameter * degrees
+  
+  if(direction = "right")Then
+    speedLeft = speed * -1
+    speedRight = Math.Abs(speedLeft) * (radius - @robot_diameter / 2) / (radius + @robot_diameter / 2)
+  Else
+    speedRight = speed 
+    speedLeft = -1 * Math.Abs(speedRight) * (radius - @robot_diameter / 2) / (radius + @robot_diameter / 2)
+  EndIf      
+  
+  Motor.MoveSync("BC", speedLeft, speedRight, encoder, "True")
+  
+EndFunction  

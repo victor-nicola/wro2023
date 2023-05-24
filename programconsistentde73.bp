@@ -193,12 +193,19 @@ cubu[4]=0
 'f2pre2 = 6
 'f2val = 13
 
+'lf_cm(speed_lf,0.1,"on","off","on")
+'@kpA = 1
+'closeClawForSpeciala()
+
+'ArcSin( 23 , 90 , 50 ,"left")
+
 'Program.Delay(100000)
 
 'terminare incercare punere 2 cuburi
 'si la final o sa fie un cub pe stanga si unul pe dreapota daca nu e cazu de unu langa altul si facem lf pe un senzor si luam cu gheara deschisa fiecare
 
 
+lf_intersection(@speed_lf, "off", "off", "on")
 
 
 ''--------------IMPORTANT----------------
@@ -282,20 +289,7 @@ final = Text.Append(final,cubu[2])
 final = Text.Append(final," ")
 final = Text.Append(final,cubu[3])
 EV3File.WriteLine(handle, final)
-MoveSync(50,12,"on")
-spinDegrees(@speed_spindeg, "left", 90, "on", "on", "on")
 
-lf_cm(@speed_lf,5,"on","off","on")
-lf_intersection(@speed_lf, "off", "off", "on")
-Program.Delay(100)
-RobotSpin("left",160, @speed_spin, "on", "on", "on")
-PerfectLine(30, "left")
-Program.Delay(300)
-
-pre[0]=10
-pre[1]=3
-pre[2]=3
-pre[3]=12
 
 If(type = 1)Then
   cub1 = 3
@@ -342,9 +336,85 @@ Else
     luat[pos + 2] = 1
   EndIf
 EndIf
-
 flag = 0
 
+if luat[0] = 1 and luat[2] = 1 Then
+  flag = 8
+  reverseSpinDegrees(@speed_spindeg, "left", 30, "off", "off", "on")
+  MoveSync(50,8,"on")
+  closeClaw()
+  @kpD = 0.6
+  @kdD = 50
+  @degD = 220
+  wait_claw_specific(1000)
+  @kdD = 10
+  reverseSpinDegrees(@speed_spindeg, "right", 32, "off", "off", "on")
+  Program.Delay(100)
+  @kpD = 4
+  @degD = 130
+  wait_claw_specific(100)
+  MoveSync(50,3,"on")
+  @kpA = 5
+  @degA = 140
+  wait_claw_specific(100)
+  @degD = 170
+  wait_claw_specific(400)
+  @kpA = 5
+  @degA = 250
+  wait_claw_specific(300)
+  raiseLift()
+  reverseMoveSyncCM(10, @speed_movesync, "off", "off", "on")
+  RobotSpin("right",180, @speed_spin, "on", "on", "on")
+  putGreenOnShip()
+  raiseLift()
+  letALittleMedium()
+  RobotSpin("left",222, @speed_spin, "on", "on", "on")
+  closeClaw()
+  @kpD = 0.6
+  @kdD = 50
+  @degD = 220
+  wait_claw_specific(1000)
+  @kdD = 10
+  reverseMoveSyncCM(5, @speed_movesync, "off", "off", "on")
+  @kpD = 4
+  @degD = 130
+  wait_claw_specific(300)
+  @kpA = 5
+  @degA = 140
+  wait_claw_specific(100)
+  @degD = 170
+  wait_claw_specific(400)
+  @kpA = 5
+  @degA = 250
+  wait_claw_specific(300)
+  raiseLift()
+  RobotSpin("right",220, @speed_spin, "on", "on", "on")
+  reverseMoveSyncCM(5, @speed_movesync, "off", "off", "on")
+  putGreenOnShip()
+  raiseLift()
+  RobotSpin("right",180, @speed_spin, "on", "on", "on")
+  MoveTillBlack(60, "true")
+  MoveSync(50,8,"on")
+  RobotSpin("left",75, @speed_spin, "on", "on", "on")
+  PerfectLine(@speed_spin, "left")
+
+  Program.Delay(100000)
+EndIf
+
+
+MoveSync(50,12,"on")
+spinDegrees(@speed_spindeg, "left", 90, "on", "on", "on")
+
+lf_cm(@speed_lf,5,"on","off","on")
+lf_intersection(@speed_lf, "off", "off", "on")
+Program.Delay(100)
+RobotSpin("left",160, @speed_spin, "on", "on", "on")
+PerfectLine(30, "left")
+Program.Delay(300)
+pre[0]=10
+pre[1]=3
+pre[2]=3
+pre[3]=12
 If luat[0] = 1 and luat[1] = 1 Then
   flag = 1
   f1dist1 = 20
@@ -391,7 +461,7 @@ if flag = 1 Then
   wait_claw()
   raiseLift()
   if(luat[0] = 1 and luat[1] = 1 )Then
-    'reverseMoveSyncCM(2, @speed_movesync, "off", "off", "on")
+    reverseMoveSyncCM(2, @speed_movesync, "off", "off", "on")
   Else  
     reverseMoveSyncCM(2, @speed_movesync, "off", "off", "on")    
   EndIf
@@ -412,34 +482,35 @@ if flag = 1 Then
   wait_claw()
   raiseLift()
   stangadreata(8, -60, sir)
-  RobotSpin("left",175, @speed_spin, "on", "on", "on")
+  lf_cm_cu_cub(@speed_lf,5,"on","off","on")
+  RobotSpin("left",178, @speed_spin, "on", "on", "on")
   'MoveSync(35,3,"on")
   'PerfectLine(30, "left")
   Program.Delay(300)
   @kpD = 1
   @degD = 100
-  reverseMoveSyncCM(2, @speed_movesync, "off", "off", "on")
+  'reverseMoveSyncCM(2, @speed_movesync, "off", "off", "on")
   lf_cm_cu_cub(@speed_lf,3,"on","off","off")
   lf_intersection(@speed_lf, "off", "off", "on")
   'RobotSpin()
   Speaker.Tone(100, 1000, 1000)
   MoveSync(@speed_lf,3,"off")
   lf_cm_cu_cub(@speed_lf,15,"off","off","on")
-  RobotSpin("right",5, @speed_spin, "on", "on", "on")
+  RobotSpin("right",10, @speed_spin, "on", "on", "on")
   'punem primul cub in nava miccccccccccccccccccccccccccccccccccccccccccccccccccccca
   @kpA = 0.1
   putGreenOnSmallShip()
   raiseLiftLittle()
-  MoveSync(50,2,"on")
+  'MoveSync(50,2,"on")
   'RobotSpin("left",5, @speed_spin, "on", "on", "on")
   'reverseMoveSyncCM(1, @speed_movesync, "off", "off", "on")
 ElseIf flag = 2 Then
-  lf_cm(@speed_lf,5,"on","off","on")
-  lf_intersection(@speed_lf, "off", "off", "on")
-  Program.Delay(100)
-  RobotSpin("left",160, @speed_spin, "on", "on", "on")
-  PerfectLine(30, "left")
-  Program.Delay(300)
+  'lf_cm(@speed_lf,5,"on","off","on")
+  'lf_intersection(@speed_lf, "off", "off", "on")
+  'Program.Delay(100)
+  'RobotSpin("left",160, @speed_spin, "on", "on", "on")
+  'PerfectLine(30, "left")
+  'Program.Delay(300)
   lf_cm(@speed_lf,5,"on","on","on")
   stangadreata(f2pre1, 60, sir)
   @kpA = 0.3
@@ -527,28 +598,29 @@ ElseIf flag = 3 Then
   wait_claw()
   lowerLiftsLowAndLower()
   wait_claw()
+  wait_claw()
   closeClawForSpeciala()
   raiseLift()
-  reverseMoveSyncCM(5, @speed_movesync, "on", "off", "on")
+  reverseMoveSyncCM(3, @speed_movesync, "on", "off", "on")
   RobotSpin("left",85, @speed_spin, "off", "on", "on")
   MoveSync(speed_movesync,25,"on")
   putGreenOnShip()
   raiseLift()
   reverseMoveSyncCM(18, @speed_movesync, "on", "off", "on")'am pus cbuurile pe nava mare si te dai in spate ca sa pui cuburile pe nava mica
   RobotSpin("right",85, @speed_spin, "on", "on", "on")
-  MoveSync(speed_movesync,2,"on")
+  'MoveSync(speed_movesync,2,"on")
   lowerLift()
   closeClaw()
   raiseLift()
   stangadreata(10, -60, "right")
-  lf_cm(@speed_lf,17,"on","on","on")
+  lf_cm(@speed_lf,15,"on","on","on")
   lowerLift()
   letALittleMedium()
   raiseLift()
   resetClaw()
   lf_cm(@speed_lf,5,"on","on","on")
-  stangadreata(5, -60, "right")
-  MoveSync(speed_movesync,6,"on")
+  stangadreata(7, -60, "right")
+  MoveSync(speed_movesync,8,"on")
   lowerLiftsLowAndLower()
   wait_claw()
   closeClaw()
@@ -558,16 +630,21 @@ ElseIf flag = 3 Then
   closeClawForSpeciala()
   raiseLift()
   stangadreata(5, -60, "left")'punem cele 2 cuburi pe nava mica
+  lf_cm(@speed_lf,5,"on","on","on")
   RobotSpin("left",160, @speed_spin, "on", "on", "on")
   PerfectLine(@speed_spin, "left")
   Program.Delay(300)
   @kpD = 1
   @degD = 100
+  'reverseMoveSyncCM(2, @speed_movesync, "off", "off", "on")
   lf_cm_cu_cub(@speed_lf,3,"on","off","off")
   lf_intersection(@speed_lf, "off", "off", "on")
+  'RobotSpin()
   Speaker.Tone(100, 1000, 1000)
   MoveSync(@speed_lf,3,"off")
-  lf_cm_cu_cub(@speed_lf,16,"off","off","on")
+  lf_cm_cu_cub(@speed_lf,15,"off","off","on")
+  RobotSpin("right",10, @speed_spin, "on", "on", "on")
+  'punem primul cub in nava miccccccccccccccccccccccccccccccccccccccccccccccccccccca
   @kpA = 0.1
   putGreenOnSmallShip()
   raiseLiftLittle()
@@ -581,16 +658,19 @@ ElseIf flag = 4 Then
   closeClawForSpeciala()'am luat primele 2 cuburi si le punem pe nava mica
   wait_claw()
   raiseLift()
-  reverseMoveSyncCM(5, @speed_movesync, "on", "off", "on")
-  RobotSpin("left",185, @speed_spin, "on", "on", "on")
+  reverseMoveSyncCM(3, @speed_movesync, "on", "off", "on")
+  RobotSpin("left",160, @speed_spin, "on", "on", "on")
+  PerfectLine(@speed_spin, "left")
   Program.Delay(300)
   @kpD = 1
   @degD = 100
-  lf_cm_cu_cub(@speed_lf,6,"on","off","off")
-  lf_intersection(@speed_lf, "off", "on", "on")
+  lf_cm_cu_cub(@speed_lf,3,"on","off","off")
+  lf_intersection(@speed_lf, "off", "off", "on")
   Speaker.Tone(100, 1000, 1000)
-  MoveSync(@speed_lf,3,"on")
-  lf_cm_cu_cub(@speed_lf,13,"off","off","on")
+  MoveSync(@speed_lf,3,"off")
+  lf_cm_cu_cub(@speed_lf,15,"off","off","on")
+  RobotSpin("right",10, @speed_spin, "on", "on", "on")
+  'punem primul cub in nava miccccccccccccccccccccccccccccccccccccccccccccccccccccca
   @kpA = 0.1
   putGreenOnSmallShip()
   raiseLiftLittle()
@@ -604,7 +684,6 @@ ElseIf flag = 4 Then
   lf_cm(@speed_lf - 10,5,"on","on","on")
   lf_intersection(@speed_lf - 10, "off", "on", "on")
   lf_cm(@speed_lf - 10,12,"on","on","on")
-
   stangadreata(8, 60, "left")
   lowerLiftsLowAndLower()
   wait_claw()
@@ -637,7 +716,7 @@ ElseIf flag = 4 Then
   reverseMoveSyncCM(28, @speed_movesync, "on", "on", "on")
   RobotSpin("left",75, @speed_spin, "on", "on", "on")
   PerfectLine(@speed_spin, "left")
-  lf_cm(@speed_lf,20,"on","on","on")
+  lf_cm(@speed_lf,35,"on","on","on")
 EndIf
 
 
@@ -657,17 +736,18 @@ lf_cm(speed_lf,20,"on","off","off")
 lf_intersection(@speed_lf + 20, "off", "off", "on")
 @kpA = 1
 resetClaw()
-raiseLift()
-wait_claw_specific(100)
-RobotSpin("right",223, @speed_spin, "off", "on", "on")'aici iau speciala pusa cu schema bussing
-raiseLift()
+'raiseLift()
+'wait_claw_specific(100)
+RobotSpin("right",10, @speed_spin, "off", "on", "on")'aici iau speciala pusa cu schema bussing
+@kpD = 1
+@degD = 50
+wait_claw()
+RobotSpin("left",145, @speed_spin, "off", "on", "on")'aici iau speciala pusa cu schema bussing
 MoveSync(speed_movesync,7,"on")
 lowerLift()
 wait_claw()
 closeClawForSpeciala()
-'raiseLiftsuper()
-@kpD = 1
-@degD = 50
+raiseLiftsuper()
 reverseMoveSyncCM(7, @speed_movesync + 30, "off", "off", "on")
 RobotSpin("right",150, @speed_spin, "off", "on", "off")
 lf_cm(@speed_lf,25,"on","on","on")
