@@ -105,12 +105,14 @@ Sub wait_claw
     
   EndWhile
 EndSub
+
 Function wait_claw_specific(in number timp)
   Time.Reset1()
   While Time.Get1() < timp
     
   EndWhile
 EndFunction
+
 Sub wait_claw_but_slower
   Time.Reset1()
   @stegulet_pervers = 1
@@ -143,8 +145,6 @@ sub raiseLiftalittle
   @degD = @auxD-10
   wait_claw()
 EndSub
-
-
 
 sub aslowaspossible
   @kpD = 0.3
@@ -186,7 +186,6 @@ sub lowerLiftFor2Cubes
   wait_claw()
 EndSub
 
-
 Sub lowerLiftSpecialCube
   @kpD = 0.6
   @degD = 155
@@ -210,7 +209,7 @@ EndSub
 
 sub lowerLiftToBigShip
   @kpD = 1
-  @degD = 185
+  @degD = 165
   wait_claw()
   wait_claw()
 
@@ -238,7 +237,6 @@ sub destroyFlagLittleShipTwo
   'RobotSpin("left",30 ,100, "off", "off", "on")  
 EndSub
 
-
 sub resetLift
   @kpD = 0.5
   @degD = 0
@@ -256,7 +254,6 @@ Sub closeClaw
   wait_claw() 
 EndSub
 
-
 Sub closeClawForSpeciala
   @kpA = 1
   @kdA = 100
@@ -264,7 +261,6 @@ Sub closeClawForSpeciala
   wait_claw() 
   @kdA = 0.1
 EndSub
-
 
 sub resetArm
   @degA = 0
@@ -305,7 +301,6 @@ sub TakeTwoCubesUnderYou
   wait_claw_specific(300)
   raiseLift()  
 EndSub
-
 
 sub TakecubeUnderYou
   @kpD = 0.6
@@ -361,8 +356,7 @@ sub letALittle
 EndSub
 
 sub letALittleMedium
-  @degA = 120
-  wait_claw()
+  @degA = 137
   wait_claw()
 EndSub
 
@@ -373,7 +367,7 @@ sub letALot
 EndSub
 
 sub letALittleless
-  @degA = 145
+  @degA = 140
   wait_claw()
   wait_claw()
 EndSub
@@ -383,7 +377,7 @@ sub putGreenOnShip
   @degD = 140
   wait_claw()
   wait_claw()
- letALittleMedium()
+ letALittle()
 EndSub
 
 sub GreenCubeFall
@@ -481,7 +475,6 @@ Function treiCaz(in number case, in number a, in number b, in number c, in numbe
   EndIf    
 EndFunction
 
-
 Function stangadreata(in number cm, in number v, in string sens)
   
   robot_diameter = 17.25
@@ -561,8 +554,6 @@ Function lf_intersection(in number speed_max,in string acceleration,in string de
     Motor.Stop("BC","True")
   EndIf
 EndFunction
-
-
 
 Function lf_intersection_read_col(in number speed_max,in string acceleration,in string deceleration,in string end_brake,out number type)
   
@@ -1683,7 +1674,6 @@ Function reverseMoveSyncCM(in number distance, in number Vmax, in string acceler
   EndIf
  
 EndFunction
-
 
 Function reverseMoveSyncCM_read(in number distance, in number V, in string end_brake,out number cubu1,out number cubu2,out number cubu3,out number cubu4)
  
