@@ -175,7 +175,7 @@ EndSub
 
 Sub lowerLiftsLowAndLower
   @kpD = 0.6
-  @degD = 190
+  @degD = 200
   wait_claw()
 
 EndSub
@@ -194,7 +194,7 @@ EndSub
 
 Sub lowerLiftSpecialCubePut
   @kpD = 4
-  @degD = 145'se coboara(*urca acum ca suntem smecheri) la unghiul optim ca sa punem speciala
+  @degD = 142'se coboara(*urca acum ca suntem smecheri) la unghiul optim ca sa punem speciala
   wait_claw()
 EndSub
 
@@ -209,7 +209,7 @@ EndSub
 
 sub lowerLiftToBigShip
   @kpD = 1
-  @degD = 165
+  @degD = 167
   wait_claw()
   wait_claw()
 
@@ -255,8 +255,8 @@ Sub closeClaw
 EndSub
 
 Sub closeClawForSpeciala
-  @kpA = 1
-  @kdA = 100
+  @kpA = 5
+  @kdA = 10
   @degA = 400
   wait_claw() 
   @kdA = 0.1
@@ -1951,7 +1951,7 @@ Function PerfectLine(in number speed,in string direction)
   RotateTillBlack(speed,direction)
 EndFunction
 
-Function ArcSin(in number radius, in number degrees, in number speed, in string direction)
+Function ArcMove(in number radius, in number degrees, in number speed, in string direction)
   encoder = 2 * (radius + @robot_diameter / 2) / @wheel_diameter * degrees
   
   if(direction = "right")Then
