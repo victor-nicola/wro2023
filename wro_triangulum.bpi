@@ -188,7 +188,7 @@ EndSub
 
 Sub lowerLiftSpecialCube
   @kpD = 0.6
-  @degD = 155
+  @degD = 159
   wait_claw()
 EndSub
 
@@ -208,7 +208,7 @@ sub lowerLiftToLittleShip
 EndSub
 
 sub lowerLiftToBigShip
-  @kpD = 1
+  @kpD = 5
   @degD = 167
   wait_claw()
   wait_claw()
@@ -390,7 +390,7 @@ EndSub
 
 sub putWhiteOnShip
   @kpD = 0.8
-  @degD = 150
+  @degD = 120
   wait_claw()
   resetClaw()
 EndSub
@@ -400,7 +400,8 @@ sub putGreenOnSmallShip
   @degD = 140
   wait_claw()
   wait_claw()
-  letALittleless()
+  @degA = 135
+  wait_claw()
 EndSub
 
 sub putWhiteOnSmallShip

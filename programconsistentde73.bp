@@ -250,6 +250,9 @@ cubu[4]=0
 
 'ArcSin( 23 , 90 , 50 ,"left")
 
+'@kpA = 0.1
+'@degA = 300
+
 'Program.Delay(100000)
 
 'terminare incercare punere 2 cuburi
@@ -522,7 +525,7 @@ if luat[1] = 1 And luat[3] = 1 Then
   @degA = 250
   wait_claw_specific(300)
   raiseLift()
-  reverseMoveSyncCM(6, @speed_movesync, "off", "off", "on")
+  reverseMoveSyncCM(7, @speed_movesync, "off", "off", "on")
   RobotSpin("right",170, @speed_spin, "on", "on", "on")
   putGreenOnShip()
   raiseLift()
@@ -542,26 +545,40 @@ if luat[1] = 1 And luat[3] = 1 Then
   PerfectLine(30, "left")
   
   lf_cm(@speed_lf,18,"on","on","on")
-  @degA = 125
+  @degA = 146
   wait_claw()
+  @kpA = 0.1
   lowerLiftsLowAndLower()
   wait_claw()
   wait_claw()
+  wait_claw()
+
   closeClawForSpeciala()
+  wait_claw()
+  wait_claw()
   
-  letALittleMedium()
+  @degA = 145
+  wait_claw()
+  wait_claw()  
   raiseLift()
   resetClaw()
-  lf_cm(@speed_lf,5,"on","on","on")
-  stangadreata(5.25, -60, "left")
+  lf_cm(@speed_lf,4,"on","on","on")
+  stangadreata(5, -60, "left")
   MoveSync(@speed_movesync,7,"on")
-  lowerLiftsLowAndLower()
+  @kpD = 0.5
+  @degD = 180
+  wait_claw()
   'closeClaw()
   '@kpA = 1
   'resetClaw()
   'wait_claw()
-  closeClawForSpeciala()
+  @kpA = 0.1
+  @kdA = 10
+  @degA = 400
+  wait_claw() 
   wait_claw()
+  wait_claw()
+  @kpA = 1
   raiseLift()
   stangadreata(5.25, -60, "right")'punem cele 2 cuburi pe nava mica
   lf_cm_cu_cub(@speed_lf,10,"on","on","on")
@@ -577,7 +594,7 @@ if luat[1] = 1 And luat[3] = 1 Then
   Speaker.Tone(100, 1000, 1000)
   MoveSync(@speed_lf,3,"off")
   lf_cm_cu_cub(@speed_lf,15,"off","off","on")
-  RobotSpin("right",5, @speed_spin, "on", "on", "on")
+  RobotSpin("right",6, @speed_spin, "on", "on", "on")
   'punem primul cub in nava miccccccccccccccccccccccccccccccccccccccccccccccccccccca
   @kpA = 0.1
   putGreenOnSmallShip()
@@ -667,19 +684,31 @@ if luat[1] = 1 And luat[3] = 1 Then
   RobotSpin("right",80, @speed_spin - 40, "off", "off", "on")
   
   'reverseMoveSyncCM(6, @speed_movesync + 10, "off", "off", "on")
-  MoveSync(@speed_movesync,3,"off")
+  MoveSync(@speed_movesync,6,"on")
   
-  putWhiteOnShip()'am pus alba pe nava mare
+  'putWhiteOnShip()'am pus alba pe nava mare
+  @kpD = 0.8
+  @degD = 130
+  wait_claw()
+  resetClaw()
+  
   raiseLift()
-  lowerLiftToBigShip()
+  
+  'lowerLiftToBigShip()
+  @kpD = 1
+  @degD = 167
+  wait_claw()
+  wait_claw()
+  
+  wait_claw()
   closeClaw()
-  reverseMoveSyncCM(2, @speed_movesync + 10, "off", "off", "on")
+  reverseMoveSyncCM(4, @speed_movesync + 10, "off", "off", "on")
   
   'MoveSync(@speed_movesync,6,"off")
   
   RobotSpin("right",100, @speed_spin - 20, "off", "off", "on")
   Program.Delay(200)
-  lf_cm(@speed_lf, 20,"off","off","on")
+  lf_cm(@speed_lf, 25,"off","off","on")
   resetClaw()
   resetLift()
   lf_cm(@speed_lf + 50, 40,"on","off","off")
@@ -739,11 +768,11 @@ EndIf
   
 
 if flag = 1 Then
-  lf_cm(@speed_lf,3,"on","on","on")
+  lf_cm(@speed_lf,4,"on","on","on")
   wait_claw()
   stangadreata(7.5, 60, sir)
   'lowerLiftFor2Cubes()
-  @degD = 160
+  @degD = 180
   wait_claw()
   wait_claw()
   wait_claw()
@@ -772,20 +801,20 @@ if flag = 1 Then
   wait_claw()
   raiseLift()
   stangadreata(8, -60, sir)
-  lf_cm_cu_cub(@speed_lf,5,"on","off","on")
-  RobotSpin("left",178, @speed_spin, "on", "on", "on")
+  lf_cm_cu_cub(@speed_lf,15,"on","off","on")
+  RobotSpin("left",160, @speed_spin, "on", "on", "on")
   'MoveSync(35,3,"on")
-  'PerfectLine(30, "left")
+  PerfectLine(30, "left")
   Program.Delay(300)
   @kpD = 1
   @degD = 100
   'reverseMoveSyncCM(2, @speed_movesync, "off", "off", "on")
-  lf_cm_cu_cub(@speed_lf,3,"on","off","off")
+  lf_cm_cu_cub(@speed_lf - 20,10,"on","off","off")
   lf_intersection(@speed_lf, "off", "off", "on")
   'RobotSpin()
   Speaker.Tone(100, 1000, 1000)
   MoveSync(@speed_lf,3,"off")
-  lf_cm_cu_cub(@speed_lf,15,"off","off","on")
+  lf_cm_cu_cub(@speed_lf,16,"off","off","on")
   RobotSpin("right",10, @speed_spin, "on", "on", "on")
   'punem primul cub in nava miccccccccccccccccccccccccccccccccccccccccccccccccccccca
   @kpA = 0.1
