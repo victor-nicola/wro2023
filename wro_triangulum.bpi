@@ -400,7 +400,7 @@ sub putGreenOnSmallShip
   @degD = 140
   wait_claw()
   wait_claw()
-  @degA = 135
+  @degA = 125
   wait_claw()
 EndSub
 
@@ -948,7 +948,7 @@ Function RobotSpin(in string direction,in number degrees,in number speed,in stri
     EndIf
     If deceleration = "on" Then 
       If currentEncoder >= encoder - decelerationEncoder Then
-        Speaker.Tone(70, 5000, 100)
+        'Speaker.Tone(70, 5000, 100)
         V = ((encoder - currentEncoder) / decelerationEncoder) * (speed - V0) + V0
         If V < V0 Then
           V = V0
@@ -1374,7 +1374,7 @@ Function spinDegrees(in number Vmax, in string side, in number circleDegrees, in
     EndIf
     If deceleration = "on" Then
       If currentEncoder >= encoder - decelerationEncoder Then
-        Speaker.Tone(70, 5000, 100)
+        'Speaker.Tone(70, 5000, 100)
         V = ((encoder - currentEncoder) / decelerationEncoder) * (Vmax - V0) + V0
         If V < V0 Then
           V = V0
