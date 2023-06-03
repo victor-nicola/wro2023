@@ -182,7 +182,7 @@ EndSub
 
 sub lowerLiftFor2Cubes
   @kpD = 0.6
-  @degD = 173
+  @degD = 175
   wait_claw()
 EndSub
 
@@ -208,8 +208,8 @@ sub lowerLiftToLittleShip
 EndSub
 
 sub lowerLiftToBigShip
-  @kpD = 5
-  @degD = 164
+  @kpD = 0.6
+  @degD = 167
   wait_claw()
   wait_claw()
 
@@ -663,9 +663,9 @@ Function lf_intersection_read_col(in number speed_max,in string acceleration,in 
       type = 2'albastru * 2
     EndIf
   EndIf    
-  'handle = EV3File.OpenWrite("vectorfrecventa")
+  'handle = EV3File.OpenWrite("vectorfrecventa.txt")
   'i = 0
-  'final = " "
+  final = " "
   'While i < 100
     'a = frec[i]
     'aux = Text.Append(a, " ")
@@ -1957,10 +1957,10 @@ Function ArcMove(in number radius, in number degrees, in number speed, in string
   
   if(direction = "right")Then
     speedLeft = speed * -1
-    speedRight = Math.Abs(speedLeft) * (radius - @robot_diameter / 2) / (radius + @robot_diameter / 2)
+    speedRight = speed * (radius - @robot_diameter / 2) / (radius + @robot_diameter / 2)
   Else
     speedRight = speed 
-    speedLeft = -1 * Math.Abs(speedRight) * (radius - @robot_diameter / 2) / (radius + @robot_diameter / 2)
+    speedLeft = -1 * speed * (radius - @robot_diameter / 2) / (radius + @robot_diameter / 2)
   EndIf      
   
   Motor.MoveSync("BC", speedLeft, speedRight, encoder, "True")
