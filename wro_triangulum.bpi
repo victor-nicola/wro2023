@@ -29,6 +29,32 @@
 @contor_error = 5
 @stegulet_pervers = 0
 
+Sub ultimaSecventa
+  putWhiteOnShip() 'am pus alba pe nava mare
+  raiseLift()
+  lowerLiftToBigShip() 'apuc nava mare
+  closeClawForSpeciala() 'am apucat-o
+  @kpD = 5
+  @degD = 150 'ridicam oleaca ca sa nu ne blocam la spin
+  reverseMoveSyncCM(2, @speed_movesync + 10, "off", "off", "on")
+  RobotSpin("right",80, @speed_spin - 30, "off", "off", "off")
+  RobotSpin("right",40, 30, "off", "off", "on") 'suntem pe linie (de ce facem asta si nu decelerare)
+  Program.Delay(200)
+  lf_cm(@speed_lf - 20, 20,"off","off","on")
+  resetClaw()
+  resetLift()
+  lf_cm(@speed_lf + 50, 120,"on","off","off")
+  RobotSpin("left",10, @speed_spin, "on", "on", "on") 'ne pozitionam catre stanga ca sa intram in box
+  
+  @kpD = 1  
+  @degD = 140
+  wait_claw_specific(1)
+  Motor.MoveSync("BC", -60, 100, 700, "True") 'facem un fel de arc ca sa intram in box
+
+  LCD.Clear()
+  LCD.Write(20,20,Time.Get3())
+EndSub
+
 Function CircleDegToMotorDeg( in number deg, out number motorDeg )
   motorDeg = deg * @robot_diameter / @wheel_diameter
 EndFunction
