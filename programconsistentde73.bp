@@ -809,15 +809,24 @@ Else 'checkpoint----------------------------------------------------------------
     reverseMoveSyncCM(7, @speed_movesync + 30, "off", "off", "on")
   EndIf
   RobotSpin("right",145, @speed_spin, "off", "on", "off") 'inapoi pe linie
-  lf_cm(@speed_lf,4,"on","off","off")
-  lf_cm(80,31,"off","off","off")
-  @kpD = 4
-  @degD = 140 'pozitionez speciala
-  ArcMove(33, 75, 70, "right") 'activez craneu
-  @degA = 0
-  ArcMove(33, 75, -70, "right") 'inapoi pe linie
-  RobotSpin("right",160, @speed_spin, "on", "on", "on")
-  PerfectLine(30, "right") 'ma intorc 180 si calibrez
+  
+  lf_cm(70,25,"on","on","on")
+  lf_intersection(80, "off", "on", "on") 'cu rotile pe intersectia de la crane
+  RobotSpin("right",75, 100, "on", "on", "on")
+  PerfectLine(40, "right") 'calibrati pe linie
+  lowerLiftSpecialCubePut() 'preparam unghiu 
+  lf_cm(70,15,"on","on","on")
+  resetClaw()
+  resetLift() 'am lasat speciala pe crane
+  lf_cm(100,10,"on","on","on")
+  Time.Reset7()
+  While(Time.Get7() < 250)
+    Motor.StartSync("BC", -80, 80)
+  EndWhile 'am activat
+  reverseMoveSyncCM(10, 100, "off", "off", "off")
+  RobotSpin("right",180, 100, "on", "on", "on") 'ne intoarcem
+  ArcMove(22, 90, 90, "left") 'terminam arcmove pe linie
+  
   lf_cm(@speed_lf,5,"on","off","off")
   lf_cm(80,10,"off","off","off")
   lf_intersection(80, "off", "off", "on")
