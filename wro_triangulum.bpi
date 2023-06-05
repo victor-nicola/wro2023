@@ -33,12 +33,10 @@ Sub ultimaSecventa
   putWhiteOnShip() 'am pus alba pe nava mare
   raiseLift()
   lowerLiftToBigShip() 'apuc nava mare
+  'wait_claw_specific(1000)
   closeClawForSpeciala() 'am apucat-o
-  @kpD = 5
-  @degD = 150 'ridicam oleaca ca sa nu ne blocam la spin
-  reverseMoveSyncCM(2, @speed_movesync + 10, "off", "off", "on")
-  RobotSpin("right",80, @speed_spin - 30, "off", "off", "off")
-  RobotSpin("right",40, 30, "off", "off", "on") 'suntem pe linie (de ce facem asta si nu decelerare)
+  reverseMoveSyncCM(4, @speed_movesync + 10, "off", "off", "on")
+  RobotSpin("right",90, @speed_spin - 30, "off", "off", "off")
   Program.Delay(200)
   lf_cm(@speed_lf - 20, 20,"off","off","on")
   resetClaw()
@@ -234,8 +232,8 @@ sub lowerLiftToLittleShip
 EndSub
 
 sub lowerLiftToBigShip
-  @kpD = 0.6
-  @degD = 167
+  @kpD = 0.6 '0.6
+  @degD = 180 '167
   wait_claw()
   wait_claw()
 
@@ -281,7 +279,7 @@ Sub closeClaw
 EndSub
 
 Sub closeClawForSpeciala
-  @kpA = 5
+  @kpA = 0.5 '5
   @kdA = 10
   @degA = 400
   wait_claw() 

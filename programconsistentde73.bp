@@ -147,7 +147,7 @@ if luat[1] = 1 and luat[2] = 1 Then
   MoveSync(50,30,"on") 'ajungem la linie
   reverseSpinDegrees(@speed_spindeg, "left", 90, "off", "off", "on") 'ne rotim pe linie
   MoveSync(50,3,"on") 'ne ducem in fata ca sa apucam cuburile din mijloc
-  @degA = 125
+  @degA = 150
   wait_claw()
   lowerLiftFor2Cubes()'luam cuburile pt nava mare
   wait_claw()
@@ -656,7 +656,7 @@ ElseIf luat[0] = 1 and luat[3] = 1 Then
   PerfectLine(30, "right") 'calibrati pe linie inainte de intersectie cu fata la nava mica
   lf_cm(@speed_lf,5,"on","off","on")
   lf_intersection(@speed_lf, "off", "off", "on")
-  RobotSpin("left",160, @speed_spin, "on", "on", "on")
+  RobotSpin("left",170, @speed_spin, "on", "on", "on")
   PerfectLine(30, "left") 'calibrati pe linie cu fata la cuburi
   lf_cm(@speed_lf,17,"on","on","on")
   @degA = 115
