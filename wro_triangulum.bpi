@@ -29,30 +29,30 @@
 @contor_error = 5
 @stegulet_pervers = 0
 
-sub final
+sub checkpoint
   lf_cm_cu_cub(@speed_lf,17,"off","off","on")
   RobotSpin("right",4, @speed_spin, "on", "on", "on") 'ma pozitionez cand las cuburile pe small ship sa nu fac buba
   @kpA = 0.1
   putGreenOnSmallShip() 'mission accomplished
+  
   @degA = 135
   @kpD = 0.6
   @degD = 200
-  ArcMove(11, 90, -100, "right")
+  ArcMove(11, 90, -100, "right") 'terminam arcu inainte de intersectia cu nava mica
   lf_cm_cu_cub(80,10,"on","off","off")
   lf_cm_cu_cub(80,30, "off","off","on")
   lf_intersection(80, "off", "off", "on")
   @kpD = 0.8
-  @degD = 50
+  @degD = 50 'ridicam gheara
   wait_claw_specific(150)
-  closeClawForSpeciala()
-  RobotSpin("left",140, @speed_spin, "off", "on", "on")
+  closeClawForSpeciala() 'ca sa nu ne lovim de stegulet cand ne rotim
+  RobotSpin("left",140, @speed_spin, "off", "on", "on") 'ca sa luam speciala
   resetClaw()
-  If steagptspec = 0 Then
-    MoveSync(@speed_movesync,5,"on")
-  EndIf
+  MoveSync(@speed_movesync,5,"on")
   lowerLift()
   wait_claw()
   closeClawForSpeciala() 'am luat speciala
+  
   raiseLift()
   if steagptspec = 0 Then
     reverseMoveSyncCM(7, @speed_movesync + 30, "off", "off", "on")
@@ -88,7 +88,6 @@ sub final
   
   ultimaSecventa()
 EndSub
-
 
 Sub ultimaSecventa
   putWhiteOnShip() 'am pus alba pe nava mare
@@ -267,7 +266,8 @@ EndSub
 
 sub lowerLiftFor2Cubes
   @kpD = 0.6
-  @degD = 175
+  @degD = 300 '175 '300
+  wait_claw()
   wait_claw()
 EndSub
 
@@ -279,7 +279,7 @@ EndSub
 
 Sub lowerLiftSpecialCubePut
   @kpD = 4
-  @degD = 138'se coboara(*urca acum ca suntem smecheri) la unghiul optim ca sa punem speciala
+  @degD = 137 'se coboara(*urca acum ca suntem smecheri) la unghiul optim ca sa punem speciala
   wait_claw()
 EndSub
 
@@ -294,10 +294,9 @@ EndSub
 
 sub lowerLiftToBigShip
   @kpD = 0.6 '0.6
-  @degD = 180 '167
+  @degD = 190 '167
   wait_claw()
   wait_claw()
-
 EndSub
 
 sub destroyFlagLittleShipOne
