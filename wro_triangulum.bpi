@@ -29,19 +29,80 @@
 @contor_error = 5
 @stegulet_pervers = 0
 
+sub final
+  lf_cm_cu_cub(@speed_lf,17,"off","off","on")
+  RobotSpin("right",4, @speed_spin, "on", "on", "on") 'ma pozitionez cand las cuburile pe small ship sa nu fac buba
+  @kpA = 0.1
+  putGreenOnSmallShip() 'mission accomplished
+  @degA = 135
+  @kpD = 0.6
+  @degD = 200
+  ArcMove(11, 90, -100, "right")
+  lf_cm_cu_cub(80,10,"on","off","off")
+  lf_cm_cu_cub(80,30, "off","off","on")
+  lf_intersection(80, "off", "off", "on")
+  @kpD = 0.8
+  @degD = 50
+  wait_claw_specific(150)
+  closeClawForSpeciala()
+  RobotSpin("left",140, @speed_spin, "off", "on", "on")
+  resetClaw()
+  If steagptspec = 0 Then
+    MoveSync(@speed_movesync,5,"on")
+  EndIf
+  lowerLift()
+  wait_claw()
+  closeClawForSpeciala() 'am luat speciala
+  raiseLift()
+  if steagptspec = 0 Then
+    reverseMoveSyncCM(7, @speed_movesync + 30, "off", "off", "on")
+  EndIf
+  RobotSpin("right",135, @speed_spin, "off", "on", "off") 'inapoi pe linie
+  lf_cm(80,10,"on","off","off")
+  lf_intersection(80, "off", "on", "on")
+  RobotSpin("right",75, @speed_spin, "on", "on", "on")
+  PerfectLine(30, "right") 'cu fata catre crane
+  lowerLiftSpecialCubePut() 'punem gheara la unghiu bun
+  lf_cm(@speed_lf,15,"on","on","on") 'activam punem speciala
+  resetClaw()
+  resetLift()
+  lf_cm(@speed_lf,10,"on","on","on") 'activam craneu
+  Time.Reset7()
+  While(Time.Get7() < 250)
+    Motor.StartSync("BC", -80, 80)
+  EndWhile
+  reverseMoveSyncCM(10, 30, "off", "off", "off")
+  RobotSpin("right",180, @speed_spin, "on", "on", "on") 'sunt pe linie
+  ArcMove(22, 90, 70, "left") 'termin arcmoveu pe linie dupa intersectie
+  lf_cm(80,70,"on","off","off")
+  lowerLift()
+  lf_intersection(80, "off", "on", "on")
+  closeClaw() 'iau alba
+  raiseLift()
+  lf_cm(80,13,"off","off","off")
+  lf_intersection(80, "off", "on", "on")
+  Program.Delay(300)
+  RobotSpin("right",90, @speed_spin, "on", "on", "on") 'cu fata la nava mare
+  
+  MoveSync(@speed_movesync,6,"on")
+  
+  ultimaSecventa()
+EndSub
+
+
 Sub ultimaSecventa
   putWhiteOnShip() 'am pus alba pe nava mare
   raiseLift()
   lowerLiftToBigShip() 'apuc nava mare
   'wait_claw_specific(1000)
   closeClawForSpeciala() 'am apucat-o
-  reverseMoveSyncCM(4, @speed_movesync + 10, "off", "off", "on")
+  reverseMoveSyncCM(6, @speed_movesync + 10, "off", "off", "on")
   RobotSpin("right",90, @speed_spin - 30, "off", "off", "off")
   Program.Delay(200)
-  lf_cm(@speed_lf - 20, 20,"off","off","on")
-  resetClaw()
-  resetLift()
-  lf_cm(@speed_lf + 50, 120,"on","off","off")
+  lf_cm(80, 20,"off","off","on")
+  @degA = 0
+  @degD = 0
+  lf_cm(100, 120,"on","off","off")
   RobotSpin("left",10, @speed_spin, "on", "on", "on") 'ne pozitionam catre stanga ca sa intram in box
   
   @kpD = 1  
@@ -218,7 +279,7 @@ EndSub
 
 Sub lowerLiftSpecialCubePut
   @kpD = 4
-  @degD = 142'se coboara(*urca acum ca suntem smecheri) la unghiul optim ca sa punem speciala
+  @degD = 138'se coboara(*urca acum ca suntem smecheri) la unghiul optim ca sa punem speciala
   wait_claw()
 EndSub
 
@@ -423,9 +484,7 @@ sub putGreenOnSmallShip
   @kpD = 0.8
   @degD = 140
   wait_claw()
-  wait_claw()
   @degA = 130
-  wait_claw()
 EndSub
 
 sub putWhiteOnSmallShip
@@ -1716,11 +1775,11 @@ Function reverseMoveSyncCM_read(in number distance, in number V, in string end_b
   
   Motor.ResetCount("BC")
   Cm2Degrees(3, dist)
-  Cm2Degrees(3, deg1)
-  Cm2Degrees(10, deg2)
-  Cm2Degrees(17, deg3)
-  Cm2Degrees(24.5, deg4)
-  Cm2Degrees(-1, offset)
+  Cm2Degrees(3.5, deg1)
+  Cm2Degrees(10.5, deg2)
+  Cm2Degrees(17.5, deg3)
+  Cm2Degrees(25, deg4)
+  Cm2Degrees(0, offset)
   v1[360] = 0
   v2[360] = 0
   v3[360] = 0
