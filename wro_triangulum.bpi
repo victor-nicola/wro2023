@@ -4,10 +4,10 @@
 @right_motor = "C"
 @wheel_diameter = 6.24
 @robot_diameter = 17.25 '-0.35 cm 
-@white = 60' de modificat
-@grey = 30' de modificat
+@white = 80' de modificat
+@grey = 20' de modificat
 @grey_rb = 30
-@black = 9' de modificat
+@black = 10' de modificat
 @Stop_motor = @left_motor + @right_motor
 @acceleration_encoder = 400
 @deceleration_encoder = 300
@@ -43,7 +43,7 @@ sub checkpoint
   lf_intersection(80, "off", "off", "on")
   @kpD = 5
   @degD = 90 'ridicam gheara
-  wait_claw_specific(200)
+  wait_claw_specific(400)
   closeClawForSpeciala() 'ca sa nu ne lovim de stegulet cand ne rotim
   RobotSpin("left",140, @speed_spin, "off", "on", "on") 'ca sa luam speciala
   @kpD = 0.8
@@ -54,7 +54,7 @@ sub checkpoint
   wait_claw_specific(250)
   closeClawForSpeciala() 'am luat speciala
   @kpD = 5
-  @degD = 120
+  @degD = 100
   reverseMoveSyncCM(7, @speed_movesync + 30, "off", "off", "on")
   RobotSpin("right",135, @speed_spin, "off", "on", "off") 'inapoi pe linie
   lf_cm(80,10,"on","off","off")
@@ -69,7 +69,7 @@ sub checkpoint
   lf_cm(@speed_lf,10,"off","off","on") 'activam craneu
   Time.Reset7()
   While(Time.Get7() < 250)
-    Motor.StartSync("BC", -80, 80)
+    Motor.StartSync("BC", -60, 60)
   EndWhile
   reverseMoveSyncCM(10, 30, "off", "off", "off")
   ArcMove(22, 90, -70, "right")
@@ -109,8 +109,8 @@ Sub ultimaSecventa
   @kpD = 1  
   @degD = 140
   wait_claw_specific(1)
-  Motor.MoveSync("BC", -60, 100, 700, "True") 'facem un fel de arc ca sa intram in box
-
+  Motor.MoveSync("BC", -60, 100, 400, "True") 'facem un fel de arc ca sa intram in box
+  Motor.MoveSync("BC", -20, 60, 300, "True")
   LCD.Clear()
   LCD.Write(20,20,Time.Get3())
 EndSub
@@ -1618,6 +1618,62 @@ Function citire(out number col)
   
 EndFunction
 
+Function citire2(out number col,out number saturation,out number value)
+   red = 0
+  green = 0
+  blue = 0
+  @max_R = @maxRed
+  @max_G = @maxGreen
+  @max_B = @maxBlue
+  Sensor3.Raw3(red, green, blue)
+  red = red / @max_R * 255
+  green = green / @max_G * 255
+  blue = blue / @max_B * 255
+ 
+  max = Math.Max(red, green)
+  max = Math.Max(max, blue)
+  min = Math.Min(red, green)
+  min = Math.Min(min, blue)
+  'max = 323
+  'min = 182
+ 
+  @r = red
+  @g = green
+  @b = blue
+  If max = min Then
+    hue = 0
+  EndIf
+  If max=@r Then
+    If @g>=@b Then
+      hue = 60*(@g-@b)/(max-min)
+    Else
+      hue = 60*(@g-@b)/(max-min)+360
+    EndIf
+  ElseIf max = @g Then
+    hue = 60*(@b-@r)/(max-min)+120
+  ElseIf max = @b Then
+    hue = 60*(@r-@g)/(max-min)+240
+  EndIf
+ 
+  If max = 0 Then
+    sat = 0
+  Else
+    sat = 1-min/max
+  EndIf
+ 
+  val = max / 255
+  
+  if(sat >= 0.56)Then
+    col = hue  
+  Else    
+    col = 0   
+  EndIf
+  
+  saturation = sat
+  value = val
+  
+EndFunction
+
 Function MoveTillBlack(in number speed,in string break)
   Sensor.SetMode(1,0)
   Sensor.SetMode(2,0)
@@ -1990,11 +2046,11 @@ Function RotateTillBlack(in number speed,in string direction)
     Motor.StartPower(@left_motor,speed*var)
     Motor.StartPower(@right_motor,speed*var)
     if(sens = 1)Then
-      if(s1 < @grey)Then
+      if(s1 < @grey + 10)Then
         exit_condition = 0
       EndIf
     Else    
-      if(s2 < @grey)Then
+      if(s2 < @grey + 10)Then
         exit_condition = 0
       EndIf  
     EndIf
@@ -2050,3 +2106,52 @@ Function ArcMove(in number radius, in number degrees, in number speed, in string
   Motor.MoveSync("BC", speedLeft, speedRight, encoder, "True")
   
 EndFunction  
+
+Function lf_cm_precision(in number speed_max,in number cm,in string acceleration,in string deceleration,in string end_brake)
+  
+  kp = 1'1 4
+  kd = 4
+  exit_condition = 1
+  Motor.ResetCount(@stop_motor)
+  Sensor.SetMode(1,0)
+  Sensor.SetMode(2,0)
+  left_encoder = 0
+  right_encoder = 0
+  Cm2Degrees(cm,encoder)
+  error_old = 0
+  flag = 1
+  While exit_condition = 1
+    left_encoder = Motor.GetCount(@left_motor)
+    right_encoder = Motor.GetCount(@right_motor)
+    left_encoder=left_encoder*-1
+    current_encoder = (left_encoder + right_encoder) / 2
+    s1 = Sensor.ReadPercent(1)
+    s2 = Sensor.ReadPercent(2)
+    error = s1 - s2
+    P = kp * error
+    D = kd * (error - error_old)
+    If acceleration = "on" Then
+      speed=(current_encoder / @acceleration_encoder) * (speed_max - @speed_0) + @speed_0
+      If speed > speed_max Then
+        speed = speed_max
+      EndIf
+    Else  
+      speed = speed_max
+    EndIf
+    If deceleration = "on" And (encoder - current_encoder) <= @deceleration_encoder Then
+      speed = ((encoder - current_encoder) / @deceleration_encoder) * (speed_max - @speed_0) + @speed_0
+      If speed < @speed_0 Then
+        speed = @speed_0
+      EndIf
+    EndIf
+    Motor.StartPower(@left_motor,-(speed + (P + D)))
+    Motor.StartPower(@right_motor,(speed - (P + D)))
+    error_old = error
+    If current_encoder > encoder Then
+      exit_condition = 0
+    EndIf
+  EndWhile
+  If end_brake = "on" Then
+    Motor.Stop("BC","True")
+  EndIf
+EndFunction
