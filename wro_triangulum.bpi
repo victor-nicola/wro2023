@@ -41,9 +41,9 @@ sub checkpoint
   lf_cm_cu_cub(80,10,"on","off","off")
   lf_cm_cu_cub(80,30, "off","off","on")
   lf_intersection(80, "off", "off", "on")
-  @kpD = 5
+  @kpD = 1
   @degD = 90 'ridicam gheara
-  wait_claw_specific(400)
+  wait_claw_specific(500)
   closeClawForSpeciala() 'ca sa nu ne lovim de stegulet cand ne rotim
   RobotSpin("left",140, @speed_spin, "off", "on", "on") 'ca sa luam speciala
   @kpD = 0.8
@@ -58,11 +58,13 @@ sub checkpoint
   reverseMoveSyncCM(7, @speed_movesync + 30, "off", "off", "on")
   RobotSpin("right",135, @speed_spin, "off", "on", "off") 'inapoi pe linie
   lf_cm(80,10,"on","off","off")
-  lf_intersection(80, "off", "on", "on")
-  RobotSpin("right",75, @speed_spin, "on", "on", "on")
-  PerfectLine(30, "right") 'cu fata catre crane
+  lf_intersection(80, "off", "off", "on")
+  MoveSync(50,15,"on")
+  reverseMoveSyncCM(6, @speed_movesync, "off", "off", "on")
+  RobotSpin("right",90, @speed_spin, "on", "on", "on")
+  'PerfectLine(30, "right") 'cu fata catre crane
   @kpD = 4
-  @degD = 135 'punem gheara la unghiu bun
+  @degD = 138 'punem gheara la unghiu bun
   lf_cm(@speed_lf,15,"on","off","off") 'activam punem speciala
   @degA = 0
   @degD = 0
@@ -463,7 +465,7 @@ sub putGreenOnShip
   @degD = 140
   wait_claw()
   wait_claw()
- letALittle()
+ letALittleMedium()
 EndSub
 
 sub GreenCubeFall
