@@ -25,9 +25,9 @@ reverseMoveSyncCM_read(30,30,"on",cubu[3],cubu[2],cubu[1],cubu[0])
 MoveSync(50,30,"on") 'ajungem la linie
   reverseSpinDegrees(@speed_spindeg, "left", 90, "off", "on", "on") 'ne rotim pe linie
   reverseMoveSyncCM(11.3, @speed_movesync, "off", "off", "on")'''''''''''''''''''''''''''''''''''''
-  lf_cm_precision(@speed_lf - 10,14,"on","on","on")
+  lf_cm_precision(@speed_lf - 10,15,"on","on","on") '14
  'ne ducem in fata ca sa apucam cuburile din mijloc
-  @degA = 150
+  @degA = 140
   wait_claw()
   @kpD = 0.6
   @degD = 175 '175 '300
@@ -53,8 +53,8 @@ MoveSync(50,30,"on") 'ajungem la linie
   MoveSync(50,10,"on")
   StraightAlley(50) 'm-am oprit pe linie
   MoveSync(50,6,"on") 'ma pun cu rotile pe linie
-  RobotSpin("right",85, @speed_spin, "on", "on", "on")
-  PerfectLine(30, "right") 'sunt cu fata catre intersectie si calibrat
+  RobotSpin("right",90, @speed_spin, "on", "on", "on") '85
+  'PerfectLine(30, "right") 'sunt cu fata catre intersectie si calibrat
   Program.Delay(200)
   lf_cm(@speed_lf,10,"on","off","on")
   lf_intersection(@speed_lf, "off", "off", "on")
@@ -67,16 +67,16 @@ MoveSync(50,30,"on") 'ajungem la linie
   EndIf
 
   Program.Delay(300)
-  lf_cm(@speed_lf,5 - add,"on","on","on")
+  lf_cm(@speed_lf,3 - add,"on","on","on")
   stangadreata(7, 60, "right")
   lowerLift()
   wait_claw()
   closeClaw()
   raiseLift() 'am luat cubu din dreapta in claw si-l duc mai aproape de celalalt
   stangadreata(7, -60, "left") 'ma intorc pe linie
-  lf_cm(@speed_lf,13 + add,"on","on","on")
+  lf_cm(@speed_lf,14 + add,"on","on","on")
   lowerLift()
-  letALittleMedium() 'eliberez cubu
+  letALittleMore() 'eliberez cubu (let a little medium)
   wait_claw_specific(200)
   raiseLift()
   resetClaw()
