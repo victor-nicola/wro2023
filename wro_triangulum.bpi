@@ -4,8 +4,8 @@
 @right_motor = "C"
 @wheel_diameter = 6.24
 @robot_diameter = 17.25 '-0.35 cm 
-@white = 80' de modificat
-@grey = 20' de modificat
+@white = 67' de modificat
+@grey = 30' de modificat
 @grey_rb = 30
 @black = 10' de modificat
 @Stop_motor = @left_motor + @right_motor
@@ -17,8 +17,8 @@
 @maxGreen = 226
 @maxBlue = 175
 @global = 0
-@MaximumWhiteSensor1=79' de modificat
-@MaximumWhiteSensor2=83' de modificat
+@MaximumWhiteSensor1=65' de modificat
+@MaximumWhiteSensor2=67' de modificat
 @TimeBetween = 300
 @degA = 0
 @degD = 0
@@ -32,19 +32,32 @@
 sub checkpoint
   lf_cm_cu_cub(@speed_lf,16,"off","off","on")
   RobotSpin("right",4, @speed_spin, "on", "on", "on") 'ma pozitionez cand las cuburile pe small ship sa nu fac buba
-  @kpA = 0.1
-  putGreenOnSmallShip() 'mission accomplished
-  @degA = 70
-  @kpD = 0.6
-  @degD = 200
-  ArcMove(11, 90, -100, "right") 'terminam arcu inainte de intersectia cu nava mica
-  lf_cm_cu_cub(80,10,"on","off","off")
-  lf_cm_cu_cub(80,30, "off","off","on")
-  lf_intersection(80, "off", "off", "on")
+  @kpD = 0.8
+  @degD = 140
+  wait_claw()
+  @kpA = 0.5
+  @degA = 130 'mission accomplished
+  wait_claw()
   @kpD = 1
-  @degD = 90 'ridicam gheara
-  wait_claw_specific(500)
-  closeClawForSpeciala() 'ca sa nu ne lovim de stegulet cand ne rotim
+  @degD = 90
+  wait_claw()
+  @degA = 0
+  lowerLiftToLittleShip()
+  wait_claw()
+  wait_claw()
+  closeClawForSpeciala()
+  wait_claw()
+  @kpD = 1
+  @degD = 140
+  ArcMove(12, 90, -100, "right") 'terminam arcu inainte de intersectia cu nava mica
+  lf_cm_cu_cub(50,10, "off","off","on")
+  @degA = 0
+  wait_claw_specific(100)
+  @kpD = 1
+  @degD = 90
+  lf_cm_cu_cub(80,30, "off","off","off")
+  lf_intersection(80, "off", "on", "on")
+  reverseMoveSyncCM(7, @speed_movesync, "off", "off", "on")
   RobotSpin("left",140, @speed_spin, "off", "on", "on") 'ca sa luam speciala
   @kpD = 0.8
   resetClaw()
@@ -2017,11 +2030,11 @@ Function RotateTillWhite(in number speed,in string direction)
     Motor.StartPower(@left_motor,speed*var)
     Motor.StartPower(@right_motor,speed*var)
     if(sens = 1)Then
-      if(s1 > @grey)Then
+      if(s1 > @grey + 20)Then
         exit_condition = 0
       EndIf
     Else    
-      if(s2 > @grey)Then
+      if(s2 > @grey + 20)Then
         exit_condition = 0
       EndIf  
     EndIf
@@ -2035,11 +2048,11 @@ Function RotateTillBlack(in number speed,in string direction)
   exit_condition = 1
   
   if(direction = "right")Then
-    var = 1
-    sens = 2
-  Else   
-    var=-1  
+    var = -1
     sens = 1
+  Else   
+    var = 1  
+    sens = 2
   EndIf
   
   While exit_condition = 1
@@ -2048,16 +2061,15 @@ Function RotateTillBlack(in number speed,in string direction)
     Motor.StartPower(@left_motor,speed*var)
     Motor.StartPower(@right_motor,speed*var)
     if(sens = 1)Then
-      if(s1 < @grey + 10)Then
+      if(s1 < @grey)Then
         exit_condition = 0
       EndIf
     Else    
-      if(s2 < @grey + 10)Then
+      if(s2 < @grey)Then
         exit_condition = 0
       EndIf  
     EndIf
   EndWhile
-  
   Motor.Stop(@Stop_motor,"true")
   Time.Reset1()
   time = 100
