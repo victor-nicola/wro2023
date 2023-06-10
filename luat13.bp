@@ -22,12 +22,13 @@ spinDegrees(@speed_spindeg, "left", 90, "on", "on", "on") 'ne rotim ca sa citim
 reverseMoveSyncCM_read(30,30,"on",cubu[3],cubu[2],cubu[1],cubu[0])
 'prima secventa
 
-@kpA = 0.4
+  @kpA = 0.4
   @degA = 250
   @kpD = 0.6
   @degD = 160
   reverseSpinDegrees(@speed_spindeg, "left", 37, "off", "off", "on") 'ma rotesc ca sa fiu fix pozitionat la primu cub pe care-l iau
-  MoveSync(50,6.5,"on")
+MoveSync(50,5.5,"on")'era 6.5
+wait_claw_specific(500)
   @kpD = 0.8
   @degD = 180 'am lasat gheara jos, acm ma dau in spate ca sa trag cubu aproape
   wait_claw_specific(300)
@@ -84,7 +85,7 @@ reverseMoveSyncCM_read(30,30,"on",cubu[3],cubu[2],cubu[1],cubu[0])
   resetClaw() 'dau reset la tot
   lf_cm(@speed_lf,5 + add,"on","on","on")
   stangadreata(3.5, -60, "left") 'era 3
-  MoveSync(@speed_movesync,4,"on") 'sunt pozitionat sa iau ambele cuburi
+  MoveSync(@speed_movesync,6,"on") 'sunt pozitionat sa iau ambele cuburi
 
   @kpD = 0.6
   @degD = 200 '175 '300
