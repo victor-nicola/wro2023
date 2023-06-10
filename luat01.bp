@@ -1,0 +1,70 @@
+include "wro_triangulum"
+folder "prjs" "Triangulum"
+
+Time.Reset3()
+
+Thread.Run = claw
+@speed_spindeg = 70
+@speed_movesync = 50 '60
+@speed_lf = 50 '60
+@speed_spinrobot = 50
+@speed_spin = 90
+@type = 0
+@speed_spinrobotShip = 40
+cubu[4]=0
+
+luat[0] = 1
+luat[1] = 1
+
+lf_cm(@speed_lf,22,"on","on","on")'am ajuns la cuburi (era 23 inainte)
+spinDegrees(@speed_spindeg, "left", 90, "on", "on", "on") 'ne rotim ca sa citim
+'Program.Delay(100000)
+reverseMoveSyncCM_read(30,30,"on",cubu[3],cubu[2],cubu[1],cubu[0])
+'prima secventa
+
+MoveSync(50,23,"on")
+reverseSpinDegrees(@speed_spindeg, "left", 90, "off", "off", "on")
+MoveSync(50,2,"on") 'sunt pozitionat sa iau cuburile'era 3
+lowerLiftFor2Cubes() 'luam cuburile pt nava 
+wait_claw_specific(100)'are si waitul din functie
+@kpA = 0.3
+@degA = 200 'le luam
+wait_claw()
+wait_claw() 
+@kpA = 5
+@degA = 400 'strangem mai tare
+wait_claw()
+wait_claw()
+raiseLift()
+RobotSpin("left",88, @speed_spin, "on", "on", "on")
+MoveSync(50,20,"on")
+putGreenOnShip() 'am pus cuburile pe nava mare
+raiseLift()
+resetClaw()
+reverseMoveSyncCM(35, @speed_movesync, "off", "off", "on")
+RobotSpin("right",90, @speed_spin, "on", "on", "on") 'pozitionati sa luam ultimele cuburi
+reverseMoveSyncCM(1, @speed_movesync, "off", "off", "on") 'mica ajustare (era 3)
+@degA = 0
+lowerLiftFor2Cubes()'luam cuburile pt nava mica
+wait_claw_specific(100)
+@kpA = 0.3
+@degA = 200 'am luat
+wait_claw()
+wait_claw()
+@kdA = 0.2
+@kpA = 8
+@degA = 400 'strangem mai tare
+wait_claw()
+wait_claw()
+raiseLift()
+stangadreata(8, -60, "left") 'suntem pe linie
+lf_cm_cu_cub(@speed_lf,15,"on","off","on") 'putina calibrare
+RobotSpin("left",180, @speed_spin, "on", "on", "on")
+'PerfectLine(30, "left") 'ne intoarcem (suntem cu fata catre small ship inainte de intersection)
+Program.Delay(300)
+@kpD = 1
+@degD = 100
+lf_cm_cu_cub(@speed_lf,10,"on","off","off")
+lf_intersection(@speed_lf, "off", "off", "on")
+Speaker.Tone(100, 1000, 1000)
+MoveSync(@speed_lf,3,"off")
