@@ -22,7 +22,7 @@ spinDegrees(@speed_spindeg, "left", 90, "on", "on", "on") 'ne rotim ca sa citim
 reverseMoveSyncCM_read(30,30,"on",cubu[3],cubu[2],cubu[1],cubu[0])
 'prima secventa
 
-@kpA = 0.4
+  @kpA = 0.4
   @degA = 250
   reverseSpinDegrees(@speed_spindeg, "left", 31, "off", "off", "on") 'ne rotim ca sa luam primu cub
   @kpD = 0.6
@@ -36,8 +36,8 @@ reverseMoveSyncCM_read(30,30,"on",cubu[3],cubu[2],cubu[1],cubu[0])
   @kdD = 10
   @kpD = 4
   @degD = 130 'am ridicat 
-MoveSync(50,0.5,"on")
-wait_claw_specific(100)
+  MoveSync(50,0.5,"on")
+  wait_claw_specific(100)
   @kpA = 5
   @degA = 130 'pregatesc gheara
   wait_claw_specific(100)
@@ -65,8 +65,8 @@ wait_claw_specific(100)
   @kdD = 10
   @kpD = 4
   @degD = 130 'am ridicat 
-MoveSync(50,0.5,"on")
-wait_claw_specific(200)
+  MoveSync(50,0.5,"on")
+  wait_claw_specific(200)
   @kpA = 5
   @degA = 130 'pregatesc gheara
   wait_claw_specific(100)
@@ -87,12 +87,12 @@ wait_claw_specific(200)
   RobotSpin("left",150, @speed_spin, "on", "on", "on") 'ne intoarcem la linie
   MoveSync(50,10,"on")
   StraightAlley(50) 
-MoveSync(50,6,"on") 'suntem cu rotile pe linie
+  MoveSync(50,6,"on") 'suntem cu rotile pe linie
 
   RobotSpin("right",75, @speed_spin, "on", "on", "on") '85?
   PerfectLine(30, "right") 'ne-am calibrat pe linie
 
-lf_cm(@speed_lf,5,"on","off","on")
+  lf_cm(@speed_lf,5,"on","off","on")
   lf_intersection(@speed_lf, "off", "off", "on")
   RobotSpin("left",160, @speed_spin, "on", "on", "on")
   PerfectLine(30, "left") 'suntem calibrati cu fata la cuburi
@@ -101,7 +101,7 @@ lf_cm(@speed_lf,5,"on","off","on")
 
   add = 0
   if cubu[1] = 3 and cubu[3] = 3 Then
-    add = 2
+  add = 2
   EndIf
 
   lf_cm(@speed_lf,17 - add,"on","on","on") 'am ajuns la cuburi

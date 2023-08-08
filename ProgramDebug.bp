@@ -1,0 +1,107 @@
+include "wro_triangulum"
+folder "prjs" "Triangulum"
+
+@speed_spindeg = 70
+@speed_movesync = 50 '60
+@speed_lf = 50 '60
+@speed_spinrobot = 50
+@speed_spin = 90
+@type = 0
+@speed_spinrobotShip = 40
+
+
+Sensor.SetMode(1,0)
+Sensor.SetMode(2,0)
+Sensor.SetMode(3,4)
+
+r = 0
+g = 0
+b = 0
+MaxS1 = 0
+MaxS2 = 0
+MinS1 = 10000
+MinS2 = 10000
+MaxR = 0
+MaxG = 0
+MaxB = 0
+MinR = 100000
+MinG = 100000
+MinB = 100000
+val = 0
+sat = 0
+
+
+while(1 = 1)
+  LCD.Clear()
+  s1 =  Sensor.ReadPercent(1)
+  s2 =  Sensor.ReadPercent(2)
+  citire2(s3,sat,val)
+  Sensor3.Raw3(r, g, b)
+  
+  if(s1 > MaxS1)Then
+    MaxS1 = s1
+  EndIf
+  if(s1 < MinS1)Then
+    MinS1 = s1
+  EndIf
+  
+  if(s2 > MaxS2)Then
+    MaxS2 = s2
+  EndIf
+  if(s2 < MinS2)Then
+    MinS2 = s2
+  EndIf
+  
+  if(r > MaxR)Then
+    MaxR = r
+  EndIf
+  if(r < MinR)Then
+    MinR = r
+  EndIf
+  
+  
+  if(g > MaxG)Then
+    MaxG = g
+  EndIf
+  if(g < MinG)Then
+    MinG = g
+  EndIf
+  
+  if(b > MaxB)Then
+    MaxB = b
+  EndIf
+  if(b < MinB)Then
+    MinB = b
+  EndIf
+  
+  LCD.Text(1,10,10,1,s1)
+  LCD.Text(1,30,10,1,MinS1)
+  LCD.Text(1,50,10,1,MaxS1)
+  
+  LCD.Text(1,10,30,1,s2)
+  LCD.Text(1,30,30,1,MinS2)
+  LCD.Text(1,50,30,1,MaxS2)
+  
+  LCD.Text(1,10,50,1,r)
+  LCD.Text(1,30,50,1,MinR)
+  LCD.Text(1,50,50,1,MaxR)
+  
+  LCD.Text(1,10,70,1,g)
+  LCD.Text(1,30,70,1,MinG)
+  LCD.Text(1,50,70,1,MaxG)
+  
+  LCD.Text(1,10,90,1,b)
+  LCD.Text(1,30,90,1,MinB)
+  LCD.Text(1,50,90,1,MaxB)
+  
+  LCD.Text(1,70 ,30,1,"Hue este:")
+  LCD.Text(1,150,30,1,s3)
+  
+  LCD.Text(1,70 ,50,1,"Sat este:")
+  LCD.Text(1,150,50,1,sat)
+  
+  LCD.Text(1,70 ,70,1,"Val este:")
+  LCD.Text(1,150,70,1,val)
+  
+  Program.Delay(100)
+EndWhile

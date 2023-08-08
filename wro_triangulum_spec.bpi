@@ -4,10 +4,10 @@
 @right_motor = "C"
 @wheel_diameter = 6.24
 @robot_diameter = 17.25 '-0.35 cm 
-@white = 75' de modificat 67
-@grey = 15' de modificat 30
+@white = 67' de modificat
+@grey = 30' de modificat
 @grey_rb = 30
-@black = 10' de modificat 10
+@black = 10' de modificat
 @Stop_motor = @left_motor + @right_motor
 @acceleration_encoder = 400
 @deceleration_encoder = 300
@@ -123,17 +123,7 @@ Sub ultimaSecventa
   lf_cm(80, 20,"off","off","on")
   @degA = 0
   @degD = 0
-  lf_cm(100, 120,"on","off","on")
-  
-  'RobotSpin("left",10, @speed_spin, "on", "on", "on") 'ne pozitionam catre stanga ca sa intram in box
-  
-  @kpD = 1  
-  @degD = 140
-  'wait_claw_specific(1)
-  'Motor.MoveSync("BC", -60, 100, 400, "True") 'facem un fel de arc ca sa intram in box
-  Motor.MoveSync("BC", -30, 60, 600, "True")
-  LCD.Clear()
-  LCD.Write(20,20,Time.Get3())
+  lf_cm(100, 140,"on","off","off")
 EndSub
 
 Function CircleDegToMotorDeg( in number deg, out number motorDeg )
@@ -187,16 +177,21 @@ EndSub
 'D motor mare de invartir
 
 sub closeFor2Cubes
-  kpA = 0.2
+  kpA = 0.3
   @degA = 300
   degD  = 200
-  wait_claw_specific(300)
+  wait_claw()
+  wait_claw()
+  wait_claw()
   degD  = 165
-  degA = 140
+  degA = 0
+  Program.Delay(1000)
   wait_claw()
   @kpA = 0.3
   @degA = 500
-  wait_claw_specific(300)
+  wait_claw()
+  wait_claw()
+  wait_claw()
 EndSub
 
 
@@ -579,23 +574,19 @@ EndFunction
 Function stangadreata(in number cm, in number v, in string sens)
   
   robot_diameter = 17.25
-  decc = "off"
-  if v > 0 Then
-    decc  = "on"
-  EndIf
   
   gr = Math.ArcCos((1 - (cm / robot_diameter))) * (robot_diameter / @wheel_diameter) * (180 / Math.Pi)
   MotorDegToCircleDeg(gr,codex)
   if sens = "left" Then
-    spinDegrees(v, "right",codex, "off", decc, "on")
+    spinDegrees(v, "right",codex, "off", "off", "on")
     Program.Delay(100)
-    spinDegrees(v, "left",codex, "off", decc, "on")
+    spinDegrees(v, "left",codex, "off", "off", "on")
     Program.Delay(100)
 
   Else
-    spinDegrees(v, "left",codex, "off", decc, "on")
+    spinDegrees(v, "left",codex, "off", "off", "on")
     Program.Delay(100)
-    spinDegrees(v, "right",codex, "off", decc, "on")
+    spinDegrees(v, "right",codex, "off", "off", "on")
     Program.Delay(100)
   EndIf
   
@@ -663,10 +654,10 @@ EndFunction
 Function lf_intersection_read_col(in number speed_max,in string acceleration,in string deceleration,in string end_brake,out number type)
   
   
-  Cm2Degrees(8.5,prim_st) '3.5 +6.5
-  Cm2Degrees(10.5,prim_dr)'6
-  Cm2Degrees(13.5,doi_st)'8.5
-  Cm2Degrees(15.7,doi_dr)'10.5
+  Cm2Degrees(10,prim_st) '3.5 +6.5
+  Cm2Degrees(13,prim_dr)'6
+  Cm2Degrees(15,doi_st)'8.5
+  Cm2Degrees(18,doi_dr)'10.5
   
   frec[360] = 0
   
@@ -945,7 +936,7 @@ EndFunction
 Function lf_cm_cu_cub(in number speed_max,in number cm,in string acceleration,in string deceleration,in string end_brake)
   
   kp = 0.25
-  kd = 0.5
+  kd = @kd
   exit_condition = 1
   Motor.ResetCount(@stop_motor)
   Sensor.SetMode(1,0)
@@ -2170,65 +2161,6 @@ Function lf_cm_precision(in number speed_max,in number cm,in string acceleration
       exit_condition = 0
     EndIf
   EndWhile
-  If end_brake = "on" Then
-    Motor.Stop("BC","True")
-  EndIf
-EndFunction
-
-Function lf_intersection_cu_cub(in number speed_max,in string acceleration,in string deceleration,in string end_brake)
-  
-  kp = 0.25
-  kd = 0.5
-  exit_condition = 1
-  Motor.ResetCount(@stop_motor)
-  Sensor.SetMode(1,0)
-  Sensor.SetMode(2,0)
-  error_old = 0
-  While exit_condition = 1
-    left_encoder = Motor.GetCount(@left_motor)
-    right_encoder = Motor.GetCount(@right_motor)
-    left_encoder=left_encoder*-1
-    current_encoder = (left_encoder + right_encoder) / 2
-    s1 = Sensor.ReadPercent(1)
-    s2 = Sensor.ReadPercent(2)
-    error = s1 - s2
-    P = kp * error
-    D = kd * (error - error_old)
-     If acceleration = "on" Then
-      speed=(current_encoder / @acceleration_encoder) * (speed_max - @speed_0) + @speed_0
-      If speed > speed_max Then
-        speed = speed_max
-      EndIf
-    Else  
-      speed = speed_max
-    EndIf
-    Motor.StartPower(@left_motor,-(speed + (P + D)))
-    Motor.StartPower(@right_motor,speed - (P + D))
-    error_old = error
-    If s1 < @grey And s2 < @grey Then
-      exit_condition = 0
-    EndIf
-  EndWhile
-  If deceleration = "on" Then
-    Motor.ResetCount(@stop_motor)
-    exit_condition = 1
-    Cm2Degrees(@wheel2sensor_distance,encoder)
-    While exit_condition = 1
-      left_encoder = Motor.GetCount(@left_motor)
-      right_encoder = Motor.GetCount(@right_motor)
-      left_encoder = -1 * left_encoder
-      current_encoder = (left_encoder + right_encoder) / 2
-      speed = ((encoder - current_encoder) / @deceleration_encoder) * (speed_max - @speed_0) + @speed_0
-      If speed < @speed_0 Then
-        speed = @speed_0
-      EndIf
-      Motor.StartPower(@left_motor,-speed)
-      Motor.StartPower(@right_motor,speed)
-      If current_encoder >= encoder Then
-        exit_condition = 0
-      EndIf
-    EndWhile
-  EndIf
   If end_brake = "on" Then
     Motor.Stop("BC","True")
   EndIf

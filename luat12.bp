@@ -22,11 +22,11 @@ spinDegrees(@speed_spindeg, "left", 90, "on", "on", "on") 'ne rotim ca sa citim
 reverseMoveSyncCM_read(30,30,"on",cubu[3],cubu[2],cubu[1],cubu[0])
 'prima secventa
 
-MoveSync(50,30,"on") 'ajungem la linie
+  MoveSync(50,30,"on") 'ajungem la linie
   reverseSpinDegrees(@speed_spindeg, "left", 90, "off", "on", "on") 'ne rotim pe linie
   reverseMoveSyncCM(11.3, @speed_movesync, "off", "off", "on")'''''''''''''''''''''''''''''''''''''
   lf_cm_precision(@speed_lf - 10,15,"on","on","on") '14
- 'ne ducem in fata ca sa apucam cuburile din mijloc
+  'ne ducem in fata ca sa apucam cuburile din mijloc
   @degA = 140
   wait_claw()
   @kpD = 0.6
@@ -53,14 +53,14 @@ MoveSync(50,30,"on") 'ajungem la linie
   MoveSync(50,10,"on")
   StraightAlley(50) 'm-am oprit pe linie
   MoveSync(50,6,"on") 'ma pun cu rotile pe linie
-  RobotSpin("right",90, @speed_spin, "on", "on", "on") '85
-  'PerfectLine(30, "right") 'sunt cu fata catre intersectie si calibrat
+  RobotSpin("right",75, @speed_spin, "on", "on", "on")'era 90 fara perf line
+  PerfectLine(30, "right") 'sunt cu fata catre intersectie si calibrat
   Program.Delay(200)
   lf_cm(@speed_lf,10,"on","off","on")
   lf_intersection(@speed_lf, "off", "off", "on")
   RobotSpin("left",170, @speed_spin, "on", "on", "on")
   PerfectLine(30, "left") 'm-am calibrat pe linie, ma duc catre cuburi
-  
+
   add = 0
   if cubu[3] = 3 Then
     add = 1.5 'era 2

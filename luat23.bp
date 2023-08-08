@@ -22,7 +22,7 @@ spinDegrees(@speed_spindeg, "left", 90, "on", "on", "on") 'ne rotim ca sa citim
 reverseMoveSyncCM_read(30,30,"on",cubu[3],cubu[2],cubu[1],cubu[0])
 'prima secventa
 
-MoveSync(50,38,"on")
+  MoveSync(50,38,"on")
   reverseSpinDegrees(@speed_spindeg, "left", 90, "off", "on", "on")
   MoveSync(50,2,"on")'era 3 
   lowerLiftFor2Cubes() 'luam cuburile pt nava mare
