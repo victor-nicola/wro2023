@@ -192,6 +192,24 @@ cubu[4]=0
 'wait_claw_specific(500)
 'RobotSpin("right",85, 30, "on", "off", "on")
 
+'lf_cm(30,30,"on","on","on")
+''lf_intersection(30, "off", "on", "on")
+'Program.Delay(1000)
+'RobotSpin("right",60, 30, "on", "on", "on")
+'PerfectLine(30,"right")
+'lf_cm(70,30,"on","on","on")
+
+
+'Program.Delay(1000)
+
+'MoveSyncAcc(70,120,"on","on","on")
+
+
+
+
+'Program.Delay(10000000)
+
+
 
 luat[0] = 1
 luat[1] = 1
@@ -664,10 +682,11 @@ lf_cm_cu_cub(80,77,"on","off","off")
 MoveSync(50,15,"on")
 reverseMoveSyncCM(8, @speed_movesync, "off", "off", "on")
 RobotSpin("right",90, @speed_spin, "on", "on", "on")
+reverseMoveSyncCM(8, @speed_movesync, "on", "on", "on")
 'PerfectLine(30, "right") 'cu fata catre crane
 @kpD = 4
 @degD = 138 'punem gheara la unghiu bun
-lf_cm(@speed_lf,15,"on","off","off") 'activam punem speciala
+lf_cm(@speed_lf,23,"on","off","off") 'activam punem speciala
 @degA = 0
 @degD = 0
 lf_cm(@speed_lf,10,"off","off","on") 'activam craneu

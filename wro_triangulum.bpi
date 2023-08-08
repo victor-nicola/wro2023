@@ -2,23 +2,24 @@
 @kd = 0.1
 @left_motor = "B"
 @right_motor = "C"
-@wheel_diameter = 6.24
-@robot_diameter = 17.25 '-0.35 cm 
+@wheel_diameter = 6.24 '6.24
+@wheel_diameterSpecial = 6.1
+@robot_diameter = 17.2 '-0.35 cm 
 @white = 75' de modificat 67
 @grey = 15' de modificat 30
 @grey_rb = 30
 @black = 10' de modificat 10
 @Stop_motor = @left_motor + @right_motor
 @acceleration_encoder = 400
-@deceleration_encoder = 300
+@deceleration_encoder = 500
 @speed_0 = 20
-@wheel2sensor_distance = 9
+@wheel2sensor_distance = 8.9
 @maxRed = 229
 @maxGreen = 226
 @maxBlue = 175
 @global = 0
-@MaximumWhiteSensor1=65' de modificat
-@MaximumWhiteSensor2=67' de modificat
+@MaximumWhiteSensor1=75' de modificat
+@MaximumWhiteSensor2=85' de modificat
 @TimeBetween = 300
 @degA = 0
 @degD = 0
@@ -138,6 +139,9 @@ EndSub
 
 Function CircleDegToMotorDeg( in number deg, out number motorDeg )
   motorDeg = deg * @robot_diameter / @wheel_diameter
+EndFunction
+Function circleDegToMotorDegForRotation( in number deg, out number motorDeg )
+  motorDeg = deg * @robot_diameter / @wheel_diameterSpecial
 EndFunction
 
 Function MotorDegToCircleDeg( in number motorDeg, out number deg )
@@ -998,30 +1002,34 @@ EndFunction
 Function RobotSpin(in string direction,in number degrees,in number speed,in string acceleration, in string deceleration, in string end_brake)  
   if direction = "left" Then
     side = 1
+    kp = 0.3'1.5
+    kd = 0.5'0.0005
+    V0 = 20  
   else 
     side = -1
+    kp = 1
+    kd = 0.1
+    V0 = 20
   EndIf
   
   'left is side = 1 and right is side = -1
   '------
-  kp = 1
-  kd = 0.1
-  V0 = 20
+
   '------
   errorOld = 0
   '------
   diamAx = @robot_diameter
   diamRoata = @wheel_diameter
-  circleDegToMotorDeg(degrees, encoder)
+  circleDegToMotorDegForRotation(degrees, encoder)
   
   
   accelerationEncoder = 100
   If 0.1 * encoder < accelerationEncoder Then
     accelerationEncoder = 0.1 * encoder
   EndIf
-  decelerationEncoder = 750
-  If 0.75 * encoder < decelerationEncoder Then
-    decelerationEncoder = 0.75 * encoder
+  decelerationEncoder = 250
+  If 0.25 * encoder < decelerationEncoder Then
+    decelerationEncoder = 0.25 * encoder
   EndIf
   
   Motor.ResetCount("BC")
@@ -1188,6 +1196,53 @@ Function MoveSync(in number speed_max,in number cm,in string end_brake)
     speed=speed_max
     Motor.StartPower(@left_motor,-(speed + (P + D)))
     Motor.StartPower(@right_motor,(speed - (P + D)))
+    error_old = error
+    If current_encoder > encoder Then
+      exit_condition = 0
+    EndIf
+  EndWhile
+  If end_brake = "on" Then
+    Motor.Stop("BC","True")
+  EndIf
+  
+EndFunction
+
+Function MoveSyncAcc(in number speed_max,in number cm,in string acceleration,in string deceleration,in string end_brake)
+  kp = 0.5
+  kd = @kd
+  ki = 0.01
+  exit_condition = 1
+  Motor.ResetCount(@stop_motor)
+  left_encoder = 0
+  right_encoder = 0
+  Cm2Degrees(cm,encoder)
+  error_old = 0
+  error_sum = 0
+  While exit_condition = 1
+    left_encoder = Motor.GetCount(@left_motor)
+    right_encoder = Motor.GetCount(@right_motor)
+    current_encoder = ((-1*left_encoder) + right_encoder) / 2
+    error = left_encoder + right_encoder
+    P = kp * error
+    D = kd * (error - error_old)
+    I = ki * error_sum
+    If acceleration = "on" Then
+      speed=(current_encoder / @acceleration_encoder) * (speed_max - @speed_0) + @speed_0
+      If speed > speed_max Then
+        speed = speed_max
+      EndIf
+    Else  
+      speed = speed_max
+    EndIf
+    If deceleration = "on" And (encoder - current_encoder) <= @deceleration_encoder Then
+      speed = ((encoder - current_encoder) / @deceleration_encoder) * (speed_max - @speed_0) + @speed_0
+      If speed < @speed_0 Then
+        speed = @speed_0
+      EndIf
+    EndIf
+    Motor.StartPower(@left_motor,-(speed + (P + D + I)))
+    Motor.StartPower(@right_motor,(speed - (P + D + I)))
+    error_sum = error_sum + error
     error_old = error
     If current_encoder > encoder Then
       exit_condition = 0
@@ -2076,15 +2131,17 @@ Function RotateTillBlack(in number speed,in string direction)
     EndIf
   EndWhile
   Motor.Stop(@Stop_motor,"true")
+  Program.Delay(100)
   Time.Reset1()
-  time = 100
+  time = 300
   error = 0
   error_old = 0
   error_sum = 0
   kp = 1
-  kd = 0.5
+  kd = 0.1
   ki = 0.0001
   exit_condition = 1
+
   While exit_condition = 1
     s1 = sensor.ReadPercent(1)
     s2 = sensor.ReadPercent(2)
@@ -2107,7 +2164,9 @@ Function RotateTillBlack(in number speed,in string direction)
 EndFunction
 
 Function PerfectLine(in number speed,in string direction)
+  'Program.Delay(2000)
   RotateTillWhite(speed,direction)
+  'Program.Delay(2000)
   RotateTillBlack(speed,direction)
 EndFunction
 
