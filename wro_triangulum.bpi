@@ -1000,16 +1000,14 @@ Function Cm2Degrees(in number cm,out number degrees)
 EndFunction
 
 Function RobotSpin(in string direction,in number degrees,in number speed,in string acceleration, in string deceleration, in string end_brake)  
+  kp = 0.5
+  kd = @kd
+  ki = 0.01
+  V0 = @speed_0
   if direction = "left" Then
     side = 1
-    kp = 0.3'1.5
-    kd = 0.5'0.0005
-    V0 = 20  
   else 
     side = -1
-    kp = 1
-    kd = 0.1
-    V0 = 20
   EndIf
   
   'left is side = 1 and right is side = -1
@@ -1035,6 +1033,7 @@ Function RobotSpin(in string direction,in number degrees,in number speed,in stri
   Motor.ResetCount("BC")
   
   exit = 0
+  err_sum = 0
   While exit <> 1
    
     r1 = Motor.GetCount("B")
@@ -1045,7 +1044,9 @@ Function RobotSpin(in string direction,in number degrees,in number speed,in stri
     error = Math.Abs(r2) - Math.Abs(r1)
     P = kp * error
     D = kd * (error - errorOld)
+    I = ki * err_sum
     errorOld = error
+    err_sum = err_sum + error
     
     LCD.Clear()
     LCD.Text(0, 1, 1, 2, currentEncoder)
@@ -1069,8 +1070,8 @@ Function RobotSpin(in string direction,in number degrees,in number speed,in stri
     EndIf  
     
     
-    motorB = V + (P + D)
-    motorC = V - (P + D)
+    motorB = V + (P + D + I)
+    motorC = V - (P + D + I)
     
     If exit <> 1 Then
       Motor.StartPower( "B", motorB * side )

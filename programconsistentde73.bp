@@ -12,6 +12,10 @@ Thread.Run = claw
 @type = 0
 @speed_spinrobotShip = 40
 cubu[4]=0
+
+RobotSpin("right",90, @speed_spin, "on", "on", "on")
+Program.Delay(10000000)
+
 'lf_cm_cu_cub(50,0,"off","off","on")
 '@kpA = 0.1
 '@kpD = 0.6
