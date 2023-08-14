@@ -4,7 +4,7 @@
 @right_motor = "C"
 @wheel_diameter = 6.24 '6.24
 @wheel_diameterSpecial = 6.1
-@robot_diameter = 17.2 '-0.35 cm 
+@robot_diameter = 17.2 '-0.35 cm
 @white = 75' de modificat 67
 @grey = 15' de modificat 30
 @grey_rb = 30
@@ -999,6 +999,109 @@ Function Cm2Degrees(in number cm,out number degrees)
   degrees = (360*cm) / (Math.Pi*@wheel_diameter)
 EndFunction
 
+Function RobotSpinGhearaJos(in string direction,in number degrees,in number speed,in string acceleration, in string deceleration, in string end_brake)  
+  
+  V0 = @speed_0
+  if direction = "left" Then
+    kp = 0.5
+    kd = 0.1
+    ki = 0.0005
+    side = 1
+  else 
+    kp = 0.5
+    kd = 0.5
+    ki = 0.0001
+    side = -1
+  EndIf
+  
+  'left is side = 1 and right is side = -1
+  '------
+
+  '------
+  errorOld = 0
+  '------
+  diamAx = @robot_diameter
+  diamRoata = @wheel_diameter
+  circleDegToMotorDegForRotation(degrees, encoder)
+  
+  
+  accelerationEncoder = 100
+  If 0.1 * encoder < accelerationEncoder Then
+    accelerationEncoder = 0.1 * encoder
+  EndIf
+  decelerationEncoder = 250
+  If 0.25 * encoder < decelerationEncoder Then
+    decelerationEncoder = 0.25 * encoder
+  EndIf
+  
+  Motor.ResetCount("BC")
+  
+  exit = 0
+  err_sum = 0
+  While exit <> 1
+   
+    r1 = Motor.GetCount("B")
+    r2 = Motor.GetCount("C")
+   
+    currentEncoder = (Math.Abs(r1) + Math.Abs(r2)) / 2
+    'r1 is the left engine, and r2 is the right engine
+    error = Math.Abs(r2) - Math.Abs(r1)
+    P = kp * error
+    D = kd * (error - errorOld)
+    I = ki * err_sum
+    errorOld = error
+    err_sum = err_sum + error
+    
+    LCD.Clear()
+    LCD.Text(0, 1, 1, 2, currentEncoder)
+    LCD.Update()
+    
+    V = speed
+    If acceleration = "on" AND  currentEncoder < accelerationEncoder Then
+      V = (currentEncoder / accelerationEncoder) * (speed - V0) + V0
+      If V > speed Then
+        V = speed
+      EndIf
+    EndIf
+    If deceleration = "on" Then 
+      If currentEncoder >= encoder - decelerationEncoder Then
+        V = ((encoder - currentEncoder) / decelerationEncoder) * (speed - V0) + V0
+        If V < V0 Then
+          V = V0
+        EndIf
+      EndIf
+    EndIf  
+    
+    
+    motorB = V + (P + D + I)
+    motorC = V - (P + D + I)
+    
+    If exit <> 1 Then
+      Motor.StartPower( "B", motorB * side )
+      Motor.StartPower( "C", motorC * side )
+    EndIf
+    
+    'errorLast = error
+    If currentEncoder >= encoder Then
+      exit = 1
+    EndIf
+   
+  EndWhile
+ 
+  If end_brake = "on" Then
+    
+    Motor.Stop("BC", "True")
+    
+  Else  
+    
+    Motor.Stop("BC", "False")
+    
+  EndIf
+  
+  'Program.Delay(200)
+ 
+EndFunction
+
 Function RobotSpin(in string direction,in number degrees,in number speed,in string acceleration, in string deceleration, in string end_brake)  
   kp = 0.5
   kd = @kd
@@ -1501,14 +1604,14 @@ Function spinDegrees(in number Vmax, in string side, in number circleDegrees, in
   ' ----------
   diamAx = @robot_diameter
   diamRoata = @wheel_diameter
-  encoder = circleDegrees * 2 * @robot_diameter / @wheel_diameter
+  encoder = circleDegrees * 2 * 17.9 / @wheel_diameter
   accelerationEncoder = 100
   If 0.1 * encoder < accelerationEncoder Then
     accelerationEncoder = 0.1 * encoder
   EndIf
-  decelerationEncoder = 750
-  If 0.75 * encoder < decelerationEncoder Then
-    decelerationEncoder = 0.75 * encoder
+  decelerationEncoder = 200
+  If 0.2 * encoder < decelerationEncoder Then
+    decelerationEncoder = 0.2 * encoder
   EndIf
   
   Motor.ResetCount("BC")
@@ -1516,8 +1619,6 @@ Function spinDegrees(in number Vmax, in string side, in number circleDegrees, in
    
     r1 = Motor.GetCount(@left_motor)
     r2 = Motor.GetCount(@right_motor)
-   
-    ' r1 is the left engine, and r2 is the right engine
    
     If side = "right" Then
       currentEncoder = Math.Abs(r2)
@@ -1534,7 +1635,6 @@ Function spinDegrees(in number Vmax, in string side, in number circleDegrees, in
     EndIf
     If deceleration = "on" Then
       If currentEncoder >= encoder - decelerationEncoder Then
-        'Speaker.Tone(70, 5000, 100)
         V = ((encoder - currentEncoder) / decelerationEncoder) * (Vmax - V0) + V0
         If V < V0 Then
           V = V0
@@ -1551,17 +1651,12 @@ Function spinDegrees(in number Vmax, in string side, in number circleDegrees, in
     If currentEncoder > encoder Then
       exitCondition = 0
     EndIf
-   
   EndWhile
  
   If endBrake = "on" Then
-    
     Motor.Stop("BC", "True")
-    
   Else
-    
     Motor.Stop("BC", "False")
-  
   EndIf
  
 EndFunction
