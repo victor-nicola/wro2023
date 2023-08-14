@@ -1,0 +1,62 @@
+include "wro_triangulum"
+Time.Reset3()
+Thread.Run = claw
+
+
+
+
+'de inainteaa intersectiei pana la cuburi
+'lf_cm(80,10,"on","off","off")'lf  de calibrare
+'lf_intersection(80, "off", "on", "on")'lf de intersectie
+'RobotSpin("left",60, 70, "off", "off", "on")'rotire mecanica
+'PerfectLine(30, "left") 'pana la negru
+'lf_cm(80,29,"on","on","on")'ASTA e DISTANTA DE LA ROTILE DE PE LINIE PANA LA CUBURI
+
+'setul de dupa citire pe linie neagra
+'lf_cm(80,10,"on","off","off")'lf  de calibrare
+'lf_intersection(80, "off", "off", "on")'lf de intersectie
+'RobotSpin("left",140, 50, "off", "off", "on")'rotire mecanica
+'PerfectLine(30, "left") 'pana la negru
+'lf_cm(50,17,"on","on","on")'ASTA e DISTANTA DE LA LF INTERSECTIE SI 180 PANA LA CUBURI
+
+'lowerLift()
+'wait_claw()
+'aici robotul e pe linia neagra in fata cuburilor
+
+
+'setul asta pune robotull fix in faat primului cub din stanga
+'reverseSpinDegrees(70, "right", 74, "on", "on", "on")
+'reverseSpinDegrees(70, "left", 73, "on", "on", "on")
+'MoveSyncAcc(70,16,"on", "on", "on")
+'lowerLift()
+'wait_claw()
+'aici robotul e fix in fata primului cub de la stanga la dreapta
+
+
+'setul asta pune robotull fix in fata celui de al doilea cub de la stanga la dreapta
+'reverseSpinDegrees(70, "right", 42, "on", "on", "on")
+'reverseSpinDegrees(70, "left", 41, "on", "on", "on")
+'MoveSyncAcc(70,11,"on", "on", "on")
+'lowerLift()
+'wait_claw()'aici robotul e fix in fata celui de al doilea cub de la stanga la dreapta
+
+
+'setul asta pune robotull fix in fata celui de al treilea cub de la stanga la dreapta
+'reverseSpinDegrees(70, "left", 40, "on", "on", "on")
+'reverseSpinDegrees(70, "right", 40, "on", "on", "on")
+'MoveSyncAcc(70,12,"on", "on", "on")
+'lowerLift()
+'wait_claw()'aici robotul e fix in fata celui de al treilea cub de la stanga la dreapta
+
+
+
+'setul asta pune robotull fix in fata celui de al patrulea cub de la stanga la dreapta
+'reverseSpinDegrees(70, "left", 68, "on", "on", "on")
+'reverseSpinDegrees(70, "right", 70, "on", "on", "on")
+'MoveSyncAcc(70,16,"on", "on", "on")
+'lowerLift()
+'wait_claw()'aici robotul e fix in fata celui de al patrulea cub de la stanga la dreapta
+
+
+
+Program.Delay(1000000)
