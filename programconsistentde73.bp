@@ -8,212 +8,10 @@ Thread.Run = claw
 @speed_movesync = 50 '60
 @speed_lf = 50 '60
 @speed_spinrobot = 50
-@speed_spin = 90
+@speed_spin = 50
 @type = 0
 @speed_spinrobotShip = 40
 cubu[4]=0
-
-RobotSpin("right",90, @speed_spin, "on", "on", "on")
-Program.Delay(10000000)
-
-'lf_cm_cu_cub(50,0,"off","off","on")
-'@kpA = 0.1
-'@kpD = 0.6
-'@degD = 15
-'wait_claw_specific(1000)
-'ArcMove(12, 93, -100, "right") 'terminam arcu inainte de intersectia cu nava mica
-'lf_cm_cu_cub(50,10,"off","off","off")
-'lf_cm_cu_cub(80,40, "off","off","on")
-''Program.Delay(1000)
-'lf_intersection_cu_cub(80, "off", "off", "on")
-'Program.Delay(1000000)
-
-''lf_cm(100,0,"off","off","on")
-'''spinDegrees(@speed_spindeg, "left", 10, "on", "on", "on") 'ne rotim ca sa citim
-'''reverseMoveSyncCM(3, @speed_movesync, "off", "on", "on")
-''wait_claw_specific(200)
-''@degD = 200
-''@kpD = 0.5
-''wait_claw_specific(2000)
-''@degA = 300
-''@kpA = 0.1
-''wait_claw_specific(400)
-''@degA = 400
-''@kpA = 10
-''wait_claw_specific(400)
-''raiseLift()
-
-'lf_cm_cu_cub(80,40, "off","off","on")
-''Program.Delay(1000)
-'lf_intersection_cu_cub(80, "off", "off", "on")
-'Program.Delay(1000000)
-
-'lf_cm(50,10,"off","off","off")
-'lf_intersection(50, "off", "on", "on")
-'RobotSpin("right",165, @speed_spin, "off", "on", "on")
-'PerfectLine(30, "right")
-
-'lf_cm(50,8,"on","off","on")
-'stangadreata(13.5,50,"right")
-
-
-'lowerLift()
-'wait_claw_specific(500)
-'@degA = 300
-'@kpA = 0.1
-'wait_claw_specific(500)
-'closeClaw()
-'raiseLift()
-
-'stangadreata(13.5,-50,"left")
-
-
-'reverseMoveSyncCM(12, @speed_movesync, "off", "on", "on")
-'lf_cm(80,12,"on","on","on")
-
-'stangadreata(18.5,50,"left")
-
-'lowerLift()
-'wait_claw_specific(500)
-'letALittle()
-'raiseLift()
-'stangadreata(3,-50,"right")
-'resetClaw()
-
-''reverseMoveSyncCM(2, @speed_movesync, "off", "on", "on")
-  'MoveSync(50,8,"on")
-
-'lowerLift()
-'wait_claw_specific(200)
-'@degA = 200
-'@kpA = 10
-'wait_claw_specific(200)
-'closeClaw()
-'wait_claw_specific(100)
-'@kpD = 10
-'raiseLift()
-
-
-'str = "right"
-'var1 = "left"
-'lf_cm(80,10,"off","off","off")
-'lf_intersection(80, "off", "on", "on")
-'RobotSpin("right",75, @speed_spin, "off", "on", "off")
-'PerfectLine(30, "right") 'ne-am calibrat la intersectie la 90
-'lf_cm(@speed_lf,22,"on","on","on")'am ajuns la cuburi (era 23 inainte)
-'spinDegrees(@speed_spindeg, "left", 90, "on", "on", "on") 'ne rotim ca sa citim
-  'reverseMoveSyncCM(30, @speed_movesync, "off", "off", "on")'''''''''''''''''''''''''''''''''''''
-
-'reverseSpinDegrees(@speed_spindeg, "left", 51, "off", "off", "on") 'ne rotim ca sa luam primu cub
-  'MoveSync(50,4,"on")
-
-'wait_claw()
-  '@kpD = 0.6
-'@degD = 200
-'closeClaw()
-'wait_claw()
-''am lasat gheara jos, acm ma dau in spate ca sa trag cubu aproape
-  'wait_claw_specific(300)
-  'reverseSpinDegrees(50, "right", 56, "off", "off", "on") 'ma rotesc inapoi si acum sunt drept
-  'wait_claw()
-  '@kpD = 1
-  '@degD = 130 'am ridicat 
-  'MoveSync(50,0.5,"on")
-  '@kpA = 5
-  '@degA = 130 'pregatesc gheara
-  'wait_claw_specific(100)
-  ''wait_claw_specific(200)
-  '@degD = 170 'las gheara in jos
-  'wait_claw_specific(400)
-  '@kpA = 5
-  '@degA = 250 'am apucat cubu
-  'wait_claw_specific(300)
-'raiseLift()
-  'MoveSync(50,5,"on")
-  'RobotSpin("right",180, 70, "on", "on", "on")
-  'putGreenOnShip() 'punem cubu pe nava mare
-  'raiseLift()'am pus primul cub pe nava mare
-  'letALittleMedium()
-  'RobotSpin("left",175, 70, "on", "on", "on")
-'MoveSync(50,23,"on")
-'reverseSpinDegrees(@speed_spindeg, "left", 55, "off", "off", "on") 
-'MoveSync(50,7,"on")
-'wait_claw()
-  '@kpD = 0.6
-'@degD = 200
-'closeClaw()
-'wait_claw()
-''am lasat gheara jos, acm ma dau in spate ca sa trag cubu aproape
-  'wait_claw_specific(300)
-  'reverseSpinDegrees(@speed_spindeg, "right", 60, "off", "off", "on") 'ma rotesc inapoi si acum sunt drept
-'wait_claw()
-  '@kpD = 0.6
-  '@degD = 130 'am ridicat 
-  'MoveSync(50,0.5,"on")
-  '@kpA = 5
-  '@degA = 130 'pregatesc gheara
-  'wait_claw_specific(100)
-  ''wait_claw_specific(200)
-  '@degD = 170 'las gheara in jos
-  'wait_claw_specific(400)
-  '@kpA = 5
-  '@degA = 250 'am apucat cubu
-  'wait_claw_specific(300)
-'raiseLift()
-  'MoveSync(50,3,"on")
-'RobotSpin("right",180, @speed_spin, "on", "on", "on")
-'MoveSync(50,15,"on")
-'putGreenOnShip()
-
-'lf_cm(100,0.1,"on","off","on")
-
-'lowerLift()
-'wait_claw_specific(500)
-'@degD = 200
-'wait_claw_specific(500)
-'@degA = 200
-'@kpA = 0.3
-'wait_claw_specific(500)
-'@kpA = 1
-'@degA = 400
-'wait_claw_specific(500)
-'raiseLift()
-'wait_claw_specific(500)
-'RobotSpin("right",180, @speed_spin, "on", "off", "on")
-'wait_claw_specific(500)
-'lowerLift()
-'wait_claw_specific(500)
-'resetClaw()
-'wait_claw_specific(500)
-'raiseLift()
-'wait_claw_specific(500)
-'RobotSpin("right",  1 , @speed_spin, "on", "off", "on")
-'wait_claw_specific(500)
-'closeClaw()
-'wait_claw_specific(500)
-'@degD = 180
-'@kpD = 0.7
-'wait_claw_specific(500)
-'RobotSpin("right",85, 30, "on", "off", "on")
-
-'lf_cm(30,30,"on","on","on")
-''lf_intersection(30, "off", "on", "on")
-'Program.Delay(1000)
-'RobotSpin("right",60, 30, "on", "on", "on")
-'PerfectLine(30,"right")
-'lf_cm(70,30,"on","on","on")
-
-
-'Program.Delay(1000)
-
-'MoveSyncAcc(70,120,"on","on","on")
-
-
-
-
-'Program.Delay(10000000)
-
-
 
 luat[0] = 1
 luat[1] = 1
@@ -239,80 +37,12 @@ ElseIf luat[0] = 1 and luat[3] = 1 Then
   
 EndIf
 
-'RobotSpin("right",75, @speed_spin, "off", "on", "off")
-'PerfectLine(30, "right") 'ne-am calibrat la intersectie la 90
-'lf_cm(@speed_lf,22,"on","on","on")'am ajuns la cuburi (era 23 inainte)
-'spinDegrees(@speed_spindeg, "left", 90, "on", "on", "on") 'ne rotim ca sa citim
-'reverseMoveSyncCM_read(30,30,"on",cubu[3],cubu[2],cubu[1],cubu[0])
-'MoveSync(50,preMS,"on") 'ajungem la linie
-'reverseSpinDegrees(@speed_spindeg, "left", 90, "off", "on", "on") 'ne rotim pe linie
-'reverseMoveSyncCM(11.3, @speed_movesync, "off", "off", "on")'''''''''''''''''''''''''''''''''''''
-'lf_cm_precision(@speed_lf - 10,14,"on","on","on")
-''ne ducem in fata ca sa apucam cuburile din mijloc
-'@degA = 150
-'wait_claw()
-'@kpD = 0.6
-'@degD = 175 '175 '300
-'wait_claw()
-'wait_claw()'luam cuburile pt nava mare (lower lift for 2 cubes)
-'wait_claw()
-'wait_claw()
-'@kpA = 0.3
-'@degA = 200
-'wait_claw()
-'wait_claw() 
-'@kpA = 5
-'@degA = 400
-'wait_claw()
-'wait_claw()
-'raiseLift() 'am luat cuburile
-'RobotSpin("left",88, @speed_spin, "on", "on", "on")
-'MoveSync(50,preMS - 3,"on")
-'putGreenOnShip() 'punem cuburile pe nava mare
-'raiseLift()
-'resetClaw() 'am lasat
-'RobotSpin("left",180, @speed_spin, "on", "on", "on")
-'MoveSync(50,10,"on")
-'StraightAlley(50) 'm-am oprit pe linie
-'MoveSync(50,6,"on") 'ma pun cu rotile pe linie
-'RobotSpin("right",85, @speed_spin, "on", "on", "on")
-'PerfectLine(30, "right") 'sunt cu fata catre intersectie si calibrat
-'Program.Delay(200)
-'lf_cm(@speed_lf,10,"on","off","on")
-'lf_intersection(@speed_lf, "off", "on", "on")
-'RobotSpin("right",75, @speed_spin, "on", "on", "on")
-'PerfectLine(30, "right") 'm-am calibrat pe linie, ma duc catre cuburi
-'lf_cm(70, 25,"off","on","on")
-'spinDegrees(@speed_spindeg, "left", 93, "on", "on", "on")
-'MoveSync(50,20.5,"on")
-'spinDegrees(@speed_spindeg, "left", 93, "on", "on", "on")
-'MoveSync(50,20,"on")
-'reverseSpinDegrees(@speed_spindeg, "left", 200, "off", "off", "on")
-'reverseSpinDegrees(@speed_spindeg, "right", 105, "off", "off", "on")
-'MoveSync(50,11.5,"on")
-'lowerLift()
-'wait_claw_specific(500)
-'closeClawForSpeciala()
-'wait_claw_specific(500)
-'raiseLift()
-
-'stangadreata(3, -60, "left") 'inapoi pe linie
-'lf_cm(@speed_lf,5,"on","on","on")
-'RobotSpin("left",160, @speed_spin, "on", "on", "on")
-'PerfectLine(@speed_spin, "left") 'calibrat pe linie cu fata catre small ship inainte de intersectie
-'Program.Delay(300)
-'@kpD = 1
-'@degD = 100
-'lf_cm_cu_cub(@speed_lf,3,"on","off","off")
-'lf_intersection(@speed_lf, "off", "off", "on")
-'MoveSync(@speed_lf,3,"off")'checkpoint
-
-'Program.Delay(1000000)
 '--------------IMPORTANT----------------
 'la stangadreata am marit viteza cu 10 in functie ca sa nu mai stau sa modifc la fiecare
 'la toate functiile directia e ok in afara de spinDegrees unde e pe dos (ca sa iesim din matrix)
 'RobotSpin = spin normal
 'SpinDegrees = compas
+
 handle = EV3File.OpenWrite("daterobot.txt")
 Sensor.SetMode(3,4)
 lf_cm(50,10,"on","off","off")
@@ -375,7 +105,7 @@ wait_claw_specific(50) 'am dat reset la claw
 reverseMoveSyncCM(22, @speed_movesync, "on", "off", "on")
 RobotSpin("right",75, @speed_spin, "off", "on", "off")
 PerfectLine(30, "right") 'ne-am calibrat la intersectie la 90
-lf_cm(@speed_lf,22,"on","on","on")'am ajuns la cuburi (era 23 inainte)
+lf_cm(@speed_lf,21,"on","on","on")'am ajuns la cuburi (era 23 inainte)
 spinDegrees(@speed_spindeg, "left", 90, "on", "on", "on") 'ne rotim ca sa citim
 reverseMoveSyncCM_read(30,30,"on",cubu[3],cubu[2],cubu[1],cubu[0])
 final = " "
@@ -485,7 +215,6 @@ ElseIf luat[0] = 1 and luat[3] = 1 Then
   flg03 = 1
   
 EndIf
-
 
 if poz2 - poz1 = 1 Then 'cazurile 0,1 ; 1,2 ; 2,3
   MoveSync(50,preMS,"on") 'ajungem la linie
@@ -631,10 +360,11 @@ EndIf 'checkpoint---------------------------------------------------------------
 RobotSpin("right",75, @speed_spin, "on", "on", "on")
 PerfectLine(30, "right") 'm-am calibrat pe linie, ma duc catre cuburi
 lf_cm(70, 22,"on","on","on")
-spinDegrees(@speed_spindeg, "left", 95, "on", "on", "on")
+spinDegrees(@speed_spindeg, "left", 90, "on", "on", "on")
 MoveSync(50,20.5,"on")
-spinDegrees(@speed_spindeg, "left", 97, "on", "on", "on")
+spinDegrees(@speed_spindeg, "left", 90, "on", "on", "on")
 MoveSync(50,17,"on")
+
 reverseSpinDegrees(@speed_spindeg, "left", 195, "off", "off", "on")
 reverseSpinDegrees(@speed_spindeg, "right", 100, "off", "off", "on")
 MoveSync(50,12,"on")
@@ -701,9 +431,10 @@ While(Time.Get7() < 500)
 EndWhile
 reverseMoveSyncCM(10, 30, "off", "off", "off")
 ArcMove(22, 90, -70, "right")
-RobotSpin("left",170, @speed_spin, "on", "on", "on") 'sunt pe linie
-PerfectLine(30, "left") 
- 'termin arcmoveu pe linie dupa intersectie
+RobotSpin("left",180, @speed_spin, "on", "on", "on") 'sunt pe linie
+PerfectLine(30, "left")
+'pana aici am ajuns cu ajustatul ------------------------------------------------------------------------------------------------------------------------ 
+'termin arcmoveu pe linie dupa intersectie
 lf_cm(80,70,"on","off","off")
 lowerLift()
 lf_intersection(80, "off", "on", "on")

@@ -114,12 +114,11 @@ Sub ultimaSecventa
   raiseLift()
   resetClaw()
   lowerLiftToBigShip() 'apuc nava mare
-  'wait_claw_specific(1000)
   closeClawForSpeciala() 'am apucat-o
   @kpD = 1
   @degD = 140
   reverseMoveSyncCM(6, @speed_movesync + 10, "off", "off", "on")
-  RobotSpin("right",100, @speed_spin - 30, "off", "off", "off")
+  RobotSpin("right",90, 50, "off", "off", "off")
   Program.Delay(200)
   lf_cm(80, 20,"off","off","on")
   @degA = 0
@@ -1602,8 +1601,6 @@ Function spinDegrees(in number Vmax, in string side, in number circleDegrees, in
   errorOld = 0
   exitCondition = 1
   ' ----------
-  diamAx = @robot_diameter
-  diamRoata = @wheel_diameter
   encoder = circleDegrees * 2 * 17.9 / @wheel_diameter
   accelerationEncoder = 100
   If 0.1 * encoder < accelerationEncoder Then
@@ -1667,11 +1664,20 @@ Function reverseSpinDegrees(in number Vmax, in string side, in number circleDegr
   ' ----------
   errorOld = 0
   exitCondition = 1
+  diam = 17.7
+  if ( side = "right" ) Then
+    diam = 17.5
+  EndIf
   ' ----------
-  diamAx = @robot_diameter
-  diamRoata = @wheel_diameter
-  encoder = circleDegrees * 2 * diamAx / diamRoata
- 
+  encoder = circleDegrees * 2 * diam / @wheel_diameter
+  accelerationEncoder = 100
+  If 0.1 * encoder < accelerationEncoder Then
+    accelerationEncoder = 0.1 * encoder
+  EndIf
+  decelerationEncoder = 200
+  If 0.2 * encoder < decelerationEncoder Then
+    decelerationEncoder = 0.2 * encoder
+  EndIf
  
   Motor.ResetCount("BC")
  
@@ -1688,28 +1694,23 @@ Function reverseSpinDegrees(in number Vmax, in string side, in number circleDegr
       currentEncoder = Math.Abs(r1)
     EndIf
    
-    If currentEncoder < @acceleration_encoder Then
-     
+    If currentEncoder < accelerationEncoder Then
       If acceleration = "on" Then
-        V = (currentEncoder / @acceleration_encoder) * (Vmax - V0) + V0
+        V = (currentEncoder / accelerationEncoder) * (Vmax - V0) + V0
         V = Math.Abs(V)
         'multiplier increases as the robot gets closer to the acceleration quota
       Else
         V = Vmax  
       EndIf
-     
     EndIf
-   
-    If encoder - currentEncoder < @deceleration_encoder Then
-     
+    If encoder - currentEncoder < decelerationEncoder Then
       If deceleration = "on" Then
-        V = ((encoder - currentEncoder) / @deceleration_encoder) * (Vmax - V0) + V0
+        V = ((encoder - currentEncoder) / decelerationEncoder) * (Vmax - V0) + V0
         V = Math.Abs(V)
         'multiplier decreases as the robot gets closer to the deceleration quota
       Else
         V = Vmax
       EndIf
-     
     EndIf
    
     If side = "right" Then
@@ -1721,19 +1722,13 @@ Function reverseSpinDegrees(in number Vmax, in string side, in number circleDegr
     If currentEncoder > encoder Then
       exitCondition = 0
     EndIf
-   
   EndWhile
  
   If endBrake = "on" Then
-    
     Motor.Stop("BC", "True")
-    
   Else  
-    
     Motor.Stop("BC", "False")
-    
   EndIf
-  
 EndFunction
 
 Function citire(out number col)
