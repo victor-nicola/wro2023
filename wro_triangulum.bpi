@@ -65,7 +65,7 @@ sub checkpoint
   RobotSpin("left",140, @speed_spin, "off", "on", "on") 'ca sa luam speciala
   @kpD = 0.8
   resetClaw()
-  MoveSync(@speed_movesync,5,"on")
+  MoveSyncAcc(@speed_movesync,5,"on", "on", "on") '--------------------------
   @kpD = 0.6
   @degD = 160
   wait_claw_specific(250)
@@ -76,7 +76,7 @@ sub checkpoint
   RobotSpin("right",135, @speed_spin, "off", "on", "off") 'inapoi pe linie
   lf_cm(80,10,"on","off","off")
   lf_intersection(80, "off", "off", "on")
-  MoveSync(50,15,"on")
+  MoveSyncAcc(50,15,"on", "on", "on") '----------------------------
   reverseMoveSyncCM(6, @speed_movesync, "off", "off", "on")
   RobotSpin("right",90, @speed_spin, "on", "on", "on")
   'PerfectLine(30, "right") 'cu fata catre crane
@@ -104,7 +104,7 @@ sub checkpoint
   lf_intersection(80, "off", "on", "on")
   RobotSpin("right",90, @speed_spin, "on", "on", "on") 'cu fata la nava mare
   
-  MoveSync(@speed_movesync,6,"on")
+  MoveSyncAcc(@speed_movesync,6,"on", "on", "on") '--------------------
   
   ultimaSecventa()
 EndSub
@@ -118,7 +118,7 @@ Sub ultimaSecventa
   @kpD = 1
   @degD = 140
   reverseMoveSyncCM(6, @speed_movesync + 10, "off", "off", "on")
-  RobotSpin("right",90, 50, "off", "off", "off")
+  RobotSpin("right",90, 70, "off", "off", "off")
   Program.Delay(200)
   lf_cm(80, 20,"off","off","on")
   @degA = 0
@@ -318,6 +318,7 @@ sub lowerLiftToBigShip
   @degD = 190 '167
   wait_claw()
   wait_claw()
+  wait_claw()
 EndSub
 
 sub destroyFlagLittleShipOne
@@ -495,7 +496,7 @@ EndSub
 
 sub putWhiteOnShip
   @kpD = 0.8
-  @degD = 127
+  @degD = 130
   wait_claw()
   letALittleMedium()
 EndSub
@@ -1279,36 +1280,36 @@ Function Rotation2Black(in string direction,in number speed,in string end_break)
   EndIf
 EndFunction
 
-Function MoveSync(in number speed_max,in number cm,in string end_brake)
-  kp = @kp
-  kd = @kd
-  exit_condition = 1
-  Motor.ResetCount(@stop_motor)
-  left_encoder = 0
-  right_encoder = 0
-  Cm2Degrees(cm,encoder)
-  error_old = 0
+'Function MoveSync(in number speed_max,in number cm,in string end_brake)
+  'kp = @kp
+  'kd = @kd
+  'exit_condition = 1
+  'Motor.ResetCount(@stop_motor)
+  'left_encoder = 0
+  'right_encoder = 0
+  'Cm2Degrees(cm,encoder)
+  'error_old = 0
 
-  While exit_condition = 1
-    left_encoder = Motor.GetCount(@left_motor)
-    right_encoder = Motor.GetCount(@right_motor)
-    current_encoder = ((-1*left_encoder) + right_encoder) / 2
-    error = left_encoder + right_encoder
-    P = kp * error
-    D = kd * (error - error_old)
-    speed=speed_max
-    Motor.StartPower(@left_motor,-(speed + (P + D)))
-    Motor.StartPower(@right_motor,(speed - (P + D)))
-    error_old = error
-    If current_encoder > encoder Then
-      exit_condition = 0
-    EndIf
-  EndWhile
-  If end_brake = "on" Then
-    Motor.Stop("BC","True")
-  EndIf
+  'While exit_condition = 1
+    'left_encoder = Motor.GetCount(@left_motor)
+    'right_encoder = Motor.GetCount(@right_motor)
+    'current_encoder = ((-1*left_encoder) + right_encoder) / 2
+    'error = left_encoder + right_encoder
+    'P = kp * error
+    'D = kd * (error - error_old)
+    'speed=speed_max
+    'Motor.StartPower(@left_motor,-(speed + (P + D)))
+    'Motor.StartPower(@right_motor,(speed - (P + D)))
+    'error_old = error
+    'If current_encoder > encoder Then
+      'exit_condition = 0
+    'EndIf
+  'EndWhile
+  'If end_brake = "on" Then
+    'Motor.Stop("BC","True")
+  'EndIf
   
-EndFunction
+'EndFunction
 
 Function MoveSyncAcc(in number speed_max,in number cm,in string acceleration,in string deceleration,in string end_brake)
   kp = 0.5
@@ -1879,14 +1880,14 @@ EndFunction
 Function StraightAlley(in number speed)
   MoveTillWhite(speed,"false")
   MoveTillBlack(speed,"false")
-  MoveSync(@speed_movesync,0.5,"on")
+  MoveSyncAcc(@speed_movesync,0.5,"on", "on", "on") '--------------------------
 
 EndFunction
 
 Function GayAlley(in number speed)
   MoveTillWhite(speed,"false")
   MoveTillBlack(speed,"false")
-  MoveSync(70, 3, "on")
+  MoveSyncAcc(70, 3, "on", "on", "on") '----------------------------
 EndFunction
 
 Function reverseMoveSyncCM(in number distance, in number Vmax, in string acceleration, in string deceleration, in string end_brake)
@@ -2261,6 +2262,106 @@ Function PerfectLine(in number speed,in string direction)
   RotateTillBlack(speed,direction)
 EndFunction
 
+Function MoveSyncPtArcMove(in number speedLeft, in number speedRight,in number encoder,in string acceleration,in string deceleration,in string end_brake)
+  
+  exit_condition = 1
+  Motor.ResetCount(@stop_motor)
+  left_encoder = 0
+  right_encoder = 0
+  
+  While exit_condition = 1
+    left_encoder = Motor.GetCount(@left_motor)
+    right_encoder = Motor.GetCount(@right_motor)
+    
+    If acceleration = "on" Then
+      speedL=(-left_encoder / @acceleration_encoder) * (speedLeft - @speed_0) + @speed_0
+      speedR=(right_encoder / @acceleration_encoder) * (speedRight - @speed_0) + @speed_0
+      If speedL > speedLeft Then
+        speedL = speedLeft
+      EndIf
+      If speedR > speedRight Then
+        speedR = speedRight
+      EndIf
+    Else  
+      speedL = speedLeft
+      speedR = speedRight
+    EndIf
+    If deceleration = "on" Then
+      if (encoder + left_encoder) <= @deceleration_encoder Then
+        speedL = ((encoder + left_encoder) / @deceleration_encoder) * (speedLeft - @speed_0) + @speed_0
+        If speedL < @speed_0 Then
+          speedL = @speed_0
+        EndIf
+      EndIf
+      if (encoder - right_encoder) <= @deceleration_encoder Then
+        speedR = ((encoder - right_encoder) / @deceleration_encoder) * (speedRight - @speed_0) + @speed_0
+        If speedR < @speed_0 Then
+          speedR = @speed_0
+        EndIf
+      EndIf
+    EndIf
+    
+    Motor.StartPower(@left_motor,-speedL)
+    Motor.StartPower(@right_motor,speedR)
+    
+    If -left_encoder > encoder Or right_encoder > encoder Then
+      exit_condition = 0
+    EndIf
+  EndWhile
+  
+  Motor.Stop("BC","True")
+  
+  if right_encoder < encoder Then
+    Speaker.Note(50, "C5", 1000)
+  EndIf
+  
+  'while -left_encoder < encoder
+    'left_encoder = Motor.GetCount(@left_motor)
+    'If acceleration = "on" Then
+      'speedL=(-left_encoder / @acceleration_encoder) * (speedLeft - @speed_0) + @speed_0
+      'If speedL > speedLeft Then
+        'speedL = speedLeft
+      'EndIf
+    'Else  
+      'speedL = speedLeft
+    'EndIf
+    'If deceleration = "on" Then
+      'if (encoder + left_encoder) <= @deceleration_encoder Then
+        'speedL = ((encoder + left_encoder) / @deceleration_encoder) * (speedLeft - @speed_0) + @speed_0
+        'If speedL < @speed_0 Then
+          'speedL = @speed_0
+        'EndIf
+      'EndIf
+    'EndIf
+    'Motor.StartPower(@left_motor,-speedL)
+  'EndWhile
+  
+  while right_encoder < encoder
+    right_encoder = Motor.GetCount(@right_motor)
+    If acceleration = "on" Then
+      speedR=(right_encoder / @acceleration_encoder) * (speedRight - @speed_0) + @speed_0
+      If speedR > speedRight Then
+        speedR = speedRight
+      EndIf
+    Else  
+      speedR = speedRight
+    EndIf
+    If deceleration = "on" Then
+      if (encoder - right_encoder) <= @deceleration_encoder Then
+        speedR = ((encoder - right_encoder) / @deceleration_encoder) * (speedRight - @speed_0) + @speed_0
+        If speedR < @speed_0 Then
+          speedR = @speed_0
+        EndIf
+      EndIf
+    EndIf
+    Motor.StartPower(@right_motor,speedR)
+  EndWhile
+  
+  If end_brake = "on" Then
+    Motor.Stop("BC","True")
+  EndIf
+EndFunction
+
 Function ArcMove(in number radius, in number degrees, in number speed, in string direction)
   encoder = 2 * (radius + @robot_diameter / 2) / @wheel_diameter * degrees
   
@@ -2272,7 +2373,7 @@ Function ArcMove(in number radius, in number degrees, in number speed, in string
     speedLeft = -1 * speed * (radius - @robot_diameter / 2) / (radius + @robot_diameter / 2)
   EndIf      
   
-  Motor.MoveSync("BC", speedLeft, speedRight, encoder, "True")
+  Motor.MoveSync("BC", speedLeft, speedRight, encoder, "on")
   
 EndFunction  
 
