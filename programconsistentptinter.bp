@@ -15,8 +15,6 @@ cubu[4]= 0
 luat[0] = 1
 luat[1] = 1
 
-
-
 if luat[1] = 1 and luat[2] = 1 Then
   preMS = 30
 ElseIf luat[0] = 1 and luat[1] = 1 Then
@@ -60,7 +58,7 @@ EV3File.WriteLine(handle, final)
 LCD.Clear()
 LCD.Text(1,70,10,2,type)
 @kpD = 0.6
-@degD = 160 'dam gheara jos ca sa luam speciala
+@degD = 150 'dam gheara jos ca sa luam speciala
 
 MoveSyncAcc(50,7.5,"on", "on", "on") '--------------------------------------------------------------------
 
@@ -200,30 +198,41 @@ EndIf
 preMS = 0
 
 if luat[1] = 1 and luat[2] = 1 Then
-  preMS = 30
+  preMS = 31
+  distms = 12
 ElseIf luat[0] = 1 and luat[1] = 1 Then
   preMS = 23'era 20
+  distms = 12
 Elseif luat[2] = 1 and luat[3] = 1 Then
-  preMS = 36
+  preMS = 38
+  distms = 12
 ElseIf luat[0] = 1 and luat[2] = 1 Then
   str = "right"
   var1 = "left"
-  disttilship = 12
+  disttilship = 14
   var1g = 30
   strg = 30'era 32 inainte
   str2g = 90
-  var2g = 91
+  var2g = 92
+  var1spg = 30
+  strspg = 27
+  distms = 11.5
+  revms = 3
 ElseIf luat[1] = 1 and luat[3] = 1 Then
   str = "left"
   var1 = "right"
-  disttilship = 44
+  disttilship = 43
   var1g = 31
   strg = 28
   str2g = 90
   var2g = 94
+  var1spg = 26
+  strspg= 25
+  distms = 12
+  revms = 5
 ElseIf luat[0] = 1 and luat[3] = 1 Then
   flg03 = 1
-  
+  distms = 12
 EndIf
 
 if poz2 - poz1 = 1 Then 'cazurile 0,1 ; 1,2 ; 2,3
@@ -306,7 +315,7 @@ ElseIf luat[0] = 1 and luat[3] = 1 Then
   raiseLift()
   reverseMoveSyncCM(3, @speed_movesync, "off", "on", "on")
   RobotSpin("left",88, @speed_spin, "on", "on", "on")
-  MoveSyncAcc(50,12,"on", "on", "on") '-------------------------------------
+  MoveSyncAcc(50,13,"on", "on", "on") '-------------------------------------
   putGreenOnShip() 'punem cuburile pe nava mare
   raiseLift()
   resetClaw() 'am lasat
@@ -338,7 +347,7 @@ ElseIf poz2 - poz1 = 2 Then
   @degD = 140
   kpD = 0.8
   wait_claw()
-  kpD = 0.4
+  kpD = 0.5
   @degD = 170
   wait_claw()
   wait_claw()
@@ -364,14 +373,21 @@ ElseIf poz2 - poz1 = 2 Then
   raiseLift()
   resetClaw()
   MoveSyncAcc(50,34,"on", "on", "on") '--------------------------------------------
-  reverseMoveSyncCM(11, @speed_movesync, "on", "off", "on")
-  lowerLiftsLowAndLower()
-  wait_claw_specific(500)
+  reverseSpinDegrees(@speed_spindeg, var1, var1spg, "off", "off", "on")
+  reverseSpinDegrees(@speed_spindeg, str, strspg, "off", "off", "on")
+  'stangadreata(1.5,-50,"right")
+  reverseMoveSyncCM(3, @speed_movesync, "off", "on", "on")
+  lowerLift()
+  wait_claw()
   closeFor2Cubes()
   wait_claw()
   raiseLift()
   reverseMoveSyncCM(5, @speed_movesync, "on", "off", "on")
-  RobotSpin("left",88, @speed_spin, "on", "on", "on")
+  if luat[0] = 1 And luat[2] = 0 Then
+    RobotSpin("left",90, @speed_spin, "on", "on", "on")
+  Else
+    RobotSpin("left",88, @speed_spin, "on", "on", "on")  
+  EndIf
   MoveSyncAcc(50,disttilship,"on", "on", "on") '-----------------------------------------
   putGreenOnShip()
   raiseLift()
@@ -396,7 +412,7 @@ MoveSyncAcc(50,18,"on", "on", "on") '-------------------------------------------
 
 reverseSpinDegrees(@speed_spindeg, "left", 195, "off", "off", "on")
 reverseSpinDegrees(@speed_spindeg, "right", 105, "off", "off", "on")
-MoveSyncAcc(50,14,"on", "on", "on") '------------------------------------------------
+MoveSyncAcc(50,distms,"on", "on", "on") '------------------------------------------------
 lowerLift()
 wait_claw_specific(200) 
 closeFor2Cubes()
@@ -423,21 +439,23 @@ lf_cm_cu_nava(50,10,"off","off","off")
 lf_cm_cu_nava(80,40, "off","off","on")
 'Program.Delay(1000)
 lf_intersection_cu_cub(80, "off", "off", "on")
-Speaker.Tone(100, )
+Speaker.Note(100, "C5", 1000)
 @kpA = 1
-@degA = 200
+@degA = 130
 wait_claw()
 wait_claw()
-@kpD = 1
-@degD = 90 'ridicam gheara
+@kpD = 5
+@degD = 60 'ridicam gheara
+wait_claw()
+wait_claw()
 resetClaw()
 wait_claw_specific(200) 'ca sa nu ne lovim de stegulet cand ne rotim
 RobotSpin("right",130, @speed_spin, "off", "on", "on") 'ca sa luam speciala
 MoveSyncAcc(50,7,"on", "on", "on") '----------------------------------------
 wait_claw_specific(200)
-@kpD = 0.4
+@kpD = 0.6
 @degD = 160
-wait_claw_specific(500)
+wait_claw_specific(600)
 closeClawForSpeciala()
 wait_claw_specific(300)
 @kpD = 5
@@ -451,8 +469,8 @@ MoveSyncAcc(50,15,"on", "on", "on") '-------------------------------------------
 reverseMoveSyncCM(8, @speed_movesync, "off", "off", "on")
 RobotSpin("right",70, @speed_spin, "on", "on", "on")
 PerfectLine(30, "right") 'cu fata catre crane -------------------------------------------
-@kpD = 0.6
-@degD = 130 'punem gheara la unghiu bun
+@kpD = 1
+@degD = 122 'punem gheara la unghiu bun
 lf_cm(@speed_lf,15,"on","off","off") 'activam punem speciala
 @degA = 0
 @degD = 0
