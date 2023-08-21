@@ -63,7 +63,7 @@ LCD.Text(1,70,10,2,type)
 MoveSyncAcc(50,7.5,"on", "on", "on") '--------------------------------------------------------------------
 
 reverseMoveSyncCM(2.5, @speed_movesync, "on", "off", "on")
-wait_claw_specific(500)
+wait_claw_specific(400) 'era 500
 closeClawForSpeciala()
 @kpD = 5
 @degD = 120 'am luat speciala
@@ -214,10 +214,11 @@ ElseIf luat[0] = 1 and luat[2] = 1 Then
   strg = 30'era 32 inainte
   str2g = 90
   var2g = 92
-  var1spg = 30
-  strspg = 27
-  distms = 11.5
-  revms = 3
+  var1spg = 24
+  strspg = 19
+  distms = 12.5
+  revms = 5
+  add13 = 0
 ElseIf luat[1] = 1 and luat[3] = 1 Then
   str = "left"
   var1 = "right"
@@ -228,8 +229,9 @@ ElseIf luat[1] = 1 and luat[3] = 1 Then
   var2g = 94
   var1spg = 26
   strspg= 25
-  distms = 12
+  distms = 13
   revms = 5
+  add13 = 1
 ElseIf luat[0] = 1 and luat[3] = 1 Then
   flg03 = 1
   distms = 12
@@ -372,11 +374,11 @@ ElseIf poz2 - poz1 = 2 Then
   wait_claw()
   raiseLift()
   resetClaw()
-  MoveSyncAcc(50,34,"on", "on", "on") '--------------------------------------------
+  MoveSyncAcc(50,34 + add13,"on", "on", "on") '--------------------------------------------
   reverseSpinDegrees(@speed_spindeg, var1, var1spg, "off", "off", "on")
   reverseSpinDegrees(@speed_spindeg, str, strspg, "off", "off", "on")
   'stangadreata(1.5,-50,"right")
-  reverseMoveSyncCM(3, @speed_movesync, "off", "on", "on")
+  reverseMoveSyncCM(revms, @speed_movesync, "off", "on", "on")
   lowerLift()
   wait_claw()
   closeFor2Cubes()
@@ -470,7 +472,7 @@ reverseMoveSyncCM(8, @speed_movesync, "off", "off", "on")
 RobotSpin("right",70, @speed_spin, "on", "on", "on")
 PerfectLine(30, "right") 'cu fata catre crane -------------------------------------------
 @kpD = 1
-@degD = 122 'punem gheara la unghiu bun
+@degD = 123 'punem gheara la unghiu bun
 lf_cm(@speed_lf,15,"on","off","off") 'activam punem speciala
 @degA = 0
 @degD = 0
@@ -478,7 +480,7 @@ lf_cm(@speed_lf,10,"off","off","on") 'activam craneu
 Program.Delay(400)
 Time.Reset7()
 While(Time.Get7() < 200)
-  Motor.StartSync("BC", -40, 40)
+  Motor.StartSync("BC", -30, 30)
 EndWhile
 reverseMoveSyncCM(10, 30, "off", "off", "off")
 ArcMove(22, 90, -70, "right")

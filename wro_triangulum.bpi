@@ -2275,35 +2275,35 @@ Function RotateTillBlack(in number speed,in string direction)
       EndIf  
     EndIf
   EndWhile
-  Motor.Stop(@Stop_motor,"true")
-  Program.Delay(100)
-  Time.Reset1()
-  time = 300
-  error = 0
-  error_old = 0
-  error_sum = 0
-  kp = 1
-  kd = 0.1
-  ki = 0.0001
-  exit_condition = 1
+  'Motor.Stop(@Stop_motor,"true")
+  'Program.Delay(100)
+  'Time.Reset1()
+  'time = 300
+  'error = 0
+  'error_old = 0
+  'error_sum = 0
+  'kp = 1
+  'kd = 0.1
+  'ki = 0.0001
+  'exit_condition = 1
 
-  While exit_condition = 1
-    s1 = sensor.ReadPercent(1)
-    s2 = sensor.ReadPercent(2)
-    s1=(s1/@MaximumWhiteSensor1)*100
-    s2=(s2/@MaximumWhiteSensor2)*100
-    error = s1 - s2
-    P = kp * error
-    D = kd * (error - error_old)
-    I = ki * error_sum
-    Motor.StartPower(@left_motor,-((P + D + I)))
-    Motor.StartPower(@right_motor,-((P + D + I)))
-    error_old = error
-    error_sum = error_sum + error
-    If Time.Get1() > time Then
-      exit_condition = 0
-    EndIf
-  EndWhile
+  'While exit_condition = 1
+    's1 = sensor.ReadPercent(1)
+    's2 = sensor.ReadPercent(2)
+    's1=(s1/@MaximumWhiteSensor1)*100
+    's2=(s2/@MaximumWhiteSensor2)*100
+    'error = s1 - s2
+    'P = kp * error
+    'D = kd * (error - error_old)
+    'I = ki * error_sum
+    'Motor.StartPower(@left_motor,-((P + D + I)))
+    'Motor.StartPower(@right_motor,-((P + D + I)))
+    'error_old = error
+    'error_sum = error_sum + error
+    'If Time.Get1() > time Then
+      'exit_condition = 0
+    'EndIf
+  'EndWhile
   
   Motor.Stop("BC","true")
 EndFunction
