@@ -104,20 +104,22 @@ sub checkpoint
   lf_intersection(80, "off", "on", "on")
   RobotSpin("right",90, @speed_spin, "on", "on", "on") 'cu fata la nava mare
   
-  MoveSyncAcc(@speed_movesync,6,"on", "on", "on") '--------------------
+  MoveSyncAcc(@speed_movesync,5,"on", "on", "on") '--------------------
   
   ultimaSecventa()
 EndSub
 
 Sub ultimaSecventa
-  putWhiteOnShip() 'am pus alba pe nava mare
-  raiseLift()
+  @kpD = 1
+  @degD = 140 'am pus alba pe nava mare
+  wait_claw()
   resetClaw()
+  'wait_claw_specific(200)
   lowerLiftToBigShip() 'apuc nava mare
   closeClawForSpeciala() 'am apucat-o
   @kpD = 1
-  @degD = 140
-  reverseMoveSyncCM(8, @speed_movesync + 10, "off", "off", "on")
+  @degD = 135
+  reverseMoveSyncCM(7, @speed_movesync + 10, "off", "off", "on")
   RobotSpin("right",90, 70, "off", "off", "off")
   Program.Delay(200)
   lf_cm(80, 20,"off","off","on")
@@ -318,7 +320,6 @@ sub lowerLiftToBigShip
   @degD = 200 '167
   wait_claw()
   wait_claw()
-  wait_claw()
 EndSub
 
 sub destroyFlagLittleShipOne
@@ -502,7 +503,6 @@ sub putWhiteOnShip
   @degD = 140
   wait_claw()
   letALittleMedium()
-  wait_claw()
 EndSub
 
 sub putGreenOnSmallShip
