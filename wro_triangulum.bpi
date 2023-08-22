@@ -199,7 +199,7 @@ sub closeFor2Cubes
   degD  = 165
   degA = 140
   wait_claw()
-  @kpA = 0.3
+  @kpA = 0.5
   @degA = 500
   wait_claw_specific(300)
 EndSub

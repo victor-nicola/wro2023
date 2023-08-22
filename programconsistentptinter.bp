@@ -220,7 +220,7 @@ ElseIf luat[0] = 1 and luat[2] = 1 Then
   var1spg = 24
   strspg = 19
   distms = 13
-  revms = 6
+  revms = 5
   add13 = 0
 ElseIf luat[1] = 1 and luat[3] = 1 Then
   str = "left"
@@ -230,11 +230,11 @@ ElseIf luat[1] = 1 and luat[3] = 1 Then
   strg = 28
   str2g = 90
   var2g = 94
-  var1spg = 26
-  strspg= 25
+  var1spg = 25 '26
+  strspg= 24 '25
   distms = 13
-  revms = 5
-  add13 = 1
+  revms = 4 '6 s-ar putea sa nu mearga 4 pt ca baterie descarcata
+  add13 = 1.5
 ElseIf luat[0] = 1 and luat[3] = 1 Then
   flg03 = 1
   distms = 12
@@ -312,7 +312,7 @@ ElseIf luat[0] = 1 and luat[3] = 1 Then
   'stangadreata(1.5,-50,"right")
   
   resetClaw()
-  reverseMoveSyncCM(3, @speed_movesync, "off", "on", "on")
+  reverseMoveSyncCM(2, @speed_movesync, "off", "on", "on")
   lowerLift()
   wait_claw()
   closeFor2Cubes()
@@ -363,8 +363,13 @@ ElseIf poz2 - poz1 = 2 Then
   wait_claw()
   lowerLiftsLowAndLower()
   wait_claw()
-  closeClaw()
+  
+  'closeClaw() 'ia primu cub sa-l mute
+  @kpA = 0.5 '5
+  @kdA = 10
+  @degA = 400
   wait_claw()
+  
   raiseLift()
   wait_claw()
   reverseSpinDegrees(@speed_spindeg, str, str2g, "off", "off", "on")
@@ -472,7 +477,7 @@ reverseMoveSyncCM(8, @speed_movesync, "off", "off", "on")
 RobotSpin("right",70, @speed_spin, "on", "on", "on")
 PerfectLine(30, "right") 'cu fata catre crane -------------------------------------------
 @kpD = 1
-@degD = 125 'punem gheara la unghiu bun
+@degD = 124 'punem gheara la unghiu bun
 lf_cm(@speed_lf,15,"on","off","off") 'activam punem speciala
 @degA = 0
 @degD = 0
@@ -491,7 +496,12 @@ lf_cm(80,70,"on","off","off")
 lowerLift()
 lf_intersection(80, "off", "off", "on")
 lf_cm(80,28.9,"off","off","on")
-closeClaw() 'iau alba
+
+'closeClaw() 'iau alba
+@kpA = 0.2
+@degA = 400
+wait_claw_specific(100)
+
 raiseLift()
 lf_intersection(80, "off", "on", "on")
 RobotSpin("right",92, @speed_spin, "on", "on", "on") 'cu fata la nava mare
