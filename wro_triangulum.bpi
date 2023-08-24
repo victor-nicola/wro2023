@@ -125,7 +125,7 @@ Sub ultimaSecventa
   lf_cm(80, 20,"off","off","on")
   @degA = 0
   @degD = 0
-  lf_cm(100, 120,"on","off","on")
+  lf_cm_cu_nava(80, 60,"on","off","off")
   
   'RobotSpin("left",10, @speed_spin, "on", "on", "on") 'ne pozitionam catre stanga ca sa intram in box
   
@@ -199,7 +199,7 @@ sub closeFor2Cubes
   degD  = 165
   degA = 140
   wait_claw()
-  @kpA = 0.5
+  @kpA = 0.3
   @degA = 500
   wait_claw_specific(300)
 EndSub
