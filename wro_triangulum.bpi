@@ -1,5 +1,18 @@
-@kp = 0.5
-@kd = 0.1
+@kpSensorF = 0.3'0.5
+@kdSensorF = 0.7'0.1
+@kiSensorF = 0.0005
+@kpSensorC = 0.9
+@kdSensorC = 1.2
+@kiSensorC = 0.001
+@kpMotorF = 0.5
+@kdMotorF = 0.9
+@kiMotorF = 0.01
+@kpMotorC = 1
+@kdMotorC = 1.4
+@kiMotorC = 0.02
+@SensorKSwitchEncoder = 30
+@kp = 0.3
+@kd = 0.7
 @left_motor = "B"
 @right_motor = "C"
 @wheel_diameter = 6.24 '6.24
@@ -10,8 +23,8 @@
 @grey_rb = 30
 @black = 10' de modificat 10
 @Stop_motor = @left_motor + @right_motor
-@acceleration_encoder = 400
-@deceleration_encoder = 500
+@acceleration_encoder = 200
+@deceleration_encoder = 800
 @speed_0 = 20
 @wheel2sensor_distance = 8.9
 @maxRed = 229
@@ -903,8 +916,7 @@ EndFunction
 
 Function lf_cm(in number speed_max,in number cm,in string acceleration,in string deceleration,in string end_brake)
   
-  kp = 0.5
-  kd = @kd
+ 
   exit_condition = 1
   Motor.ResetCount(@stop_motor)
   Sensor.SetMode(1,0)
@@ -913,7 +925,11 @@ Function lf_cm(in number speed_max,in number cm,in string acceleration,in string
   right_encoder = 0
   Cm2Degrees(cm,encoder)
   error_old = 0
+  isumC = 0
+  isumF = 0
+  isum = 0
   flag = 1
+  LocalSensorKSwitchEncoder = @SensorKSwitchEncoder
   While exit_condition = 1
     left_encoder = Motor.GetCount(@left_motor)
     right_encoder = Motor.GetCount(@right_motor)
@@ -922,8 +938,6 @@ Function lf_cm(in number speed_max,in number cm,in string acceleration,in string
     s1 = Sensor.ReadPercent(1)
     s2 = Sensor.ReadPercent(2)
     error = s1 - s2
-    P = kp * error
-    D = kd * (error - error_old)
     If acceleration = "on" Then
       speed=(current_encoder / @acceleration_encoder) * (speed_max - @speed_0) + @speed_0
       If speed > speed_max Then
@@ -938,6 +952,24 @@ Function lf_cm(in number speed_max,in number cm,in string acceleration,in string
         speed = @speed_0
       EndIf
     EndIf
+    if current_encoder <= LocalSensorKSwitchEncoder and ( error < -20 or error > 20 ) Then
+      exp = current_encoder /  LocalSensorKSwitchEncoder
+      kplf = @kpSensorC * ( 1 - exp )
+      kdlf = @kdSensorC * ( 1 - exp )
+      kilf = @kiSensorC * ( 1 - exp )
+      LocalSensorKSwitchEncoder = LocalSensorKSwitchEncoder + LocalSensorKSwitchEncoder * ( Math.Abs( error ) / 250 )
+      isumC = isumC + error
+      isum= isumC
+    Else
+      kplf = @kpSensorF
+      kdlf = @kdSensorF
+      kilf = @kiSensorF
+      isumF = isumF + error
+      isum= isumC
+    EndIf
+    P = kplf * error
+    D = kdlf * (error - error_old)
+    I = kilf * isum
     Motor.StartPower(@left_motor,-(speed + (P + D)))
     Motor.StartPower(@right_motor,(speed - (P + D)))
     error_old = error
@@ -1365,24 +1397,22 @@ EndFunction
 'EndFunction
 
 Function MoveSyncAcc(in number speed_max,in number cm,in string acceleration,in string deceleration,in string end_brake)
-  kp = 0.5
-  kd = @kd
-  ki = 0.01
   exit_condition = 1
   Motor.ResetCount(@stop_motor)
   left_encoder = 0
   right_encoder = 0
   Cm2Degrees(cm,encoder)
   error_old = 0
-  error_sum = 0
+  isumC = 0
+  isumF = 0
+  isum = 0
+  flag = 1
+  LocalSensorKSwitchEncoder = @SensorKSwitchEncoder
   While exit_condition = 1
     left_encoder = Motor.GetCount(@left_motor)
     right_encoder = Motor.GetCount(@right_motor)
     current_encoder = ((-1*left_encoder) + right_encoder) / 2
-    error = left_encoder + right_encoder
-    P = kp * error
-    D = kd * (error - error_old)
-    I = ki * error_sum
+    error =  left_encoder + right_encoder
     If acceleration = "on" Then
       speed=(current_encoder / @acceleration_encoder) * (speed_max - @speed_0) + @speed_0
       If speed > speed_max Then
@@ -1397,9 +1427,26 @@ Function MoveSyncAcc(in number speed_max,in number cm,in string acceleration,in 
         speed = @speed_0
       EndIf
     EndIf
+    if current_encoder <= LocalSensorKSwitchEncoder and ( error < -30 or error > 30 ) Then
+      exp = current_encoder /  LocalSensorKSwitchEncoder
+      kpms = @kpMotorC * ( 1 - exp )
+      kdms = @kdMotorC * ( 1 - exp )
+      kims = @kiMotorC * ( 1 - exp )
+      LocalSensorKSwitchEncoder = LocalSensorKSwitchEncoder + LocalSensorKSwitchEncoder * ( Math.Abs( error ) / 200 )
+      isumC = isumC + error
+      isum= isumC
+    Else
+      kpms = @kpMotorF
+      kdms = @kdMotorF
+      kims = @kiMotorF
+      isumF = isumF + error
+      isum= isumC
+    EndIf
+    P = kpms * error
+    D = kdms * (error - error_old)
+    I = kims * isum
     Motor.StartPower(@left_motor,-(speed + (P + D + I)))
     Motor.StartPower(@right_motor,(speed - (P + D + I)))
-    error_sum = error_sum + error
     error_old = error
     If current_encoder > encoder Then
       exit_condition = 0
