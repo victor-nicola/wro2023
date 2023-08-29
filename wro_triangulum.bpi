@@ -164,8 +164,8 @@ EndFunction
 
 Sub Claw
   error_oldA = 0
-  @kpA = 0.3
-  @kdA = 0.1
+  @kpA = 0.2
+  @kdA = 0.4
   error_oldD = 0
   @kpD = 1
   @kdD = 10
@@ -274,8 +274,8 @@ sub aslowaspossible
 EndSub
 
 sub raiseLiftsuper
-  @kpD = 5
-  @degD = 110
+  @kpD = 20
+  @degD = 100
   wait_claw()
 EndSub
 
@@ -314,8 +314,8 @@ Sub lowerLiftSpecialCube
 EndSub
 
 Sub lowerLiftSpecialCubePut
-  @kpD = 4
-  @degD = 137 'se coboara(*urca acum ca suntem smecheri) la unghiul optim ca sa punem speciala
+  @kpD = 0.8
+  @degD = 125 'se coboara(*urca acum ca suntem smecheri) la unghiul optim ca sa punem speciala
   wait_claw()
 EndSub
 
@@ -522,7 +522,9 @@ sub putGreenOnSmallShip
   @kpD = 0.8
   @degD = 140
   wait_claw()
-  @degA = 130
+  @kpA = 1
+  @degA = 145
+  wait_claw()
 EndSub
 
 sub putWhiteOnSmallShip
@@ -532,6 +534,178 @@ sub putWhiteOnSmallShip
   wait_claw()
   letALittle()
 EndSub
+
+Function SensorRead (in number port, out number R, out number G, out number B)
+  
+  If port = 1 Then
+    Sensor1.Raw3(R, G, B)
+  Else
+    Sensor2.Raw3(R, G, B)
+  EndIf
+EndFunction
+
+Function LF_Encoder_1sensor_grey_blue1(in number encoder_cm, in number Vmax, in string acceleration, in string deceleration, in string end_brake)
+  
+  Sensor.SetMode(1, 4)
+  '------ These values might be adjusted for light or speed
+  AcceleratedEncoder = 200
+  DeceleratedEncoder = 300
+  black = 13
+  grey = 34
+  V0 = 20
+  kp = 2
+  kd = 2
+  '------
+  error_old = 0
+  exit_condition = 1
+  Motor.ResetCount("BC")
+  
+  Cm2Degrees(encoder_cm, encoder)
+  
+  
+  r = 0
+  g = 0
+  b = 0
+  
+  While exit_condition = 1
+    
+    'read the sensors only one time in the loop!
+    SensorRead(1, r, g, b)
+    s1 = b
+    CurrentEncoder = Motor.GetCount("C")
+    
+    'acceleration algorithm for smooth start
+    If acceleration = "on" Then
+      V = ( CurrentEncoder / AcceleratedEncoder ) * ( Vmax - V0 ) + V0
+      V = Math.Abs( V ) 'needed to make sure the robot will not go backwards
+      
+      If V > Vmax Then
+        V = Vmax
+      EndIf
+      
+    ElseIf acceleration = "off" Then
+      V = Vmax
+    EndIf
+    
+    'deceleation for smooth stop
+    If deceleration = "on" Then
+      If encoder - CurrentEncoder < DeceleratedEncoder Then 'we must get the last part of the encoder run
+        V = ( (encoder - CurrentEncoder) / DeceleratedEncoder ) * ( Vmax - V0 ) + V0
+        V = Math.Abs( V ) 'needed to make sure the robot will not go backwards
+        
+        If V < 20 Then
+          V = 20
+        EndIf
+        
+      EndIf
+    EndIf
+    
+    error = s1 - grey
+      
+    'PD controller for linefollower
+    P = kp * error
+    D = kd * (error - error_old)
+    MotorB = -1 * ( V + (P + D) )
+    MotorC = V - (P + D)
+    error_old = error
+    
+    Motor.StartPower("B", MotorB)
+    Motor.StartPower("C", MotorC)
+    
+    'exit condition for line follower: encoder
+    If CurrentEncoder > encoder Then
+      exit_condition = 0
+    EndIf
+    
+  EndWhile
+  
+  'check if we want brake at the end of the linefollower
+  If end_brake = "on" Then
+    Motor.Stop("BC", "True")
+  EndIf
+EndFunction
+
+
+Function LF_Encoder_1sensor_grey_blue2(in number encoder_cm, in number Vmax, in string acceleration, in string deceleration, in string end_brake)
+  
+  Sensor.SetMode(1, 4)
+  '------ These values might be adjusted for light or speed
+  AcceleratedEncoder = 200
+  DeceleratedEncoder = 300
+  black = 13
+  grey = 34
+  V0 = 20
+  kp = 4.5
+  kd = 4.5
+  '------
+  error_old = 0
+  exit_condition = 1
+  Motor.ResetCount("BC")
+  
+  Cm2Degrees(encoder_cm, encoder)
+  
+  
+  r = 0
+  g = 0
+  b = 0
+  
+  While exit_condition = 1
+    
+    'read the sensors only one time in the loop!
+    SensorRead(1, r, g, b)
+    s1 = b
+    CurrentEncoder = Motor.GetCount("C")
+    
+    'acceleration algorithm for smooth start
+    If acceleration = "on" Then
+      V = ( CurrentEncoder / AcceleratedEncoder ) * ( Vmax - V0 ) + V0
+      V = Math.Abs( V ) 'needed to make sure the robot will not go backwards
+      
+      If V > Vmax Then
+        V = Vmax
+      EndIf
+      
+    ElseIf acceleration = "off" Then
+      V = Vmax
+    EndIf
+    
+    'deceleation for smooth stop
+    If deceleration = "on" Then
+      If encoder - CurrentEncoder < DeceleratedEncoder Then 'we must get the last part of the encoder run
+        V = ( (encoder - CurrentEncoder) / DeceleratedEncoder ) * ( Vmax - V0 ) + V0
+        V = Math.Abs( V ) 'needed to make sure the robot will not go backwards
+        
+        If V < 20 Then
+          V = 20
+        EndIf
+        
+      EndIf
+    EndIf
+    
+    error = s1 - grey
+      
+    'PD controller for linefollower
+    P = kp * error
+    D = kd * (error - error_old)
+    MotorB = -1 * ( V + (P + D) )
+    MotorC = V - (P + D)
+    error_old = error
+    
+    Motor.StartPower("B", MotorB)
+    Motor.StartPower("C", MotorC)
+    
+    'exit condition for line follower: encoder
+    If CurrentEncoder > encoder Then
+      exit_condition = 0
+    EndIf
+    
+  EndWhile
+  
+  'check if we want brake at the end of the linefollower
+  If end_brake = "on" Then
+    Motor.Stop("BC", "True")
+  EndIf
+EndFunction
 
 Function ceSaUrmaresti(in number case, in number a, in number b, in number c, in number d, out number follow)
   'case
