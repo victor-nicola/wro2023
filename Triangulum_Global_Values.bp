@@ -1,0 +1,59 @@
+@kpSensorF = 0.3'0.5
+@kdSensorF = 0.7'0.1
+@kiSensorF = 0.0005
+@kpSensorC = 0.9
+@kdSensorC = 1.2
+@kiSensorC = 0.001
+@kpMotorF = 0.5
+@kdMotorF = 0.9
+@kiMotorF = 0.01
+@kpMotorC = 1
+@kdMotorC = 1.4
+@kiMotorC = 0.02
+@SensorKSwitchEncoder = 30
+@kp = 0.3
+@kd = 0.7
+@left_motor = "B"
+@right_motor = "C"
+@wheel_diameter = 6.24 '6.24
+@wheel_diameterSpecial = 6.1
+@robot_diameter = 17.2 '-0.35 cm
+@white = 75' de modificat 67
+@grey = 15' de modificat 30
+@grey_rb = 30
+@black = 10' de modificat 10
+@Stop_motor = @left_motor + @right_motor
+@acceleration_encoder = 200
+@deceleration_encoder = 800
+@speed_0 = 20
+@wheel2sensor_distance = 8.9
+@maxRed = 229
+@maxGreen = 226
+@maxBlue = 175
+@global = 0
+@MaximumWhiteSensor1=75' de modificat
+@MaximumWhiteSensor2=85' de modificat
+@TimeBetween = 300
+@degA = 0
+@degD = 0
+@auxD = 0
+@auxA = 0
+@kpD = 0.5
+@optimumval = 69
+@contor_error = 5
+@stegulet_pervers = 0
+
+
+'𝓘 𝓱𝓪𝓽𝓮 𝓪𝓵𝓵 𝓷𝓲𝓰𝓰𝓮𝓻𝓼
+'𝑴𝒂𝒏𝒄𝒂 𝒎𝒊 𝒂𝒊 𝒗𝒓𝒆𝒋𝒖 𝒊𝒔𝒎𝒂𝒏𝒂
+'𝕀𝕤𝕞𝕒𝕟𝕒 𝕥𝕒𝕚𝕖 𝕥𝕚 𝕧𝕖𝕟𝕖𝕝𝕖
+'ඞ ඞ ඞ ඞ ඞ ඞ ඞ
+'╭∩╮( •̀_•́ )╭∩╮
+'(͜ₒㅅ ͜ₒ)
+'🍆🍑🍆💦🥛CÜM
+'☭
+'Harder daddy😩
+'I'm cumming!! 🥛
+'sussyඞbaka
+'( ͡° ͜ʖ ͡°) 
+
