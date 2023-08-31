@@ -1,9 +1,9 @@
-@kpSensorF = 0.3'0.5
-@kdSensorF = 0.7'0.1
-@kiSensorF = 0.0005
-@kpSensorC = 0.9
-@kdSensorC = 1.2
-@kiSensorC = 0.001
+@kpSensorF = 0.5'0.5
+@kdSensorF = 1'0.1
+@kiSensorF = 0.0004
+@kpSensorC = 1.7
+@kdSensorC = 2
+@kiSensorC = 0.0016
 @kpMotorF = 0.5
 @kdMotorF = 0.9
 @kiMotorF = 0.01
@@ -18,14 +18,14 @@
 @wheel_diameter = 6.24 '6.24
 @wheel_diameterSpecial = 6.1
 @robot_diameter = 17.2 '-0.35 cm
-@white = 75' de modificat 67
-@grey = 15' de modificat 30
-@grey_rb = 30
-@black = 10' de modificat 10
+@white = 67' de modificat 67
+@grey = 30' de modificat 30
+@grey_rb = 40
+@black = 7' de modificat 10
 @Stop_motor = @left_motor + @right_motor
-@acceleration_encoder = 200
+@acceleration_encoder = 150
 @deceleration_encoder = 800
-@speed_0 = 20
+@speed_0 = 35
 @wheel2sensor_distance = 8.9
 @maxRed = 229
 @maxGreen = 226
@@ -274,7 +274,7 @@ sub aslowaspossible
 EndSub
 
 sub raiseLiftsuper
-  @kpD = 20
+  @kpD = 100
   @degD = 100
   wait_claw()
 EndSub
@@ -309,13 +309,13 @@ EndSub
 
 Sub lowerLiftSpecialCube
   @kpD = 0.6
-  @degD = 153
+  @degD = 155
   wait_claw()
 EndSub
 
 Sub lowerLiftSpecialCubePut
   @kpD = 0.8
-  @degD = 125 'se coboara(*urca acum ca suntem smecheri) la unghiul optim ca sa punem speciala
+  @degD = 120'se coboara(*urca acum ca suntem smecheri) la unghiul optim ca sa punem speciala
   wait_claw()
 EndSub
 
@@ -369,8 +369,8 @@ Sub prepLowerLiftSpecialCube
 EndSub
 
 Sub closeClaw
-  @kpA = 0.2
-  @degA = 400
+  @kpA = 0.3
+  @degA = 300
   wait_claw() 
 EndSub
 
@@ -451,7 +451,7 @@ sub TakecubeUnderYou
 EndSub
 
 sub prepForWhite
-  @degA = 140
+  @degA = 135
   wait_claw()
 EndSub
 
@@ -523,7 +523,7 @@ sub putGreenOnSmallShip
   @degD = 140
   wait_claw()
   @kpA = 1
-  @degA = 145
+  @degA = 150
   wait_claw()
 EndSub
 
@@ -541,6 +541,75 @@ Function SensorRead (in number port, out number R, out number G, out number B)
     Sensor1.Raw3(R, G, B)
   Else
     Sensor2.Raw3(R, G, B)
+  EndIf
+EndFunction
+
+Function lf_cm_SP(in number speed_max,in number cm,in string acceleration,in string deceleration,in string end_brake)
+  
+  'If the system oscillates too much, reduce the P gain.
+  'If the system takes too long to settle, increase the I gain.
+  'If the system overshoots the setpoint, adjust the D gain. Ou mai gaud what an inglishmen
+  
+  exit_condition = 1
+  Motor.ResetCount(@stop_motor)
+  Sensor.SetMode(1,0)
+  Sensor.SetMode(2,0)
+  left_encoder = 0
+  right_encoder = 0
+  Cm2Degrees(cm,encoder)
+  error_old = 0
+  isumC = 0
+  isumF = 0
+  isum = 0
+  flag = 1
+  While exit_condition = 1
+    left_encoder = Motor.GetCount(@left_motor)
+    right_encoder = Motor.GetCount(@right_motor)
+    left_encoder=left_encoder*-1
+    current_encoder = (left_encoder + right_encoder) / 2
+    s1 = Sensor.ReadPercent(1)
+    s2 = Sensor.ReadPercent(2)
+    error = s1 - s2
+    If acceleration = "on" Then
+      speed=(current_encoder / @acceleration_encoder) * (speed_max - @speed_0) + @speed_0
+      If speed > speed_max Then
+        speed = speed_max
+      EndIf
+    Else  
+      speed = speed_max
+    EndIf
+    If deceleration = "on" And (encoder - current_encoder) <= @deceleration_encoder Then
+      speed = ((encoder - current_encoder) / @deceleration_encoder) * (speed_max - @speed_0) + @speed_0
+      If speed < @speed_0 Then
+        speed = @speed_0
+      EndIf
+    EndIf
+    if (error < -10 or error > 10) and current_encoder < 200 Then
+      exp = Math.abs(error) / 100
+      kplf =  @kpSensorC * exp 
+      kdlf =  @kdSensorC * exp 
+      kilf =  @kiSensorC * exp
+      isumC = isumC + error
+      isum= isumC
+    Else
+      kplf = @kpSensorF
+      kdlf = @kdSensorF
+      kilf = @kiSensorF
+      isumF = isumF + error
+      isum= isumF
+    EndIf
+    P = kplf * error
+    D = kdlf * (error - error_old)
+    I = kilf * isum
+    Motor.StartPower(@left_motor,-(speed + (P + D)))
+    Motor.StartPower(@right_motor,(speed - (P + D)))
+    error_old = error
+    If current_encoder > encoder Then
+      exit_condition = 0
+    EndIf
+  EndWhile
+  If end_brake = "on" Then
+    Motor.Stop("BC","True")
   EndIf
 EndFunction
 
@@ -1103,7 +1172,6 @@ Function lf_cm(in number speed_max,in number cm,in string acceleration,in string
   isumF = 0
   isum = 0
   flag = 1
-  LocalSensorKSwitchEncoder = @SensorKSwitchEncoder
   While exit_condition = 1
     left_encoder = Motor.GetCount(@left_motor)
     right_encoder = Motor.GetCount(@right_motor)
@@ -1126,12 +1194,11 @@ Function lf_cm(in number speed_max,in number cm,in string acceleration,in string
         speed = @speed_0
       EndIf
     EndIf
-    if current_encoder <= LocalSensorKSwitchEncoder and ( error < -20 or error > 20 ) Then
-      exp = current_encoder /  LocalSensorKSwitchEncoder
-      kplf = @kpSensorC * ( 1 - exp )
-      kdlf = @kdSensorC * ( 1 - exp )
-      kilf = @kiSensorC * ( 1 - exp )
-      LocalSensorKSwitchEncoder = LocalSensorKSwitchEncoder + LocalSensorKSwitchEncoder * ( Math.Abs( error ) / 250 )
+    if (error < -10 or error > 10) and current_encoder < 200 Then
+      exp = Math.abs(error) / 100
+      kplf =  @kpSensorC * exp 
+      kdlf =  @kdSensorC * exp 
+      kilf =  @kiSensorC * exp
       isumC = isumC + error
       isum= isumC
     Else
@@ -1139,7 +1206,7 @@ Function lf_cm(in number speed_max,in number cm,in string acceleration,in string
       kdlf = @kdSensorF
       kilf = @kiSensorF
       isumF = isumF + error
-      isum= isumC
+      isum= isumF
     EndIf
     P = kplf * error
     D = kdlf * (error - error_old)
