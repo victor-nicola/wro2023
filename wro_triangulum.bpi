@@ -27,9 +27,9 @@
 @deceleration_encoder = 800
 @speed_0 = 35
 @wheel2sensor_distance = 8.9
-@maxRed = 229
-@maxGreen = 226
-@maxBlue = 175
+@maxRed = 205'229
+@maxGreen = 200'226
+@maxBlue = 154'175
 @global = 0
 @MaximumWhiteSensor1=75' de modificat
 @MaximumWhiteSensor2=85' de modificat
@@ -315,7 +315,7 @@ EndSub
 
 Sub lowerLiftSpecialCubePut
   @kpD = 0.8
-  @degD = 120'se coboara(*urca acum ca suntem smecheri) la unghiul optim ca sa punem speciala
+  @degD = 113 'se coboara(*urca acum ca suntem smecheri) la unghiul optim ca sa punem speciala
   wait_claw()
 EndSub
 
@@ -500,7 +500,7 @@ sub putGreenOnShip
   @degD = 140
   wait_claw()
   wait_claw()
- letALittleMedium()
+  letALittleMedium()
 EndSub
 
 sub GreenCubeFall
@@ -622,7 +622,7 @@ Function LF_Encoder_1sensor_grey_blue1(in number encoder_cm, in number Vmax, in 
   black = 13
   grey = 34
   V0 = 20
-  kp = 2
+  kp = 2.75
   kd = 2
   '------
   error_old = 0
@@ -1194,20 +1194,27 @@ Function lf_cm(in number speed_max,in number cm,in string acceleration,in string
         speed = @speed_0
       EndIf
     EndIf
-    if (error < -10 or error > 10) and current_encoder < 200 Then
-      exp = Math.abs(error) / 100
-      kplf =  @kpSensorC * exp 
-      kdlf =  @kdSensorC * exp 
-      kilf =  @kiSensorC * exp
-      isumC = isumC + error
-      isum= isumC
-    Else
-      kplf = @kpSensorF
-      kdlf = @kdSensorF
-      kilf = @kiSensorF
-      isumF = isumF + error
-      isum= isumF
-    EndIf
+    'if (error < -10 or error > 10) and current_encoder < 200 Then
+      'exp = Math.abs(error) / 100
+      'kplf =  @kpSensorC * exp 
+      'kdlf =  @kdSensorC * exp 
+      'kilf =  @kiSensorC * exp
+      'isumC = isumC + error
+      'isum= isumC
+    'Else
+      'kplf = @kpSensorF
+      'kdlf = @kdSensorF
+      'kilf = @kiSensorF
+      'isumF = isumF + error
+      'isum= isumF
+    'EndIf
+    
+    kplf = @kpSensorF
+    kdlf = @kdSensorF
+    kilf = @kiSensorF
+    isumF = isumF + error
+    isum= isumF
+    
     P = kplf * error
     D = kdlf * (error - error_old)
     I = kilf * isum
@@ -2074,6 +2081,7 @@ Function reverseSpinDegrees(in number Vmax, in string side, in number circleDegr
 EndFunction
 
 Function citire(out number col)
+   Sensor.SetMode(3,4)
    red = 0
   green = 0
   blue = 0
@@ -2125,6 +2133,77 @@ Function citire(out number col)
   EndIf
   
 EndFunction
+
+Function citireOriceCuloare(out number col)
+  Sensor.SetMode(3,4)
+  red = 0
+  green = 0
+  blue = 0
+  @max_R = @maxRed
+  @max_G = @maxGreen
+  @max_B = @maxBlue
+  Sensor3.Raw3(red, green, blue)
+  red = red / @max_R * 255
+  green = green / @max_G * 255
+  blue = blue / @max_B * 255
+ 
+  max = Math.Max(red, green)
+  max = Math.Max(max, blue)
+  min = Math.Min(red, green)
+  min = Math.Min(min, blue)
+  'max = 323
+  'min = 182
+ 
+  @r = red
+  @g = green
+  @b = blue
+  If max = min Then
+    hue = 0
+  EndIf
+  If max=@r Then
+    If @g>=@b Then
+      hue = 60*(@g-@b)/(max-min)
+    Else
+      hue = 60*(@g-@b)/(max-min)+360
+    EndIf
+  ElseIf max = @g Then
+    hue = 60*(@b-@r)/(max-min)+120
+  ElseIf max = @b Then
+    hue = 60*(@r-@g)/(max-min)+240
+  EndIf
+ 
+  If max = 0 Then
+    sat = 0
+  Else
+    sat = 1-min/max
+  EndIf
+ 
+  val = max / 255
+  
+  if(sat >= 0.56)Then
+    if(hue >= 0 AND hue <=60)Then
+      col = 1
+    ElseIf(hue <=120)Then
+      col = 2
+    ElseIf(hue <=180)Then
+      col = 3
+    ElseIf(hue <=300)Then
+      col = 4      
+    Else
+      col = 100  
+    EndIf      
+  Else    
+    if(val <= 0.1)Then
+      col = 0
+    Else    
+      col = 6
+    EndIf
+  EndIf
+  
+  
+  
+EndFunction
+
 
 Function citire2(out number col,out number saturation,out number value)
    red = 0

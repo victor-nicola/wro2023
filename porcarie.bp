@@ -1,0 +1,97 @@
+include "wro_triangulum"
+folder "prjs" "Triangulum"
+
+Time.Reset3()
+
+Thread.Run = claw
+@speed_spindeg = 70
+@speed_movesync = 50 '60
+@speed_lf = 50 '60
+@speed_spinrobot = 50
+@speed_spin = 50
+@type = 0
+@speed_spinrobotShip = 40
+cubu[4]= 0
+luat[0] = 1
+luat[1] = 1
+
+
+preMS = 0
+
+lf_intersection_cu_cub(80, "off", "on", "on")
+@degA = 100
+wait_claw()
+@kpD = 1
+@degD = 0 'ridicam gheara
+resetClaw()
+wait_claw_specific(200)
+RobotSpin("left",75, @speed_spin, "on", "on", "on") '88
+PerfectLine(30, "left")
+lf_cm(90,23,"on","on","on")
+
+spinDegrees(70, "right", 12, "on", "on", "on")
+
+lowerLift()
+Program.Delay(600)
+closeClaw()
+raiseLift()
+MoveSyncAcc(50, 8,"on", "on", "on") '---------------------------------------
+spinDegrees(@speed_spindeg, "right", 70, "off", "off", "on")'aici pun speciala cu schema bussing
+LF_Encoder_1sensor_grey_blue1(29, 80, "on", "on", "on")
+MoveTillWhite(80, "off")
+MoveSyncAcc(80,12,"off", "on", "on") '---------------------------------------
+LF_Encoder_1sensor_grey_blue2(25,50,  "on", "on", "on")
+
+reverseMoveSyncCM(14.5, 80, "on", "on", "on")
+
+stangadreata(20.5,50,"left")
+
+putGreenOnShip() ' pun cubul alb pe barca mare
+resetClaw()
+raiseLift()
+
+MoveSyncAcc(80,5,"off", "on", "on") '---------------------------------------
+RobotSpin("right",88, @speed_spin, "off", "on", "on")'ne rotim la 90 de la nava mare
+
+lowerLift()
+MoveSyncAcc(80,5,"on", "on", "on") '---------------------------------------
+closeFor2Cubes() ' iau cele 2 cuburi colorate
+
+raiseLiftsuper()
+MoveSyncAcc(80,13,"on", "on", "on") 'era 14
+reverseSpinDegrees(70, "left", 90, "off", "on", "on")
+
+MoveSyncAcc(80, 5,"on", "on", "on") '---------------------------------------
+
+putGreenOnShip() ' pun cubul alb pe barca mare
+
+resetLift()
+@kpD = 5
+@degD = 0
+
+Time.Reset6()
+while Time.Get6() < 1300
+  Motor.StartPower("B", -60)
+  Motor.StartPower("C", 60)
+EndWhile
+reverseMoveSyncCM(10, 80, "off", "on", "on")
+RobotSpin("left",180, 60, "off", "on", "on")'ne rotim la 90 de la nava mare
+
+Time.Reset6()
+while Time.Get6() < 1000
+  Motor.StartPower("B", 60)
+  Motor.StartPower("C", -60)
+EndWhile
+
+spinDegrees(60, "left", 20, "off", "off", "on")'aici pun speciala cu schema bussing
+spinDegrees(60, "right", 20, "off", "off", "on")'aici pun speciala cu schema bussing
+MoveSyncAcc(70, 15,"off", "off", "on") '---------------------------------------
+RobotSpin("right",90,50, "off", "on", "on")'ne rotim la 90 de la nava mare
+StraightAlley(70)
+MoveSyncAcc(80, 10,"off", "off", "on") '---------------------------------------
+RobotSpin("left",75,50, "off", "on", "on")'ne rotim la 90 de la nava mare
+PerfectLine(50, "left")
+lf_cm(80,50,"on","on","on")
+
+
+Program.End()
