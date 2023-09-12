@@ -287,32 +287,30 @@ ElseIf luat[0] = 1 and luat[3] = 1 Then
   lf_cm(50,8,"on","off","on")
   
   'stangadreata(13.5,80,"right")
-  spinDegrees(@speed_spindeg, "left", 75, "on", "on", "on")
-  spinDegrees(@speed_spindeg, "right", 75, "on", "on", "on")
+  spinDegrees(@speed_spindeg, "left", 80, "on", "on", "on")
+  spinDegrees(@speed_spindeg, "right", 80, "on", "on", "on")
   
   lowerLift()
   wait_claw_specific(500)
-  @degA = 300
-  @kpA = 0.1
-  wait_claw_specific(300)
   closeClaw()
+  wait_claw_specific(500)
   raiseLift()
   
-  reverseSpinDegrees(@speed_spindeg, "right", 135, "off", "off", "on")
-  reverseSpinDegrees(@speed_spindeg, "left", 135, "off", "off", "on")
+  reverseSpinDegrees(@speed_spindeg, "right", 145, "off", "off", "on")
+  reverseSpinDegrees(@speed_spindeg, "left", 140, "off", "off", "on")
   
   lowerLift()
   wait_claw_specific(200)
   resetClaw()
   raiseLift()
-  MoveSyncAcc(@speed_lf,25,"on", "on", "on") '------------------------------------------------
+  MoveSyncAcc(@speed_lf,22,"on", "on", "on") '------------------------------------------------
   
   reverseSpinDegrees(@speed_spindeg, "left", 26, "off", "off", "on")
   reverseSpinDegrees(@speed_spindeg, "right", 26, "off", "off", "on")
   'stangadreata(1.5,-50,"right")
   
   resetClaw()
-  reverseMoveSyncCM(2, @speed_movesync, "off", "on", "on")
+  reverseMoveSyncCM(3, @speed_movesync, "off", "on", "on")
   lowerLift()
   wait_claw()
   closeFor2Cubes()
