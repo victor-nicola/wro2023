@@ -1,22 +1,35 @@
-@kp = 0.5
-@kd = 0.1
+@kpSensorF = 0.5'0.5
+@kdSensorF = 1'0.1
+@kiSensorF = 0.0004
+@kpSensorC = 1.7
+@kdSensorC = 2
+@kiSensorC = 0.0016
+@kpMotorF = 0.5
+@kdMotorF = 0.9
+@kiMotorF = 0.01
+@kpMotorC = 1
+@kdMotorC = 1.4
+@kiMotorC = 0.02
+@SensorKSwitchEncoder = 30
+@kp = 0.3
+@kd = 0.7
 @left_motor = "B"
 @right_motor = "C"
 @wheel_diameter = 6.24 '6.24
 @wheel_diameterSpecial = 6.1
 @robot_diameter = 17.2 '-0.35 cm
-@white = 75' de modificat 67
-@grey = 15' de modificat 30
-@grey_rb = 30
-@black = 10' de modificat 10
+@white = 67' de modificat 67
+@grey = 30' de modificat 30
+@grey_rb = 40
+@black = 7' de modificat 10
 @Stop_motor = @left_motor + @right_motor
-@acceleration_encoder = 400
-@deceleration_encoder = 500
-@speed_0 = 20
+@acceleration_encoder = 150
+@deceleration_encoder = 800
+@speed_0 = 35
 @wheel2sensor_distance = 8.9
-@maxRed = 229
-@maxGreen = 226
-@maxBlue = 175
+@maxRed = 205'229
+@maxGreen = 200'226
+@maxBlue = 154'175
 @global = 0
 @MaximumWhiteSensor1=75' de modificat
 @MaximumWhiteSensor2=85' de modificat
@@ -125,7 +138,7 @@ Sub ultimaSecventa
   lf_cm(80, 20,"off","off","on")
   @degA = 0
   @degD = 0
-  lf_cm(100, 120,"on","off","on")
+  lf_cm_cu_nava(80, 60,"on","off","off")
   
   'RobotSpin("left",10, @speed_spin, "on", "on", "on") 'ne pozitionam catre stanga ca sa intram in box
   
@@ -151,8 +164,8 @@ EndFunction
 
 Sub Claw
   error_oldA = 0
-  @kpA = 0.3
-  @kdA = 0.1
+  @kpA = 0.2
+  @kdA = 0.4
   error_oldD = 0
   @kpD = 1
   @kdD = 10
@@ -199,7 +212,7 @@ sub closeFor2Cubes
   degD  = 165
   degA = 140
   wait_claw()
-  @kpA = 0.5
+  @kpA = 0.3
   @degA = 500
   wait_claw_specific(300)
 EndSub
@@ -261,8 +274,8 @@ sub aslowaspossible
 EndSub
 
 sub raiseLiftsuper
-  @kpD = 5
-  @degD = 110
+  @kpD = 100
+  @degD = 100
   wait_claw()
 EndSub
 
@@ -296,13 +309,13 @@ EndSub
 
 Sub lowerLiftSpecialCube
   @kpD = 0.6
-  @degD = 153
+  @degD = 155
   wait_claw()
 EndSub
 
 Sub lowerLiftSpecialCubePut
-  @kpD = 4
-  @degD = 137 'se coboara(*urca acum ca suntem smecheri) la unghiul optim ca sa punem speciala
+  @kpD = 0.8
+  @degD = 122 'se coboara(*urca acum ca suntem smecheri) la unghiul optim ca sa punem speciala
   wait_claw()
 EndSub
 
@@ -356,8 +369,8 @@ Sub prepLowerLiftSpecialCube
 EndSub
 
 Sub closeClaw
-  @kpA = 0.2
-  @degA = 400
+  @kpA = 0.3
+  @degA = 300
   wait_claw() 
 EndSub
 
@@ -438,7 +451,7 @@ sub TakecubeUnderYou
 EndSub
 
 sub prepForWhite
-  @degA = 140
+  @degA = 135
   wait_claw()
 EndSub
 
@@ -487,7 +500,7 @@ sub putGreenOnShip
   @degD = 140
   wait_claw()
   wait_claw()
- letALittleMedium()
+  letALittleMedium()
 EndSub
 
 sub GreenCubeFall
@@ -509,7 +522,9 @@ sub putGreenOnSmallShip
   @kpD = 0.8
   @degD = 140
   wait_claw()
-  @degA = 130
+  @kpA = 1
+  @degA = 150
+  wait_claw()
 EndSub
 
 sub putWhiteOnSmallShip
@@ -519,6 +534,247 @@ sub putWhiteOnSmallShip
   wait_claw()
   letALittle()
 EndSub
+
+Function SensorRead (in number port, out number R, out number G, out number B)
+  
+  If port = 1 Then
+    Sensor1.Raw3(R, G, B)
+  Else
+    Sensor2.Raw3(R, G, B)
+  EndIf
+EndFunction
+
+Function lf_cm_SP(in number speed_max,in number cm,in string acceleration,in string deceleration,in string end_brake)
+  
+  'If the system oscillates too much, reduce the P gain.
+  'If the system takes too long to settle, increase the I gain.
+  'If the system overshoots the setpoint, adjust the D gain. Ou mai gaud what an inglishmen
+  
+  exit_condition = 1
+  Motor.ResetCount(@stop_motor)
+  Sensor.SetMode(1,0)
+  Sensor.SetMode(2,0)
+  left_encoder = 0
+  right_encoder = 0
+  Cm2Degrees(cm,encoder)
+  error_old = 0
+  isumC = 0
+  isumF = 0
+  isum = 0
+  flag = 1
+  While exit_condition = 1
+    left_encoder = Motor.GetCount(@left_motor)
+    right_encoder = Motor.GetCount(@right_motor)
+    left_encoder=left_encoder*-1
+    current_encoder = (left_encoder + right_encoder) / 2
+    s1 = Sensor.ReadPercent(1)
+    s2 = Sensor.ReadPercent(2)
+    error = s1 - s2
+    If acceleration = "on" Then
+      speed=(current_encoder / @acceleration_encoder) * (speed_max - @speed_0) + @speed_0
+      If speed > speed_max Then
+        speed = speed_max
+      EndIf
+    Else  
+      speed = speed_max
+    EndIf
+    If deceleration = "on" And (encoder - current_encoder) <= @deceleration_encoder Then
+      speed = ((encoder - current_encoder) / @deceleration_encoder) * (speed_max - @speed_0) + @speed_0
+      If speed < @speed_0 Then
+        speed = @speed_0
+      EndIf
+    EndIf
+    if (error < -10 or error > 10) and current_encoder < 200 Then
+      exp = Math.abs(error) / 100
+      kplf =  @kpSensorC * exp 
+      kdlf =  @kdSensorC * exp 
+      kilf =  @kiSensorC * exp
+      isumC = isumC + error
+      isum= isumC
+    Else
+      kplf = @kpSensorF
+      kdlf = @kdSensorF
+      kilf = @kiSensorF
+      isumF = isumF + error
+      isum= isumF
+    EndIf
+    P = kplf * error
+    D = kdlf * (error - error_old)
+    I = kilf * isum
+    Motor.StartPower(@left_motor,-(speed + (P + D)))
+    Motor.StartPower(@right_motor,(speed - (P + D)))
+    error_old = error
+    If current_encoder > encoder Then
+      exit_condition = 0
+    EndIf
+  EndWhile
+  If end_brake = "on" Then
+    Motor.Stop("BC","True")
+  EndIf
+EndFunction
+
+Function LF_Encoder_1sensor_grey_blue1(in number encoder_cm, in number Vmax, in string acceleration, in string deceleration, in string end_brake)
+  
+  Sensor.SetMode(1, 4)
+  '------ These values might be adjusted for light or speed
+  AcceleratedEncoder = 200
+  DeceleratedEncoder = 300
+  black = 13
+  grey = 34
+  V0 = 20
+  kp = 2.75
+  kd = 2
+  '------
+  error_old = 0
+  exit_condition = 1
+  Motor.ResetCount("BC")
+  
+  Cm2Degrees(encoder_cm, encoder)
+  
+  
+  r = 0
+  g = 0
+  b = 0
+  
+  While exit_condition = 1
+    
+    'read the sensors only one time in the loop!
+    SensorRead(1, r, g, b)
+    s1 = b
+    CurrentEncoder = Motor.GetCount("C")
+    
+    'acceleration algorithm for smooth start
+    If acceleration = "on" Then
+      V = ( CurrentEncoder / AcceleratedEncoder ) * ( Vmax - V0 ) + V0
+      V = Math.Abs( V ) 'needed to make sure the robot will not go backwards
+      
+      If V > Vmax Then
+        V = Vmax
+      EndIf
+      
+    ElseIf acceleration = "off" Then
+      V = Vmax
+    EndIf
+    
+    'deceleation for smooth stop
+    If deceleration = "on" Then
+      If encoder - CurrentEncoder < DeceleratedEncoder Then 'we must get the last part of the encoder run
+        V = ( (encoder - CurrentEncoder) / DeceleratedEncoder ) * ( Vmax - V0 ) + V0
+        V = Math.Abs( V ) 'needed to make sure the robot will not go backwards
+        
+        If V < 20 Then
+          V = 20
+        EndIf
+        
+      EndIf
+    EndIf
+    
+    error = s1 - grey
+      
+    'PD controller for linefollower
+    P = kp * error
+    D = kd * (error - error_old)
+    MotorB = -1 * ( V + (P + D) )
+    MotorC = V - (P + D)
+    error_old = error
+    
+    Motor.StartPower("B", MotorB)
+    Motor.StartPower("C", MotorC)
+    
+    'exit condition for line follower: encoder
+    If CurrentEncoder > encoder Then
+      exit_condition = 0
+    EndIf
+    
+  EndWhile
+  
+  'check if we want brake at the end of the linefollower
+  If end_brake = "on" Then
+    Motor.Stop("BC", "True")
+  EndIf
+EndFunction
+
+
+Function LF_Encoder_1sensor_grey_blue2(in number encoder_cm, in number Vmax, in string acceleration, in string deceleration, in string end_brake)
+  
+  Sensor.SetMode(1, 4)
+  '------ These values might be adjusted for light or speed
+  AcceleratedEncoder = 200
+  DeceleratedEncoder = 300
+  black = 13
+  grey = 34
+  V0 = 20
+  kp = 4.5
+  kd = 4.5
+  '------
+  error_old = 0
+  exit_condition = 1
+  Motor.ResetCount("BC")
+  
+  Cm2Degrees(encoder_cm, encoder)
+  
+  
+  r = 0
+  g = 0
+  b = 0
+  
+  While exit_condition = 1
+    
+    'read the sensors only one time in the loop!
+    SensorRead(1, r, g, b)
+    s1 = b
+    CurrentEncoder = Motor.GetCount("C")
+    
+    'acceleration algorithm for smooth start
+    If acceleration = "on" Then
+      V = ( CurrentEncoder / AcceleratedEncoder ) * ( Vmax - V0 ) + V0
+      V = Math.Abs( V ) 'needed to make sure the robot will not go backwards
+      
+      If V > Vmax Then
+        V = Vmax
+      EndIf
+      
+    ElseIf acceleration = "off" Then
+      V = Vmax
+    EndIf
+    
+    'deceleation for smooth stop
+    If deceleration = "on" Then
+      If encoder - CurrentEncoder < DeceleratedEncoder Then 'we must get the last part of the encoder run
+        V = ( (encoder - CurrentEncoder) / DeceleratedEncoder ) * ( Vmax - V0 ) + V0
+        V = Math.Abs( V ) 'needed to make sure the robot will not go backwards
+        
+        If V < 20 Then
+          V = 20
+        EndIf
+        
+      EndIf
+    EndIf
+    
+    error = s1 - grey
+      
+    'PD controller for linefollower
+    P = kp * error
+    D = kd * (error - error_old)
+    MotorB = -1 * ( V + (P + D) )
+    MotorC = V - (P + D)
+    error_old = error
+    
+    Motor.StartPower("B", MotorB)
+    Motor.StartPower("C", MotorC)
+    
+    'exit condition for line follower: encoder
+    If CurrentEncoder > encoder Then
+      exit_condition = 0
+    EndIf
+    
+  EndWhile
+  
+  'check if we want brake at the end of the linefollower
+  If end_brake = "on" Then
+    Motor.Stop("BC", "True")
+  EndIf
+EndFunction
 
 Function ceSaUrmaresti(in number case, in number a, in number b, in number c, in number d, out number follow)
   'case
@@ -903,8 +1159,7 @@ EndFunction
 
 Function lf_cm(in number speed_max,in number cm,in string acceleration,in string deceleration,in string end_brake)
   
-  kp = 0.5
-  kd = @kd
+ 
   exit_condition = 1
   Motor.ResetCount(@stop_motor)
   Sensor.SetMode(1,0)
@@ -913,6 +1168,9 @@ Function lf_cm(in number speed_max,in number cm,in string acceleration,in string
   right_encoder = 0
   Cm2Degrees(cm,encoder)
   error_old = 0
+  isumC = 0
+  isumF = 0
+  isum = 0
   flag = 1
   While exit_condition = 1
     left_encoder = Motor.GetCount(@left_motor)
@@ -922,8 +1180,6 @@ Function lf_cm(in number speed_max,in number cm,in string acceleration,in string
     s1 = Sensor.ReadPercent(1)
     s2 = Sensor.ReadPercent(2)
     error = s1 - s2
-    P = kp * error
-    D = kd * (error - error_old)
     If acceleration = "on" Then
       speed=(current_encoder / @acceleration_encoder) * (speed_max - @speed_0) + @speed_0
       If speed > speed_max Then
@@ -938,6 +1194,30 @@ Function lf_cm(in number speed_max,in number cm,in string acceleration,in string
         speed = @speed_0
       EndIf
     EndIf
+    'if (error < -10 or error > 10) and current_encoder < 200 Then
+      'exp = Math.abs(error) / 100
+      'kplf =  @kpSensorC * exp 
+      'kdlf =  @kdSensorC * exp 
+      'kilf =  @kiSensorC * exp
+      'isumC = isumC + error
+      'isum= isumC
+    'Else
+      'kplf = @kpSensorF
+      'kdlf = @kdSensorF
+      'kilf = @kiSensorF
+      'isumF = isumF + error
+      'isum= isumF
+    'EndIf
+    
+    kplf = @kpSensorF
+    kdlf = @kdSensorF
+    kilf = @kiSensorF
+    isumF = isumF + error
+    isum= isumF
+    
+    P = kplf * error
+    D = kdlf * (error - error_old)
+    I = kilf * isum
     Motor.StartPower(@left_motor,-(speed + (P + D)))
     Motor.StartPower(@right_motor,(speed - (P + D)))
     error_old = error
@@ -1365,24 +1645,22 @@ EndFunction
 'EndFunction
 
 Function MoveSyncAcc(in number speed_max,in number cm,in string acceleration,in string deceleration,in string end_brake)
-  kp = 0.5
-  kd = @kd
-  ki = 0.01
   exit_condition = 1
   Motor.ResetCount(@stop_motor)
   left_encoder = 0
   right_encoder = 0
   Cm2Degrees(cm,encoder)
   error_old = 0
-  error_sum = 0
+  isumC = 0
+  isumF = 0
+  isum = 0
+  flag = 1
+  LocalSensorKSwitchEncoder = @SensorKSwitchEncoder
   While exit_condition = 1
     left_encoder = Motor.GetCount(@left_motor)
     right_encoder = Motor.GetCount(@right_motor)
     current_encoder = ((-1*left_encoder) + right_encoder) / 2
-    error = left_encoder + right_encoder
-    P = kp * error
-    D = kd * (error - error_old)
-    I = ki * error_sum
+    error =  left_encoder + right_encoder
     If acceleration = "on" Then
       speed=(current_encoder / @acceleration_encoder) * (speed_max - @speed_0) + @speed_0
       If speed > speed_max Then
@@ -1397,9 +1675,26 @@ Function MoveSyncAcc(in number speed_max,in number cm,in string acceleration,in 
         speed = @speed_0
       EndIf
     EndIf
+    if current_encoder <= LocalSensorKSwitchEncoder and ( error < -30 or error > 30 ) Then
+      exp = current_encoder /  LocalSensorKSwitchEncoder
+      kpms = @kpMotorC * ( 1 - exp )
+      kdms = @kdMotorC * ( 1 - exp )
+      kims = @kiMotorC * ( 1 - exp )
+      LocalSensorKSwitchEncoder = LocalSensorKSwitchEncoder + LocalSensorKSwitchEncoder * ( Math.Abs( error ) / 200 )
+      isumC = isumC + error
+      isum= isumC
+    Else
+      kpms = @kpMotorF
+      kdms = @kdMotorF
+      kims = @kiMotorF
+      isumF = isumF + error
+      isum= isumC
+    EndIf
+    P = kpms * error
+    D = kdms * (error - error_old)
+    I = kims * isum
     Motor.StartPower(@left_motor,-(speed + (P + D + I)))
     Motor.StartPower(@right_motor,(speed - (P + D + I)))
-    error_sum = error_sum + error
     error_old = error
     If current_encoder > encoder Then
       exit_condition = 0
@@ -1786,6 +2081,7 @@ Function reverseSpinDegrees(in number Vmax, in string side, in number circleDegr
 EndFunction
 
 Function citire(out number col)
+   Sensor.SetMode(3,4)
    red = 0
   green = 0
   blue = 0
@@ -1837,6 +2133,77 @@ Function citire(out number col)
   EndIf
   
 EndFunction
+
+Function citireOriceCuloare(out number col)
+  Sensor.SetMode(3,4)
+  red = 0
+  green = 0
+  blue = 0
+  @max_R = @maxRed
+  @max_G = @maxGreen
+  @max_B = @maxBlue
+  Sensor3.Raw3(red, green, blue)
+  red = red / @max_R * 255
+  green = green / @max_G * 255
+  blue = blue / @max_B * 255
+ 
+  max = Math.Max(red, green)
+  max = Math.Max(max, blue)
+  min = Math.Min(red, green)
+  min = Math.Min(min, blue)
+  'max = 323
+  'min = 182
+ 
+  @r = red
+  @g = green
+  @b = blue
+  If max = min Then
+    hue = 0
+  EndIf
+  If max=@r Then
+    If @g>=@b Then
+      hue = 60*(@g-@b)/(max-min)
+    Else
+      hue = 60*(@g-@b)/(max-min)+360
+    EndIf
+  ElseIf max = @g Then
+    hue = 60*(@b-@r)/(max-min)+120
+  ElseIf max = @b Then
+    hue = 60*(@r-@g)/(max-min)+240
+  EndIf
+ 
+  If max = 0 Then
+    sat = 0
+  Else
+    sat = 1-min/max
+  EndIf
+ 
+  val = max / 255
+  
+  if(sat >= 0.56)Then
+    if(hue >= 0 AND hue <=60)Then
+      col = 1
+    ElseIf(hue <=120)Then
+      col = 2
+    ElseIf(hue <=180)Then
+      col = 3
+    ElseIf(hue <=300)Then
+      col = 4      
+    Else
+      col = 100  
+    EndIf      
+  Else    
+    if(val <= 0.1)Then
+      col = 0
+    Else    
+      col = 6
+    EndIf
+  EndIf
+  
+  
+  
+EndFunction
+
 
 Function citire2(out number col,out number saturation,out number value)
    red = 0
