@@ -3,7 +3,9 @@ folder "prjs" "Triangulum"
 
 Time.Reset3()
 
+
 Thread.Run = claw
+handle = EV3File.OpenWrite("testeculori.txt")
 @speed_spindeg = 70
 @speed_movesync = 50 '60
 @speed_lf = 50 '60
@@ -15,6 +17,77 @@ cubu[4]= 0
 luat[0] = 1
 luat[1] = 1
 
+avgHue=0
+nrRead=0
+miHue=1000000
+maHue=0
+avgSat=0
+miSat=1000000
+maSat=0
+mr=0
+mg=0
+mb=0
+r=0
+g=0
+b=0
+counter=0
+v[400]=0
+text = ""
+for i = 0 to 360
+  v[i] = 0
+  text=Text.Append(text,Math.Round(i/100))
+  text=Text.Append(text," ")
+EndFor
+text=Text.Append(text,"\n")
+EV3FILE.WriteLine(handle, text)
+text = ""
+for i = 0 to 360
+  text=Text.Append(text,Math.Remainder(Math.Round(i/10),10))
+  text=Text.Append(text," ")
+EndFor
+text=Text.Append(text,"\n")
+EV3FILE.WriteLine(handle, text)
+text = ""
+for i = 0 to 360
+  text=Text.Append(text,Math.Remainder(i,10))
+  text=Text.Append(text," ")
+EndFor
+text=Text.Append(text,"\n")
+EV3FILE.WriteLine(handle, text)
+EV3FILE.WriteLine(handle, " ")
+while(1=1)
+  debugcitire(hue,sat)
+  Sensor3.Raw3(r,g,b)
+  nrRead=nrRead+1
+  v[hue] = v[hue]+1
+  if(Buttons.GetClicks()="E")Then
+    text = ""
+    for i = 0 to 180
+      text=Text.Append(text,v[i])
+      v[i] = 0
+      text=Text.Append(text," ")
+    EndFor
+    EV3FILE.WriteLine(handle, text) 
+    Program.Delay(100)
+    text = ""
+    for i = 1 to 180
+      text=Text.Append(text,v[i+180])
+      v[i+180] = 0
+      text=Text.Append(text," ")
+    EndFor
+    text=Text.Append(text,"\n")
+    EV3FILE.WriteLine(handle, text) 
+    
+    text=""  
+    EV3FILE.WriteLine(handle, text)   
+    counter=counter+1
+  EndIf
+EndWhile
+
+
+
+
+Program.Delay(1000000)
 
 if luat[1] = 1 and luat[2] = 1 Then
   preMS = 30
