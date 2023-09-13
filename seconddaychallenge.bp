@@ -3,6 +3,13 @@ Time.Reset3()
 Thread.Run = claw
 
 
+@speed_spindeg = 70
+@speed_movesync = 50 '60
+@speed_lf = 50 '60
+@speed_spinrobot = 50
+@speed_spin = 50
+@type = 0
+@speed_spinrobotShip = 40
 
 
 'de inainteaa intersectiei pana la cuburi
@@ -11,6 +18,8 @@ Thread.Run = claw
 'RobotSpin("left",60, 70, "off", "off", "on")'rotire mecanica
 'PerfectLine(30, "left") 'pana la negru
 'lf_cm(80,29,"on","on","on")'ASTA e DISTANTA DE LA ROTILE DE PE LINIE PANA LA CUBURI
+
+
 
 'setul de dupa citire pe linie neagra
 'lf_cm(80,10,"on","off","off")'lf  de calibrare
@@ -27,7 +36,7 @@ Thread.Run = claw
 'setul asta pune robotull fix in faat primului cub din stanga
 'reverseSpinDegrees(70, "right", 74, "on", "on", "on")
 'reverseSpinDegrees(70, "left", 73, "on", "on", "on")
-'MoveSyncAcc(70,16,"on", "on", "on")
+'MoveSyncAcc(70,15,"on", "on", "on")
 'lowerLift()
 'wait_claw()
 'aici robotul e fix in fata primului cub de la stanga la dreapta
@@ -44,7 +53,7 @@ Thread.Run = claw
 'setul asta pune robotull fix in fata celui de al treilea cub de la stanga la dreapta
 'reverseSpinDegrees(70, "left", 40, "on", "on", "on")
 'reverseSpinDegrees(70, "right", 40, "on", "on", "on")
-'MoveSyncAcc(70,12,"on", "on", "on")
+'MoveSyncAcc(70,11,"on", "on", "on")
 'lowerLift()
 'wait_claw()'aici robotul e fix in fata celui de al treilea cub de la stanga la dreapta
 
@@ -53,10 +62,98 @@ Thread.Run = claw
 'setul asta pune robotull fix in fata celui de al patrulea cub de la stanga la dreapta
 'reverseSpinDegrees(70, "left", 68, "on", "on", "on")
 'reverseSpinDegrees(70, "right", 70, "on", "on", "on")
-'MoveSyncAcc(70,16,"on", "on", "on")
+'MoveSyncAcc(70,15,"on", "on", "on")
 'lowerLift()
 'wait_claw()'aici robotul e fix in fata celui de al patrulea cub de la stanga la dreapta
 
 
 
+
+'aici robotul incepe cu fata la partea cu nava mare inainte de nitersectie si ia un cub pus fix langa steagul de pe nava mica
+'lf_cm(80,10,"on","off","off")
+'lf_intersection(80, "off", "on", "on")
+'lf_cm(80,22,"on","off","off")'daca vrem sa lauam cubul de pe cealalta pozitie, adaugam 5 cm aici
+
+'RobotSpin("left",89, 70, "on", "on", "on")
+'Program.Delay(300)
+'MoveSyncAcc(70,42.5,"on", "on", "on")
+'RobotSpin("left",87, 70, "on", "on", "on")
+'@kpD = 0.6
+'@degD = 135
+'wait_claw_specific(1500)
+'closeClaw()
+'wait_claw_specific(600)
+'raiseLift()
+'RobotSpin("left",80, 70, "on", "on", "on")
+'StraightAlley(50)
+'MoveSyncAcc(70,6,"on", "on", "on")
+'RobotSpin("right",75, 70, "on", "on", "on")
+'PerfectLine(30, "right") 'pana la negru
+'lf_cm(60,10,"on","off","off")
+'lf_intersection(60, "off", "on", "on")
+'se termina chunkul
+
+
+
+'aici robotul incepe cu fata la partea cu nava mare inainte de intersectie si ia un cub pus fix in locul navei mici
+
+'lf_cm(80,10,"on","off","off")
+'lf_intersection(80, "off", "on", "on")
+'RobotSpin("left",75, 70, "off", "off", "on")
+'PerfectLine(30, "left")
+'lf_cm(60,15,"on","on","on")
+'lowerLift()
+'wait_claw_specific(1000)
+'closeClaw()
+'raiseLift()
+
+'se termina chunkul
+
+
+
+
+'aici robotul incepe cu fata catre casuta de finish inainte de al doua x-cross de la stanga la dreapta si ia un cub pus fix in locul crane-ului A
+
+'lf_cm(80,10,"on","off","off")
+'lf_intersection(80, "off", "on", "on")
+'RobotSpin("right",75, 70, "off", "off", "on")
+'PerfectLine(30, "right")
+'lf_cm(60,28,"on","on","on")
+'lowerLift()
+'wait_claw_specific(1000)
+'closeClaw()
+'raiseLift()
+
+'se termina chunkul
+
+
+
+'aici robotul incepe cu fata catre casuta de finish inainte de al doilea x-cross de la stanga la dreapta si ia un cub de pe pozitia de langa steag pus pe o barca mare pe pontonul inspre casuta de finish de la linia alba
+
+lf_cm(80,10,"on","off","off")
+lf_intersection(80, "off", "on", "on")
+RobotSpin("left",75, 70, "off", "off", "on")
+PerfectLine(30, "left")
+lf_cm(60,29,"on","on","on")
+RobotSpin("left",90, 70, "on", "on", "on")
+MoveSyncAcc(50,8,"on","on","on")
+resetClaw()
+@kpD = 0.6
+@degD = 140
+wait_claw()
+wait_claw_specific(1000)
+closeClaw()
+wait_claw_specific(500)
+raiseLiftsuper()
+wait_claw_specific(500)
+reverseMoveSyncCM(8, 50, "on", "on", "on")
+RobotSpin("left",75, 70, "off", "off", "on")
+PerfectLine(30, "left")
+lf_cm(80,10,"on","off","off")
+lf_intersection(80, "off", "on", "on")
+RobotSpin("right",75, 70, "off", "off", "on")
+PerfectLine(30, "right")
+lf_cm(80,10,"on","off","off")
+lf_intersection(80, "off", "on", "on")
+'se termina chunkul
 Program.Delay(1000000)

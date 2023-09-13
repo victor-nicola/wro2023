@@ -159,7 +159,7 @@ EndSub
 
 Sub ultimaSecventa
   @kpD = 1
-  @degD = 140 'am pus alba pe nava mare
+  @degD = 137 'am pus alba pe nava mare
   wait_claw()
   resetClaw()
   'wait_claw_specific(200)
