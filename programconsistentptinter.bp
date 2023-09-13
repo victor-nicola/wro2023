@@ -14,99 +14,99 @@ handle = EV3File.OpenWrite("testeculori.txt")
 @type = 0
 @speed_spinrobotShip = 40
 cubu[4]= 0
-luat[0] = 1
-luat[1] = 1
+'luat[0] = 1
+'luat[1] = 1
 
-avgHue=0
-nrRead=0
-miHue=1000000
-maHue=0
-avgSat=0
-miSat=1000000
-maSat=0
-mr=0
-mg=0
-mb=0
-r=0
-g=0
-b=0
-counter=0
-v[400]=0
-text = ""
-for i = 0 to 360
-  v[i] = 0
-  text=Text.Append(text,Math.Round(i/100))
-  text=Text.Append(text," ")
-EndFor
-text=Text.Append(text,"\n")
-EV3FILE.WriteLine(handle, text)
-text = ""
-for i = 0 to 360
-  text=Text.Append(text,Math.Remainder(Math.Round(i/10),10))
-  text=Text.Append(text," ")
-EndFor
-text=Text.Append(text,"\n")
-EV3FILE.WriteLine(handle, text)
-text = ""
-for i = 0 to 360
-  text=Text.Append(text,Math.Remainder(i,10))
-  text=Text.Append(text," ")
-EndFor
-text=Text.Append(text,"\n")
-EV3FILE.WriteLine(handle, text)
-EV3FILE.WriteLine(handle, " ")
-while(1=1)
-  debugcitire(hue,sat)
-  Sensor3.Raw3(r,g,b)
-  nrRead=nrRead+1
-  v[hue] = v[hue]+1
-  if(Buttons.GetClicks()="E")Then
-    text = ""
-    for i = 0 to 180
-      text=Text.Append(text,v[i])
-      v[i] = 0
-      text=Text.Append(text," ")
-    EndFor
-    EV3FILE.WriteLine(handle, text) 
-    Program.Delay(100)
-    text = ""
-    for i = 1 to 180
-      text=Text.Append(text,v[i+180])
-      v[i+180] = 0
-      text=Text.Append(text," ")
-    EndFor
-    text=Text.Append(text,"\n")
-    EV3FILE.WriteLine(handle, text) 
+'avgHue=0
+'nrRead=0
+'miHue=1000000
+'maHue=0
+'avgSat=0
+'miSat=1000000
+'maSat=0
+'mr=0
+'mg=0
+'mb=0
+'r=0
+'g=0
+'b=0
+'counter=0
+'v[400]=0
+'text = ""
+'for i = 0 to 360
+  'v[i] = 0
+  'text=Text.Append(text,Math.Round(i/100))
+  'text=Text.Append(text," ")
+'EndFor
+'text=Text.Append(text,"\n")
+'EV3FILE.WriteLine(handle, text)
+'text = ""
+'for i = 0 to 360
+  'text=Text.Append(text,Math.Remainder(Math.Round(i/10),10))
+  'text=Text.Append(text," ")
+'EndFor
+'text=Text.Append(text,"\n")
+'EV3FILE.WriteLine(handle, text)
+'text = ""
+'for i = 0 to 360
+  'text=Text.Append(text,Math.Remainder(i,10))
+  'text=Text.Append(text," ")
+'EndFor
+'text=Text.Append(text,"\n")
+'EV3FILE.WriteLine(handle, text)
+'EV3FILE.WriteLine(handle, " ")
+'while(1=1)
+  'debugcitire(hue,sat)
+  'Sensor3.Raw3(r,g,b)
+  'nrRead=nrRead+1
+  'v[hue] = v[hue]+1
+  'if(Buttons.GetClicks()="E")Then
+    'text = ""
+    'for i = 0 to 180
+      'text=Text.Append(text,v[i])
+      'v[i] = 0
+      'text=Text.Append(text," ")
+    'EndFor
+    'EV3FILE.WriteLine(handle, text) 
+    'Program.Delay(100)
+    'text = ""
+    'for i = 1 to 180
+      'text=Text.Append(text,v[i+180])
+      'v[i+180] = 0
+      'text=Text.Append(text," ")
+    'EndFor
+    'text=Text.Append(text,"\n")
+    'EV3FILE.WriteLine(handle, text) 
     
-    text=""  
-    EV3FILE.WriteLine(handle, text)   
-    counter=counter+1
-  EndIf
-EndWhile
+    'text=""  
+    'EV3FILE.WriteLine(handle, text)   
+    'counter=counter+1
+  'EndIf
+'EndWhile
 
 
 
 
-Program.Delay(1000000)
+'Program.Delay(1000000)
 
-if luat[1] = 1 and luat[2] = 1 Then
-  preMS = 30
-ElseIf luat[0] = 1 and luat[1] = 1 Then
-  preMS = 20
-Elseif luat[2] = 1 and luat[3] = 1 Then
-  preMS = 42
-ElseIf luat[0] = 1 and luat[2] = 1 Then
-  str = "right"
-  var1 = "left"
-  disttilship = 30
-ElseIf luat[1] = 1 and luat[3] = 1 Then
-  str = "left"
-  var1 = "right"
-  disttilship = 50
-ElseIf luat[0] = 1 and luat[3] = 1 Then
-  flg03 = 1
+'if luat[1] = 1 and luat[2] = 1 Then
+  'preMS = 30
+'ElseIf luat[0] = 1 and luat[1] = 1 Then
+  'preMS = 20
+'Elseif luat[2] = 1 and luat[3] = 1 Then
+  'preMS = 42
+'ElseIf luat[0] = 1 and luat[2] = 1 Then
+  'str = "right"
+  'var1 = "left"
+  'disttilship = 30
+'ElseIf luat[1] = 1 and luat[3] = 1 Then
+  'str = "left"
+  'var1 = "right"
+  'disttilship = 50
+'ElseIf luat[0] = 1 and luat[3] = 1 Then
+  'flg03 = 1
   
-EndIf
+'EndIf
 
 
 '--------------IMPORTANT----------------
@@ -115,7 +115,7 @@ EndIf
 'RobotSpin = spin normal
 'SpinDegrees = compas
 
-handle = EV3File.OpenWrite("daterobot.txt")
+'handle = EV3File.OpenWrite("daterobot.txt")
 Sensor.SetMode(3,4)
 lf_cm(50,10,"on","off","off")
 lf_intersection_read_col(50, "off", "off", "off",type)
@@ -127,8 +127,8 @@ ElseIf(type = 2)Then
 Else
   
 EndIf
-final = Text.Append("Primele doua cuburi ",type)
-EV3File.WriteLine(handle, final)
+'final = Text.Append("Primele doua cuburi ",type)
+'EV3File.WriteLine(handle, final)
 LCD.Clear()
 LCD.Text(1,70,10,2,type)
 @kpD = 0.6
@@ -137,7 +137,7 @@ LCD.Text(1,70,10,2,type)
 MoveSyncAcc(50,7.5,"on", "on", "on") '--------------------------------------------------------------------
 
 reverseMoveSyncCM(2.5, @speed_movesync, "off", "off", "on")
-wait_claw_specific(200) 'era 500
+wait_claw_specific(300) 'era 500
 closeClawForSpeciala()
 wait_claw_specific(300)
 @kpD = 5
@@ -288,8 +288,8 @@ ElseIf luat[0] = 1 and luat[2] = 1 Then
   disttilship = 14
   var1g = 35
   strg = 32'era 32 inainte
-  str2g = 90
-  var2g = 90
+  str2g = 92
+  var2g = 92
   var1spg = 26
   strspg = 20
   distms = 13
@@ -299,15 +299,15 @@ ElseIf luat[1] = 1 and luat[3] = 1 Then
   str = "left"
   var1 = "right"
   disttilship = 43
-  var1g = 31
-  strg = 28
+  var1g = 33
+  strg = 30
   str2g = 90
-  var2g = 92
-  var1spg = 24 '26
-  strspg= 23 '25
-  distms = 13
-  revms = 4 '6 s-ar putea sa nu mearga 4 pt ca baterie descarcata
-  add13 = 1.5
+  var2g = 93
+  var1spg = 19 '26
+  strspg= 14 '25
+  distms = 12
+  revms = 4.5 '6 s-ar putea sa nu mearga 4 pt ca baterie descarcata
+  add13 = 2.5 '1.5
 ElseIf luat[0] = 1 and luat[3] = 1 Then
   flg03 = 1
   distms = 12
@@ -316,7 +316,7 @@ EndIf
 if poz2 - poz1 = 1 Then 'cazurile 0,1 ; 1,2 ; 2,3
   MoveSyncAcc(50,preMS,"on", "on", "on") 'ajungem la linie ---------------------------------------------------------------
   reverseSpinDegrees(@speed_spindeg, "left", 88, "on", "on", "on") 'ne rotim pe linie
-  MoveSyncAcc(50,4,"on", "on", "on") '2 cm
+  MoveSyncAcc(50,2.5,"on", "on", "on") '2 cm
  'ne ducem in fata ca sa apucam cuburile din mijloc
   @degA = 140
   wait_claw()
@@ -414,17 +414,17 @@ ElseIf poz2 - poz1 = 2 Then
   RobotSpin("left",160, @speed_spin, "on", "on", "on")
   PerfectLine(30, "left")
   lf_cm(70, 8,"on","off","on")
-  spinDegrees(@speed_spindeg, var1, var1g, "on", "on", "on")'var1g
-  spinDegrees(@speed_spindeg, str, strg, "on", "on", "on")'strg
-  reverseMoveSyncCM(1, @speed_movesync, "off", "off", "on")
-  'stangadreata(4, 60, str)
+  spinDegrees(@speed_spindeg, var1, var1g, "on", "on", "on")
+  spinDegrees(@speed_spindeg, str, strg, "on", "on", "on")
+  reverseMoveSyncCM(1, @speed_movesync, "off", "off", "on") 'de comentat sau chiar de pus un movesync de 1-2 cm
   
-  @degA = 400
+  @degA = 300
   @degD = 140
-  kpD = 0.8
+  @kpD = 0.8
   wait_claw()
-  kpD = 0.5
+  @kpD = 0.25
   @degD = 170
+  wait_claw()
   wait_claw()
   wait_claw()
   reverseMoveSyncCM(9, @speed_movesync, "on", "off", "on")
@@ -438,13 +438,17 @@ ElseIf poz2 - poz1 = 2 Then
   @kpA = 0.2
   
   wait_claw()
-  lowerLiftsLowAndLower()
+  'lowerLiftsLowAndLower()
+  @kpD = 0.25
+  @degD = 200
+  wait_claw()
   wait_claw()
   
   'closeClaw() 'ia primu cub sa-l mute
   @kpA = 0.5 '5
   @kdA = 10
   @degA = 400
+  wait_claw()
   wait_claw()
   
   raiseLift()
@@ -459,9 +463,15 @@ ElseIf poz2 - poz1 = 2 Then
   wait_claw()
   raiseLift()
   
-  @kpA = 0.3
-  @degA = 137
-  wait_claw()
+  if luat[1] = 1 and luat[3] = 1 Then 
+    @kpA = 0.3
+    @degA = 140
+    wait_claw()
+  Else
+    @kpA = 0.3
+    @degA = 142
+    wait_claw()
+  EndIf
   
   MoveSyncAcc(50,32 + add13,"on", "on", "on") '--------------------------------------------
   reverseSpinDegrees(@speed_spindeg, var1, var1spg, "off", "off", "on")
@@ -477,9 +487,12 @@ ElseIf poz2 - poz1 = 2 Then
   if luat[0] = 1 And luat[2] = 1 Then
     RobotSpin("left",88, @speed_spin, "on", "on", "on")
   Else
-    RobotSpin("left",88, @speed_spin, "on", "on", "on")  
+    RobotSpin("left",90, @speed_spin, "on", "on", "on")  
   EndIf
   MoveSyncAcc(50,disttilship,"on", "on", "on") '-----------------------------------------
+  @kpA = 0.3
+  @degA = 300
+  wait_claw()
   putGreenOnShip()
   raiseLift()
   resetClaw()
@@ -508,7 +521,8 @@ lowerLift()
 wait_claw_specific(200) 
 closeFor2Cubes()
 wait_claw()
-raiseLift()
+raiseLiftsuper()
+wait_claw()
 wait_claw()
 stangadreata(8, -60, "left") 'inapoi pe linie
 lf_cm(@speed_lf,12,"on","on","on")
@@ -520,8 +534,9 @@ Program.Delay(300)
 lf_cm_cu_cub(@speed_lf,7,"on","off","off") 'cub
 lf_intersection(@speed_lf, "off", "off", "on")
 MoveSyncAcc(@speed_lf,3,"on", "on", "on")'checkpoint -----------------------------------------------
-lf_cm_cu_cub(@speed_lf,16,"off","off","on")
-RobotSpin("right",4, @speed_spin, "on", "on", "on") 'ma pozitionez cand las cuburile pe small ship sa nu fac buba
+lf_cm_cu_cub(@speed_lf,10,"off","off","on")
+RobotSpin("right",6, @speed_spin, "on", "on", "on") 'ma pozitionez cand las cuburile pe small ship sa nu fac buba
+MoveSyncAcc(@speed_lf,6,"off", "off", "on")
 @kpA = 0.1
 putGreenOnSmallShip() 'mission accomplished
 @degA = 70
@@ -547,7 +562,7 @@ MoveSyncAcc(50,7,"on", "on", "on") '----------------------------------------
 @degD = 160
 wait_claw_specific(400) '600
 closeClawForSpeciala()
-wait_claw_specific(100) '100
+wait_claw_specific(200) '200
 @kpD = 5
 @degD = 100
 reverseMoveSyncCM(8, @speed_movesync, "off", "off", "on")
@@ -561,7 +576,7 @@ RobotSpin("right",70, @speed_spin, "on", "on", "on")
 PerfectLine(30, "right") 'cu fata catre crane -------------------------------------------
 @kpD = 1
 @degD = 124 'punem gheara la unghiu bun
-lf_cm(@speed_lf,15,"on","off","off") 'activam punem speciala
+lf_cm(@speed_lf,15,"on","off","off") 'activam punem speciala 15
 @degA = 0
 @degD = 0
 lf_cm(@speed_lf,11,"off","off","on") 'activam craneu
@@ -578,7 +593,7 @@ PerfectLine(30, "left") '-------------------------------------------------------
 lf_cm(80,70,"on","off","off")
 lowerLift()
 lf_intersection(80, "off", "off", "on")
-lf_cm(80,28.9,"off","off","on")
+lf_cm(80,27,"off","off","on")
 
 'closeClaw() 'iau alba
 @kpA = 0.2

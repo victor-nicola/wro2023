@@ -168,7 +168,7 @@ Sub ultimaSecventa
   @kpD = 1
   @degD = 135
   reverseMoveSyncCM(7, @speed_movesync + 10, "off", "off", "on")
-  RobotSpin("right",90, 70, "off", "off", "off")
+  RobotSpin("right",90, 60, "off", "off", "off")
   Program.Delay(200)
   lf_cm(80, 20,"off","off","on")
   @degA = 0
@@ -240,12 +240,12 @@ EndSub
 'D motor mare de invartir
 
 sub closeFor2Cubes
-  kpA = 0.2
+  @kpA = 0.2
   @degA = 300
-  degD  = 200
+  @degD  = 200
   wait_claw_specific(300)
-  degD  = 165
-  degA = 140
+  @degD  = 165
+  @degA = 140
   wait_claw()
   @kpA = 0.5
   @degA = 500
