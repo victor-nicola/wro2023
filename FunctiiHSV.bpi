@@ -1,0 +1,101 @@
+
+@maxRed = 219
+@maxGreen = 197
+@maxBlue = 155
+@sens = 0
+
+Function debugcitire(out number hue,out number sat,out number val)
+  Sensor.SetMode(3,4)
+  red = 0
+  green = 0
+  blue = 0
+  @max_R = @maxRed
+  @max_G = @maxGreen
+  @max_B = @maxBlue
+  Sensor3.Raw3(red, green, blue)
+  red = red / @max_R * 255
+  green = green / @max_G * 255
+  blue = blue / @max_B * 255
+ 
+  max = Math.Max(red, green)
+  max = Math.Max(max, blue)
+  min = Math.Min(red, green)
+  min = Math.Min(min, blue)
+  'max = 323
+  'min = 182
+ 
+  @r = red
+  @g = green
+  @b = blue
+  If max = min Then
+    hue = 0
+  EndIf
+  If max=@r Then
+    If @g>=@b Then
+      hue = 60*(@g-@b)/(max-min)
+    Else
+      hue = 60*(@g-@b)/(max-min)+360
+    EndIf
+  ElseIf max = @g Then
+    hue = 60*(@b-@r)/(max-min)+120
+  ElseIf max = @b Then
+    hue = 60*(@r-@g)/(max-min)+240
+  EndIf
+  
+  
+  If max = 0 Then
+    sat = 0
+  Else
+    sat = 1-min/max
+  EndIf
+  
+  val = max / 255
+  
+  if(sat >= 0.56)Then
+    col = hue  
+  Else    
+    col = 0   
+  EndIf
+  
+EndFunction
+
+Function GiveColor(out string col)
+  red = 0
+  green = 0
+  blue = 0
+  debugcitire(hue, sat, val)
+  Sensor3.Raw3(red,green,blue)
+  if(@sens = 1)Then
+    LCD.Clear()
+    LCD.Text(1,10,10,1,hue)
+    LCD.Text(1,10,40,1,sat)
+    LCD.Text(1,10,70,1,val)
+    LCD.Text(1,100,10,1,red)
+    LCD.Text(1,100,40,1,green)
+    LCD.Text(1,100,70,1,blue)
+    LCD.Update()
+  EndIf
+  
+  if(sat<=0.7)Then
+    col = "WHITE"
+  Elseif(val<0.05)Then
+    col = "BLACK"
+  Else    
+    if(hue>=0 AND hue<=25)Then
+      col = "RED1"
+    ElseIf(hue<=100)Then    
+      col = "YELLOW"    
+    ElseIf(hue<=168)Then    
+      col = "GREEN"  
+    ElseIf(hue<=235)Then    
+      col = "BLUE"
+    ElseIf(hue<=33)Then    
+      col = "RED2"
+    EndIf  
+  EndIf
+  if(@sens = 0)Then
+    LCD.Clear()
+    LCD.Text(1,10,10,2,col)
+    LCD.Update()
+  EndIf  
+EndFunction
