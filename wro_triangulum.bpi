@@ -159,7 +159,7 @@ EndSub
 
 Sub ultimaSecventa
   @kpD = 1
-  @degD = 137 'am pus alba pe nava mare
+  @degD = 128 'am pus alba pe nava mare
   wait_claw()
   resetClaw()
   'wait_claw_specific(200)
@@ -532,7 +532,7 @@ EndSub
 
 sub putGreenOnShip
   @kpD = 0.6
-  @degD = 140
+  @degD = 138
   wait_claw()
   wait_claw()
  letALittleMedium()
@@ -555,7 +555,7 @@ EndSub
 
 sub putGreenOnSmallShip
   @kpD = 0.8
-  @degD = 140
+  @degD = 138
   wait_claw()
   @degA = 130
 EndSub
@@ -655,6 +655,166 @@ Function stangadreata(in number cm, in number v, in string sens)
     Program.Delay(100)
   EndIf
   
+EndFunction
+
+Function LF_Encoder_1sensor(in number encoder_cm, in number Vmax, in string acceleration, in string deceleration, in string end_brake)
+  
+  Sensor.SetMode(1, 0)
+  '------ These values might be adjusted for light or speed
+  AcceleratedEncoder = 200
+  DeceleratedEncoder = 300
+  black = 5
+  grey = 30
+  V0 = 20
+  kp = 1
+  kd = 0.1
+  '------
+  error_old = 0
+  exit_condition = 1
+  Motor.ResetCount("BC")
+  
+  Cm2Degrees(encoder_cm, encoder)
+  
+
+  
+  While exit_condition = 1
+    
+    'read the sensors only one time in the loop!
+    s1 = Sensor.ReadPercent(1)
+    CurrentEncoder = Motor.GetCount("C")
+    
+    'acceleration algorithm for smooth start
+    If acceleration = "on" Then
+      V = ( CurrentEncoder / AcceleratedEncoder ) * ( Vmax - V0 ) + V0
+      V = Math.Abs( V ) 'needed to make sure the robot will not go backwards
+      
+      If V > Vmax Then
+        V = Vmax
+      EndIf
+      
+    ElseIf acceleration = "off" Then
+      V = Vmax
+    EndIf
+    
+    'deceleation for smooth stop
+    If deceleration = "on" Then
+      If encoder - CurrentEncoder < DeceleratedEncoder Then 'we must get the last part of the encoder run
+        V = ( (encoder - CurrentEncoder) / DeceleratedEncoder ) * ( Vmax - V0 ) + V0
+        V = Math.Abs( V ) 'needed to make sure the robot will not go backwards
+        
+        If V < 20 Then
+          V = 20
+        EndIf
+        
+      EndIf
+    EndIf
+    
+    error = grey - s1
+      
+    'PD controller for linefollower
+    P = kp * error
+    D = kd * (error - error_old)
+    MotorB = -1 * ( V + (P + D) )
+    MotorC = V - (P + D)
+    error_old = error
+    
+    Motor.StartPower("B", MotorB)
+    Motor.StartPower("C", MotorC)
+    
+    'exit condition for line follower: encoder
+    If CurrentEncoder > encoder Then
+      exit_condition = 0
+    EndIf
+    
+  EndWhile
+  
+  'check if we want brake at the end of the linefollower
+  If end_brake = "on" Then
+    Motor.Stop("BC", "True")
+  EndIf
+EndFunction
+
+Function LF_Encoder_1sensorTillWhite(in number encoder_cm, in number Vmax, in string acceleration, in string deceleration, in string end_brake)
+  
+  Sensor.SetMode(1, 0)
+  Sensor.SetMode(2, 0)
+  '------ These values might be adjusted for light or speed
+  AcceleratedEncoder = 200
+  DeceleratedEncoder = 300
+  black = 5
+  grey = 30
+  V0 = 20
+  kp = 1
+  kd = 0.1
+  '------
+  error_old = 0
+  exit_condition = 1
+  Motor.ResetCount("BC")
+  
+  Cm2Degrees(encoder_cm, encoder)
+  
+
+  
+  While exit_condition = 1
+    
+    'read the sensors only one time in the loop!
+    s1 = Sensor.ReadPercent(1)
+    s2 = Sensor.ReadPercent(2)
+    if s2 > 36 then 
+      exit_condition = 0
+    EndIf
+    
+      CurrentEncoder = Motor.GetCount("C")
+    
+    'acceleration algorithm for smooth start
+    If acceleration = "on" Then
+      V = ( CurrentEncoder / AcceleratedEncoder ) * ( Vmax - V0 ) + V0
+      V = Math.Abs( V ) 'needed to make sure the robot will not go backwards
+      
+      If V > Vmax Then
+        V = Vmax
+      EndIf
+      
+    ElseIf acceleration = "off" Then
+      V = Vmax
+    EndIf
+    
+    'deceleation for smooth stop
+    If deceleration = "on" Then
+      If encoder - CurrentEncoder < DeceleratedEncoder Then 'we must get the last part of the encoder run
+        V = ( (encoder - CurrentEncoder) / DeceleratedEncoder ) * ( Vmax - V0 ) + V0
+        V = Math.Abs( V ) 'needed to make sure the robot will not go backwards
+        
+        If V < 20 Then
+          V = 20
+        EndIf
+        
+      EndIf
+    EndIf
+    
+    error = grey - s1
+      
+    'PD controller for linefollower
+    P = kp * error
+    D = kd * (error - error_old)
+    MotorB = -1 * ( V + (P + D) )
+    MotorC = V - (P + D)
+    error_old = error
+    
+    Motor.StartPower("B", MotorB)
+    Motor.StartPower("C", MotorC)
+    
+    'exit condition for line follower: encoder
+    If CurrentEncoder > encoder Then
+      exit_condition = 0
+    EndIf
+    
+  EndWhile
+  
+  'check if we want brake at the end of the linefollower
+  If end_brake = "on" Then
+    Motor.Stop("BC", "True")
+  EndIf
 EndFunction
 
 Function lf_intersection(in number speed_max,in string acceleration,in string deceleration,in string end_brake)
@@ -867,7 +1027,8 @@ Function lf_cm_read_col(in number speed_max,in number cm,in string acceleration,
   Cm2Degrees(13.5,doi_st)
   Cm2Degrees(15.5,doi_dr)
   
-  frec[360] = 0
+  frec1[360] = 0
+  frec2[360] = 0
   
   kp = 0.5
   kd = @kd
@@ -905,11 +1066,15 @@ Function lf_cm_read_col(in number speed_max,in number cm,in string acceleration,
       EndIf
     EndIf
     
-    if((current_encoder>=prim_st AND current_encoder<=prim_dr) OR (current_encoder>=doi_st AND current_encoder<=doi_dr))Then
+    if(current_encoder>=prim_st AND current_encoder<=prim_dr)Then
       citire(hue)
-      frec[hue] = frec[hue] + 1
+      frec1[hue] = frec1[hue] + 1
       EV3.SetLEDColor("RED","NORMAL")
-    Else  
+    ElseIf(current_encoder>=doi_st AND current_encoder<=doi_dr)Then
+      citire(hue)
+      frec2[hue] = frec2[hue] + 1
+      EV3.SetLEDColor("RED","NORMAL")
+    Else    
       EV3.SetLEDColor("GREEN","NORMAL")     
     EndIf
     
@@ -925,26 +1090,22 @@ Function lf_cm_read_col(in number speed_max,in number cm,in string acceleration,
   EndIf
   
   
-  type=0
+  type=2 'albastru * 2
   contor = 0 
-  for i=90 to 210 ' verde
-    contor = contor + frec[i]
+  for i=121 to 168' verde
+    contor = contor + frec1[i]
   EndFor  
   'LCD.Write(10,10,contor)
   if(contor > @contor_error)Then
-    type = 1' verde * 2
+    type = 3'albastru + verde
   EndIf     
   contor = 0 
-  for i=211 to 270'albastru
-    contor = contor + frec[i]
+  for i=121 to 168'verde
+    contor = contor + frec2[i]
   EndFor   
   'LCD.Write(30,10,contor)
   if(contor > @contor_error)Then
-    if(type = 1)Then
-      type = 3'albasrru + verde
-    Else    
-      type = 2'albastru * 2
-    EndIf
+    type = 1' verde * 2
   EndIf    
   
 EndFunction

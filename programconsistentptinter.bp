@@ -137,7 +137,7 @@ LCD.Text(1,70,10,2,type)
 MoveSyncAcc(50,7.5,"on", "on", "on") '--------------------------------------------------------------------
 
 reverseMoveSyncCM(2.5, @speed_movesync, "off", "off", "on")
-wait_claw_specific(300) 'era 500
+wait_claw_specific(500) 'era 500
 closeClawForSpeciala()
 wait_claw_specific(300)
 @kpD = 5
@@ -156,15 +156,15 @@ raiseLift() 'am lasat speciala
 reverseMoveSyncCM(5, @speed_movesync, "on", "off", "on")
 reverseSpinDegrees(@speed_spindeg, "left", 50 , "off", "off", "on")
 lf_cm(80,5,"on","off","off")
-lf_cm(80,25,"off","off","off")
+lf_cm(80,23,"off","off","off")
 @degA = 140
 ArcMove(25, 93, 80, "left") 'ma rotesc sa iau alba
 MoveSyncAcc(50,2, "on", "on", "on") '------------------------------------------------
 @kpA = 1
 lowerLift()
-closeClawForSpeciala() 'am luat alba
+closeClaw() 'am luat alba
 @kpD = 10
-@degD = 120
+@degD = 100
 reverseMoveSyncCM(2, @speed_movesync, "on", "off", "on")
 ArcMove(23, 90, -80, "left")
 RobotSpin("right",160, @speed_spin, "on", "off", "on")
@@ -277,8 +277,9 @@ if luat[1] = 1 and luat[2] = 1 Then
   preMS = 30.5
   distms = 12
 ElseIf luat[0] = 1 and luat[1] = 1 Then
-  preMS = 23'era 20
-  distms = 13
+  preMS = 22'era 20
+  distms = 12
+  add01 = -1
 Elseif luat[2] = 1 and luat[3] = 1 Then
   preMS = 38
   distms = 12
@@ -292,20 +293,20 @@ ElseIf luat[0] = 1 and luat[2] = 1 Then
   var2g = 93
   var1spg = 28
   strspg = 22
-  distms = 12
+  distms = 13
   revms = 4
   add13 = 0
 ElseIf luat[1] = 1 and luat[3] = 1 Then
   str = "left"
   var1 = "right"
-  disttilship = 42
+  disttilship = 41
   var1g = 36
-  strg = 33
+  strg = 31
   str2g = 90
   var2g = 93
-  var1spg = 19 '26
-  strspg= 14 '25
-  distms = 11
+  var1spg = 17 '26
+  strspg= 12 '25
+  distms = 12
   revms = 5.5 '6 s-ar putea sa nu mearga 4 pt ca baterie descarcata
   add13 = 2.5 '1.5
 ElseIf luat[0] = 1 and luat[3] = 1 Then
@@ -315,10 +316,10 @@ EndIf
 
 if poz2 - poz1 = 1 Then 'cazurile 0,1 ; 1,2 ; 2,3
   MoveSyncAcc(50,preMS,"on", "on", "on") 'ajungem la linie ---------------------------------------------------------------
-  reverseSpinDegrees(@speed_spindeg, "left", 88, "on", "on", "on") 'ne rotim pe linie
-  MoveSyncAcc(50,2.5,"on", "on", "on") '2 cm
+  reverseSpinDegrees(@speed_spindeg, "left", 88 + add01, "on", "on", "on") 'ne rotim pe linie
+  MoveSyncAcc(50,2,"on", "on", "on") '2 cm
  'ne ducem in fata ca sa apucam cuburile din mijloc
-  @degA = 140
+  @degA = 130 '138 neaparat modific pentru baterie descarcata
   wait_claw()
   @kpD = 0.6
   @degD = 175 '175 '300
@@ -364,32 +365,46 @@ ElseIf luat[0] = 1 and luat[3] = 1 Then
   spinDegrees(@speed_spindeg, "right", 80, "on", "on", "on")
   
   lowerLift()
+  wait_claw_specific(600)
+  @kpA = 0.2
+  @degA = 300
   wait_claw_specific(500)
-  closeClaw()
+  @kpA = 0.5
+  @degA = 600
   wait_claw_specific(500)
   raiseLift()
   
-  reverseSpinDegrees(@speed_spindeg, "right", 145, "off", "off", "on")
-  reverseSpinDegrees(@speed_spindeg, "left", 140, "off", "off", "on")
+  reverseSpinDegrees(@speed_spindeg, "right", 140, "off", "off", "on")
+  reverseSpinDegrees(@speed_spindeg, "left", 137, "off", "off", "on")
   
   lowerLift()
   wait_claw_specific(200)
   resetClaw()
   raiseLift()
-  MoveSyncAcc(@speed_lf,22,"on", "on", "on") '------------------------------------------------
+  MoveSyncAcc(@speed_lf,23,"on", "on", "on") '------------------------------------------------
   
-  reverseSpinDegrees(@speed_spindeg, "left", 26, "off", "off", "on")
-  reverseSpinDegrees(@speed_spindeg, "right", 26, "off", "off", "on")
+  reverseSpinDegrees(@speed_spindeg, "left", 20, "off", "off", "on")
+  reverseSpinDegrees(@speed_spindeg, "right", 20, "off", "off", "on")
   'stangadreata(1.5,-50,"right")
   
   resetClaw()
-  reverseMoveSyncCM(3, @speed_movesync, "off", "on", "on")
+  reverseMoveSyncCM(5, @speed_movesync, "off", "on", "on")
   lowerLift()
   wait_claw()
-  closeFor2Cubes()
+  @kpA = 0.2
+  @degA = 300
+  @degD  = 200
   wait_claw_specific(300)
+  @degD  = 165
+  @degA = 80
+  wait_claw()
+  @kpA = 0.5
+  @degA = 500
+  wait_claw_specific(300)
+  wait_claw_specific(300)
+  reverseMoveSyncCM(2, @speed_movesync, "off", "on", "on")
   raiseLift()
-  reverseMoveSyncCM(3, @speed_movesync, "off", "on", "on")
+  reverseMoveSyncCM(1, @speed_movesync, "off", "on", "on")
   RobotSpin("left",90, @speed_spin, "on", "on", "on")
   MoveSyncAcc(50,13,"on", "on", "on") '-------------------------------------
   putGreenOnShip() 'punem cuburile pe nava mare
@@ -463,7 +478,7 @@ ElseIf poz2 - poz1 = 2 Then
   
   if luat[1] = 1 and luat[3] = 1 Then 
     @kpA = 0.3
-    @degA = 140
+    @degA = 138
     wait_claw()
   Else
     @kpA = 0.3
@@ -480,8 +495,9 @@ ElseIf poz2 - poz1 = 2 Then
   wait_claw()
   closeFor2Cubes()
   wait_claw()
+  reverseMoveSyncCM(2, @speed_movesync, "off", "off", "on")
   raiseLift()
-  reverseMoveSyncCM(5, @speed_movesync, "on", "off", "on")
+  reverseMoveSyncCM(3, @speed_movesync, "on", "off", "on")
   if luat[0] = 1 And luat[2] = 1 Then
     RobotSpin("left",88, @speed_spin, "on", "on", "on")
   Else
@@ -508,8 +524,8 @@ RobotSpin("right",75, @speed_spin, "on", "on", "on")
 PerfectLine(30, "right") 'm-am calibrat pe linie, ma duc catre cuburi
 lf_cm(60, 22,"on","on","on")
 spinDegrees(@speed_spindeg, "left", 90, "on", "on", "on")
-MoveSyncAcc(50,22.5,"on", "on", "on") '20.5
-spinDegrees(@speed_spindeg, "left", 92, "on", "on", "on")
+MoveSyncAcc(50,23,"on", "on", "on") '20.5
+spinDegrees(@speed_spindeg, "left", 93, "on", "on", "on")
 MoveSyncAcc(50,18,"on", "on", "on") '-------------------------------------------
 
 reverseSpinDegrees(@speed_spindeg, "left", 195, "off", "off", "on")
@@ -517,64 +533,82 @@ reverseSpinDegrees(@speed_spindeg, "right", 105, "off", "off", "on")
 MoveSyncAcc(50,distms,"on", "on", "on") '------------------------------------------------
 lowerLift()
 wait_claw_specific(200) 
-closeFor2Cubes()
+@kpA = 0.2
+@degA = 300
+@degD  = 200
+wait_claw_specific(300)
+@degD  = 165
+@degA = 70              
 wait_claw()
+@kpA = 0.5
+@degA = 500
+wait_claw_specific(300)
+wait_claw()
+reverseMoveSyncCM(2, @speed_movesync, "off", "off", "on")
 raiseLiftsuper()
 wait_claw()
 wait_claw()
-stangadreata(8, -60, "left") 'inapoi pe linie
+MoveSyncAcc(@speed_lf,2,"on", "on", "on")'checkpoint -----------------------------------------------
+stangadreata(6, -60, "left") 'inapoi pe linie
 lf_cm(@speed_lf,12,"on","on","on")
 RobotSpin("left",180, @speed_spin, "on", "on", "on")
 'PerfectLine(@speed_spin, "left") 'calibrat pe linie cu fata catre small ship inainte de intersectie
 Program.Delay(300)
 @kpD = 1
 @degD = 100
-lf_cm_cu_cub(@speed_lf,7,"on","off","off") 'cub
+lf_cm_cu_nava(@speed_lf,7,"on","off","off") 'cub
 lf_intersection(@speed_lf, "off", "off", "on")
 MoveSyncAcc(@speed_lf,3,"on", "on", "on")'checkpoint -----------------------------------------------
 lf_cm_cu_cub(@speed_lf,10,"off","off","on")
 RobotSpin("right",6, @speed_spin, "on", "on", "on") 'ma pozitionez cand las cuburile pe small ship sa nu fac buba
-MoveSyncAcc(@speed_lf,5,"off", "off", "on")
+MoveSyncAcc(@speed_lf,4,"off", "off", "on")
 @kpA = 0.1
 putGreenOnSmallShip() 'mission accomplished
 @degA = 70
 @kpD = 0.6
 @degD = 240
-ArcMove(12, 95, -100, "right") 'terminam arcu inainte de intersectia cu nava mica
+ArcMove(10, 97, -100, "right") 'terminam arcu inainte de intersectia cu nava mica
 lf_cm_cu_nava(50,10,"off","off","off")
-lf_cm_cu_nava(80,40, "off","off","on")
+lf_cm_cu_nava(60,42, "off","off","on")
 'Program.Delay(1000)
-lf_intersection_cu_cub(80, "off", "off", "on")
+lf_intersection_cu_cub(50, "off", "on", "on")
 @kpA = 1
-@degA = 130
+@degA = 125
 wait_claw_specific(50) '100
 @kpD = 5
 @degD = 60 'ridicam gheara
 wait_claw_specific(50) '100
 @kpA = 0.2
 @degA = 0
-RobotSpin("right",130, @speed_spin, "off", "on", "on") 'ca sa luam speciala
-MoveSyncAcc(50,7,"on", "on", "on") '----------------------------------------
+RobotSpin("right",140, @speed_spin, "off", "on", "on") 'ca sa luam speciala
+MoveSyncAcc(50,12,"on", "on", "on") '----------------------------------------
 'wait_claw_specific(100)
 @kpD = 0.6
-@degD = 160
-wait_claw_specific(400) '600
+@degD = 147
+wait_claw_specific(800) '600
 closeClawForSpeciala()
 wait_claw_specific(200) '200
 @kpD = 5
 @degD = 100
-reverseMoveSyncCM(8, @speed_movesync, "off", "off", "on")
-RobotSpin("left",125, @speed_spin, "off", "on", "off") 'inapoi pe linie
+reverseMoveSyncCM(12, @speed_movesync, "off", "off", "on")
+RobotSpin("left",140, @speed_spin, "off", "on", "off") 'inapoi pe linie
 'PerfectLine(30, "left")
-lf_cm_cu_cub(80,77,"on","off","off")
-'lf_intersection_cu_cub(80, "off", "off", "on")
-MoveSyncAcc(50,15,"on", "on", "on") '-------------------------------------------------------
-reverseMoveSyncCM(8, @speed_movesync, "off", "off", "on")
+lf_cm_cu_nava(70,60,"on","off","off")
+lf_intersection_cu_cub(60, "off", "off", "on")
+
+'MoveSyncAcc(50,15,"on", "on", "on") '-------------------------------------------------------
+Time.Reset7()
+While(Time.Get7() < 1500)
+  Motor.StartSync("BC", -30, 30)
+EndWhile
+
+reverseMoveSyncCM(11, @speed_movesync, "off", "off", "on")
 RobotSpin("right",70, @speed_spin, "on", "on", "on")
 PerfectLine(30, "right") 'cu fata catre crane -------------------------------------------
-@kpD = 1
-@degD = 124 'punem gheara la unghiu bun
-lf_cm(@speed_lf,16,"on","off","off") 'activam punem speciala 15
+@kpD = 1'era 10
+@degD = 120 'punem gheara la unghiu bun'era 139
+wait_claw_specific(500)
+lf_cm(@speed_lf,14,"on","off","off") 'activam punem speciala 15
 @degA = 0
 @degD = 0
 lf_cm(@speed_lf,11,"off","off","on") 'activam craneu
@@ -591,16 +625,15 @@ PerfectLine(30, "left") '-------------------------------------------------------
 lf_cm(80,70,"on","off","off")
 lowerLift()
 lf_intersection(80, "off", "off", "on")
-lf_cm(80,27,"off","off","on")
-
+lf_cm(80,28,"off","off","on")
+wait_claw_specific(200)
 'closeClaw() 'iau alba
-@kpA = 0.2
-@degA = 400
-wait_claw_specific(500)
+closeClaw()
+wait_claw_specific(400)
 
 raiseLift()
 lf_intersection(80, "off", "on", "on")
-RobotSpin("right",92, @speed_spin, "on", "on", "on") 'cu fata la nava mare
+RobotSpin("right",94, @speed_spin, "on", "on", "on") 'cu fata la nava mare
 MoveSyncAcc(@speed_movesync,6.5,"on", "on", "on") '----------------------------------------------------------------------
 ultimaSecventa()
 'end de la iful de la cazurile care fac tot traseul(am daca caz complet, atunci fa tot traseul; altfel, fa portiunea asta de cod), care a practic checkpointul

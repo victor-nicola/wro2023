@@ -1,0 +1,199 @@
+include "wro_triangulum"
+
+@speed_spin = 60
+@speed_movesync = 50
+@speed_spindeg = 60
+
+'----------------------------------------------------------------------
+'COD PENTRU LUAT NAVA MARE CALUMEA DIN POZITIA SECOND DAYULUI DIN GERMANIA
+'----------------------------------------------------------------------
+
+Time.Reset3()
+Thread.Run = claw
+Sensor.SetMode(3,4)
+lf_cm(50,10,"on","off","off")
+lf_intersection(50, "off", "on", "on")
+RobotSpin("right",75, @speed_spin, "on", "off", "on")
+PerfectLine(30, "right") 
+lf_cm(50,19,"on","off","on")
+'Program.Delay(1000)
+spinDegrees(60, "left", 40, "off", "off", "on")
+spinDegrees(60, "right", 40, "off", "off", "on")
+'Program.Delay(1000)
+MoveSyncAcc(50,16,"on", "off", "on")
+RobotSpin("left",90, @speed_spin, "off", "off", "on")
+'Program.Delay(1000)
+MoveSyncAcc(50,8,"off", "on", "on")
+'Program.Delay(1000)
+resetClaw()
+'lowerLiftToLittleShip()
+
+@kpD = 1
+@degD = 190
+wait_claw()
+wait_claw()
+wait_claw()
+
+wait_claw_specific(500)
+closeClawForSpeciala()
+
+ArcMove(4, 95, -80, "left")
+'Program.Delay(2000)
+lf_cm(50,50,"on","off","on")
+
+Motor.Stop("BC", "True")
+Program.Delay(100000)
+
+'----------------------------------------------------------------------
+'COD PENTRU SECOND DAY DIN GERMANIA
+'----------------------------------------------------------------------
+'Time.Reset3()
+'Thread.Run = claw
+'Sensor.SetMode(3,4)
+'lf_cm(50,10,"on","off","off")
+'lf_intersection(50, "off", "on", "on")
+'RobotSpin("right",75, @speed_spin, "on", "off", "on")
+'PerfectLine(30, "right") 'ma calibrez pe linie ca sa las alba
+'lf_cm(50,20,"on","off","on")
+'RobotSpin("left",86, @speed_spin, "on", "off", "on")
+'MoveSyncAcc(50,35,"on", "on", "on") '--------------------------------------------------------------------
+'Program.Delay(200)
+'RobotSpin("right",89, @speed_spin, "on", "off", "on")
+'Program.Delay(200)
+'@kpD = 0.6
+'@degD = 134
+'wait_claw_specific(1200)
+'@kpA = 0.4
+'@degA = 400
+'wait_claw_specific(500)
+'raiseLift()
+'reverseMoveSyncCM(4, @speed_movesync, "on", "off", "on")
+'Program.Delay(500)
+'RobotSpin("right",136, @speed_spin, "on", "off", "on")
+'Program.Delay(500)
+'MoveSyncAcc(50,19,"on", "on", "on") '--------------------------------------------------------------------
+'Program.Delay(500)
+'lowerLift()
+'wait_claw_specific(500)
+'resetClaw()
+'raiseLift()
+'RobotSpin("left",146, @speed_spin, "on", "off", "on") '148
+'Program.Delay(500)
+'MoveSyncAcc(80,22,"on", "on", "on") '--------------------------------------------------------------------
+'@kpA = 0.4
+'@degA = 140
+'wait_claw_specific(300) 
+'@kpD = 2
+'@degD = 200
+'wait_claw_specific(500)
+'RobotSpin("right",50, 50, "off", "off", "on")'50  e viteza
+'MoveSyncAcc(50,30,"on", "on", "on") '--------------------------------------------------------------------
+'StraightAlley(80)
+'RobotSpin("left",45, @speed_spin, "on", "off", "on")'duc nava mare
+'raiseLift()
+'resetClaw()
+'lf_cm_cu_nava(30,20,"on","off","on")'30 e viteza
+'lf_intersection(50, "off", "off", "on")
+'lf_cm_cu_nava(70,52,"off","off","on")
+
+'Program.Delay(1000)
+'@kpA = 0.4
+'@degA = 150
+'wait_claw_specific(300) 
+'@kpD = 10
+'@degD = 300
+'lf_cm_cu_nava(50,10,"on","off","on")
+'RobotSpin("left",93, 70, "off", "off", "on")
+'Program.Delay(1000)
+'MoveSyncAcc(50,12,"on", "on", "on") '--------------------------------------------------------------------
+'@kpD = 5
+'@degD = 120
+'wait_claw()
+'resetClaw()
+'Time.Reset9()
+'While Time.Get9() < 2500
+  'Motor.StartSync("BC", -30, 30)
+'EndWhile
+'reverseMoveSyncCM(35, @speed_movesync, "on", "off", "on")
+'Program.Delay(1000)
+'RobotSpin("right",75, 50, "on", "off", "on")
+'PerfectLine(30, "right") 
+'lf_cm(50,10,"on","off","on")
+'lf_intersection(50, "off", "off", "on")
+'reverseSpinDegrees(70, "left", 45, "on", "on", "on")
+'reverseSpinDegrees(70, "right", 45, "on", "on", "on")
+'closeClaw()
+'MoveSyncAcc(80,18,"on", "on", "on") '--------------------------------------------------------------------
+'resetClaw()
+'lowerLiftToLittleShip()
+'wait_claw_specific(500)
+'closeClawForSpeciala()
+'raiseLift()
+'RobotSpin("right",135, 70, "off", "off", "on")
+'PerfectLine(50, "right") 
+'lf_cm(50,20,"on","off","on")
+'lf_intersection(50, "off", "on", "on")
+'lf_intersection(50, "off", "on", "on")
+'RobotSpin("left",75, 50, "on", "off", "on")
+'PerfectLine(30, "left") 
+'lf_cm(50,10,"off","off","on")
+'lowerLift()
+'resetClaw()
+'raiseLift()
+'reverseMoveSyncCM(10, @speed_movesync, "on", "off", "on")
+'RobotSpin("left",75, 70, "off", "off", "on")
+'PerfectLine(50, "left") 
+'lf_cm(50,10,"on","off","on")
+'lf_intersection(50, "off", "on", "on")
+'RobotSpin("left",75, 70, "off", "off", "on")
+'PerfectLine(50, "left") 
+'Program.Delay(200)
+'lf_cm(40,26,"on","on","on")
+'lowerLift()
+'wait_claw_specific(1000)
+'closeClaw()'am luat alba
+'raiseLift()
+'RobotSpin("left",140, 70, "off", "off", "on")
+'PerfectLine(50, "left")
+'lf_cm(40,10,"on","off","on")
+'lf_intersection(50, "off", "on", "on")
+'lf_cm(60,28,"on","on","on")
+'Program.Delay(200)
+'lowerLift()
+'resetClaw()
+'raiseLift()
+'RobotSpin("left",140, 70, "off", "off", "on")
+'PerfectLine(50, "left")
+'lf_cm(40,10,"on","off","on")
+'lf_intersection(50, "off", "on", "on")
+'RobotSpin("right",75, 70, "off", "off", "on")
+'PerfectLine(50, "right")
+'lf_cm(40,10,"on","off","on")
+'lf_intersection(50, "off", "on", "on")
+'RobotSpin("left",75, 70, "off", "off", "on")
+'PerfectLine(30, "left")
+'Program.Delay(200)
+'lf_cm(40,7,"on","off","on")
+'lowerLift()
+'wait_claw_specific(1000)
+'closeClawForSpeciala()
+'lowerLiftSpecialCubePut()
+'lf_cm(40,10,"on","off","on")
+'RobotSpin("left",150, 70, "off", "off", "on")
+'PerfectLine(50, "left")
+'lf_cm(40,6,"on","off","on")
+'lf_intersection(50, "off", "on", "on")
+'@kpD = 10
+'@degD = 133 'punem gheara la unghiu bun
+'wait_claw_specific(500)
+'lf_cm(60,15,"on","off","on") 'activam punem speciala 15
+'@degA = 0
+'@degD = 0
+'lf_cm(60,11,"off","off","on") 'activam craneu
+'Program.Delay(400)
+'Time.Reset7()
+'While(Time.Get7() < 200)
+  'Motor.StartSync("BC", -30, 30)
+'EndWhile
+'Motor.Stop("BC", "True")
+'Program.Delay(100000)
