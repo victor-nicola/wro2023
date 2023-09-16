@@ -198,41 +198,46 @@ Function MotorDegToCircleDeg( in number motorDeg, out number deg )
 EndFunction
 
 Sub Claw
-  error_oldA = 0
-  @kpA = 0.3
-  @kdA = 0.1
-  error_oldD = 0
-  @kpD = 1
-  @kdD = 10
-  @degA = 0
-  @degD = 0
-  Motor.ResetCount("DA")
-  While(1 = 1)
-    if Buttons.Current = "U" Then
-      resetClaw()
-    EndIf
-    encoder = Motor.GetCount("A")
-    error = degA - encoder
-    err1 = degA - encoder
-    @auxA = encoder
-    PA = error * kpA
-    DA = (error - error_oldA) * kdA
-    error_oldA = error
+
+  While(1 > 0 )
+   
+    encoderA = Motor.GetCount("A")
+    errorA = @degA - encoderA
+    PA = errorA * @kpA
+    DA = (errorA - error_oldA) * @kdA
+    error_oldA = errorA
     Motor.StartPower("A",PA + DA)
-    encoder = Motor.GetCount("D")
-    error = degD - encoder
-    err2 = degD - encoder
-    @auxD = encoder
-    PD = error * kpD
-    DD = (error - error_oldD) * kdD
-    error_oldD = error
-    Motor.StartPower("D",PD + DD)
-    if(err1 < 10 And err1 > -10 And err2 < 10 And err2 > -10 )Then
-      @stegulet_pervers = 0
-    EndIf
-    if((degD > 170 AND @auxD > 170 ) OR (degA > 170 And @auxA > 170 ))Then
-      @stegulet_pervers = 0
-    EndIf    
+    
+    encoderD = Motor.GetCount("D")
+    errorD = @degD - encoderD
+    PD = errorD * @kpD
+    DD = (errorD - @error_oldD) * @kdD
+    @error_oldD = errorD
+    speedD = PD + DD
+    if(speedD < -100) Then
+      speedD = -100
+     EndIf
+    Motor.StartPower("D",speedD)
+    
+    'if @stegulet = 1 Then
+      'vectorSpeed[limit] = speedD
+      'limit = limit + 1
+    'EndIf
+    
+    'LCD.Text(1, 10, 10, 1, speedD)
+    
+    'if Math.Remainder(pasi,50) = 0 Then
+      'LCD.Clear()
+      'LCD.Text(1, 10, 10, 1, speedD)
+      'pasi = pasi + 1
+    'EndIf
+    
+    'if(err1 < 10 And err1 > -10 And err2 < 10 And err2 > -10 )Then
+      '@stegulet_pervers = 0
+    'EndIf
+    'if((degD > 170 AND @auxD > 170 ) OR (degA > 170 And @auxA > 170 ))Then
+      '@stegulet_pervers = 0
+    'EndIf    
   EndWhile
 EndSub
 
@@ -1413,9 +1418,9 @@ Function RobotSpin(in string direction,in number degrees,in number speed,in stri
     errorOld = error
     err_sum = err_sum + error
     
-    LCD.Clear()
-    LCD.Text(0, 1, 1, 2, currentEncoder)
-    LCD.Update()
+    'LCD.Clear()
+    'LCD.Text(0, 1, 1, 2, currentEncoder)
+    'LCD.Update()
     
     V = speed
     If acceleration = "on" AND  currentEncoder < accelerationEncoder Then
