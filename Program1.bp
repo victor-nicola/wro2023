@@ -1,0 +1,171 @@
+include "wro_triangulum"
+folder "prjs" "Triangulum"
+
+Time.Reset3()
+
+
+Thread.Run = Claw
+handle = EV3File.OpenWrite("vector.txt")
+@speed_spindeg = 70
+@speed_movesync = 50 '60
+@speed_lf = 50 '60
+@speed_spinrobot = 50
+@speed_spin = 50
+@type = 0
+@speed_spinrobotShip = 40
+cubu[4]= 0
+  error_oldA = 0
+  @kpA = 0.3
+  @kdA = 0.1
+  @error_oldD = 0
+  @kpD = 1
+  @kdD = 0.4
+  @degA = 0
+  @degD = 0
+  pasi = 0
+Motor.ResetCount("DA")
+
+'luat[0] = 1
+'luat[1] = 1
+
+'avgHue=0
+'nrRead=0
+'miHue=1000000
+'maHue=0
+'avgSat=0
+'miSat=1000000
+'maSat=0
+'mr=0
+'mg=0
+'mb=0
+'r=0
+'g=0
+'b=0
+'counter=0
+'v[400]=0
+'text = ""
+'for i = 0 to 360
+  'v[i] = 0
+  'text=Text.Append(text,Math.Round(i/100))
+  'text=Text.Append(text," ")
+'EndFor
+'text=Text.Append(text,"\n")
+'EV3FILE.WriteLine(handle, text)
+'text = ""
+'for i = 0 to 360
+  'text=Text.Append(text,Math.Remainder(Math.Round(i/10),10))
+  'text=Text.Append(text," ")
+'EndFor
+'text=Text.Append(text,"\n")
+'EV3FILE.WriteLine(handle, text)
+'text = ""
+'for i = 0 to 360
+  'text=Text.Append(text,Math.Remainder(i,10))
+  'text=Text.Append(text," ")
+'EndFor
+'text=Text.Append(text,"\n")
+'EV3FILE.WriteLine(handle, text)
+'EV3FILE.WriteLine(handle, " ")
+'while(1=1)
+  'debugcitire(hue,sat)
+  'Sensor3.Raw3(r,g,b)
+  'nrRead=nrRead+1
+  'v[hue] = v[hue]+1
+  'if(Buttons.GetClicks()="E")Then
+    'text = ""
+    'for i = 0 to 180
+      'text=Text.Append(text,v[i])
+      'v[i] = 0
+      'text=Text.Append(text," ")
+    'EndFor
+    'EV3FILE.WriteLine(handle, text) 
+    'Program.Delay(100)
+    'text = ""
+    'for i = 1 to 180
+      'text=Text.Append(text,v[i+180])
+      'v[i+180] = 0
+      'text=Text.Append(text," ")
+    'EndFor
+    'text=Text.Append(text,"\n")
+    'EV3FILE.WriteLine(handle, text) 
+    
+    'text=""  
+    'EV3FILE.WriteLine(handle, text)   
+    'counter=counter+1
+  'EndIf
+'EndWhile
+
+
+
+
+'Program.Delay(1000000)
+
+'if luat[1] = 1 and luat[2] = 1 Then
+  'preMS = 30
+'ElseIf luat[0] = 1 and luat[1] = 1 Then
+  'preMS = 20
+'Elseif luat[2] = 1 and luat[3] = 1 Then
+  'preMS = 42
+'ElseIf luat[0] = 1 and luat[2] = 1 Then
+  'str = "right"
+  'var1 = "left"
+  'disttilship = 30
+'ElseIf luat[1] = 1 and luat[3] = 1 Then
+  'str = "left"
+  'var1 = "right"
+  'disttilship = 50
+'ElseIf luat[0] = 1 and luat[3] = 1 Then
+  'flg03 = 1
+  
+'EndIf
+
+
+'lf_cm_cu_nava(60,42, "off","off","on")
+''Program.Delay(1000)
+'lf_intersection_cu_cub(50, "off", "on", "on")
+'@kpA = 1
+'@degA = 125
+'wait_claw_specific(50) '100
+
+lf_cm_cu_nava(60,30, "off","off","on")
+'Program.Delay(1000)
+lf_intersection_cu_cub(50, "off", "on", "on")
+@kpA = 1
+@degA = 125
+wait_claw_specific(50) '100
+@kpD = 5
+@degD = 60 'ridicam gheara
+wait_claw_specific(50) '100
+@kpA = 0.2
+@degA = 0
+RobotSpin("right",140, @speed_spin, "off", "on", "on") 'ca sa luam speciala
+MoveSyncAcc(50,13,"on", "on", "on") '----------------------------------------
+'wait_claw_specific(100)
+@kpD = 1
+@kdD = 1
+@degD = 140
+wait_claw()
+@kpD = 0.6
+@degD = 180 '147
+wait_claw_specific(1000) '600
+@kpA = 0.5 '5
+@kdA = 10
+@degA = 500
+wait_claw()
+wait_claw()
+wait_claw()
+@kdA = 0.1
+wait_claw_specific(600) '200
+@stegulet = 1
+@kpD = 5
+@kdD = 10
+@degD = 120
+wait_claw()
+wait_claw()
+wait_claw()
+wait_claw()
+wait_claw()
+wait_claw()
+wait_claw()
+Motor.Stop("BC", "true")
+Program.Delay(1000)
