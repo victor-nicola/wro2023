@@ -78,110 +78,27 @@ Function debugcitire(out number hue,out number sat)
   
 EndFunction
 
-sub checkpoint
-  lf_cm_cu_cub(@speed_lf,16,"off","off","on")
-  RobotSpin("right",4, @speed_spin, "on", "on", "on") 'ma pozitionez cand las cuburile pe small ship sa nu fac buba
-  @kpD = 0.8
-  @degD = 140
-  wait_claw()
-  @kpA = 0.5
-  @degA = 130 'mission accomplished
-  wait_claw()
-  @kpD = 1
-  @degD = 90
-  wait_claw()
-  RobotSpin("right",4, @speed_spin, "on", "on", "on")
-  @degA = 0
-  @kpD = 0.2
-  @degD = 300
-  wait_claw()
-  wait_claw()
-  wait_claw()
-  closeClawForSpeciala()
-  wait_claw()
-  @kpD = 1
-  @degD = 140
-  ArcMove(12, 90, -100, "right") 'terminam arcu inainte de intersectia cu nava mica
-  lf_cm_cu_cub(70,10, "off","off","on")
-  @degA = 0
-  wait_claw_specific(100)
-  @kpD = 1
-  @degD = 90
-  lf_cm_cu_cub(80,30, "off","off","off")
-  lf_intersection(80, "off", "on", "on")
-  reverseMoveSyncCM(7, @speed_movesync, "off", "off", "on")
-  RobotSpin("left",140, @speed_spin, "off", "on", "on") 'ca sa luam speciala
-  @kpD = 0.8
-  resetClaw()
-  MoveSyncAcc(@speed_movesync,5,"on", "on", "on") '--------------------------
-  @kpD = 0.6
-  @degD = 160
-  wait_claw_specific(250)
-  closeClawForSpeciala() 'am luat speciala
-  @kpD = 5
-  @degD = 100
-  reverseMoveSyncCM(7, @speed_movesync + 30, "off", "off", "on")
-  RobotSpin("right",135, @speed_spin, "off", "on", "off") 'inapoi pe linie
-  lf_cm(80,10,"on","off","off")
-  lf_intersection(80, "off", "off", "on")
-  MoveSyncAcc(50,15,"on", "on", "on") '----------------------------
-  reverseMoveSyncCM(6, @speed_movesync, "off", "off", "on")
-  RobotSpin("right",90, @speed_spin, "on", "on", "on")
-  'PerfectLine(30, "right") 'cu fata catre crane
-  @kpD = 4
-  @degD = 138 'punem gheara la unghiu bun
-  lf_cm(@speed_lf,15,"on","off","off") 'activam punem speciala
-  @degA = 0
-  @degD = 0
-  lf_cm(@speed_lf,10,"off","off","on") 'activam craneu
-  Time.Reset7()
-  While(Time.Get7() < 250)
-    Motor.StartSync("BC", -60, 60)
-  EndWhile
-  reverseMoveSyncCM(10, 30, "off", "off", "off")
-  ArcMove(22, 90, -70, "right")
-  RobotSpin("left",170, @speed_spin, "on", "on", "on") 'sunt pe linie
-  PerfectLine(30, "left") 
-   'termin arcmoveu pe linie dupa intersectie
-  lf_cm(80,70,"on","off","off")
-  lowerLift()
-  lf_intersection(80, "off", "on", "on")
-  closeClaw() 'iau alba
-  raiseLift()
-  lf_cm(80,13,"off","off","off")
-  lf_intersection(80, "off", "on", "on")
-  RobotSpin("right",90, @speed_spin, "on", "on", "on") 'cu fata la nava mare
-  
-  MoveSyncAcc(@speed_movesync,5,"on", "on", "on") '--------------------
-  
-  ultimaSecventa()
-EndSub
-
 Sub ultimaSecventa
   @kpD = 1
   @degD = 128 'am pus alba pe nava mare
   wait_claw()
   resetClaw()
-  'wait_claw_specific(200)
   lowerLiftToBigShip() 'apuc nava mare
   closeClawForSpeciala() 'am apucat-o
   @kpD = 1
-  @degD = 135
-  reverseMoveSyncCM(7, @speed_movesync + 10, "off", "off", "on")
+  @degD = 135 'ridic putin sa nu ma blochez cu gumele
+  reverseMoveSyncCM(7, @speed_movesync + 10, "off", "off", "on") 'inapoi pe linie
   RobotSpin("right",90, 60, "off", "off", "off")
   Program.Delay(200)
   lf_cm(80, 20,"off","off","on")
   @degA = 0
-  @degD = 0
+  @degD = 0 'ridic tot sa imping cu senzorii
   lf_cm(100, 120,"on","off","on")
   
-  'RobotSpin("left",10, @speed_spin, "on", "on", "on") 'ne pozitionam catre stanga ca sa intram in box
-  
   @kpD = 1  
-  @degD = 140
-  'wait_claw_specific(1)
-  'Motor.MoveSync("BC", -60, 100, 400, "True") 'facem un fel de arc ca sa intram in box
-  Motor.MoveSync("BC", -30, 60, 600, "True")
+  @degD = 140 'cobor gheara ca sa fim projection (tiganeasca de la galati)
+  
+  Motor.MoveSync("BC", -30, 60, 600, "True") 'facem un fel de arc ca sa intram in box
   LCD.Clear()
   LCD.Write(20,20,Time.Get3())
 EndSub
@@ -189,12 +106,17 @@ EndSub
 Function CircleDegToMotorDeg( in number deg, out number motorDeg )
   motorDeg = deg * @robot_diameter / @wheel_diameter
 EndFunction
+
 Function circleDegToMotorDegForRotation( in number deg, out number motorDeg )
   motorDeg = deg * @robot_diameter / @wheel_diameterSpecial
 EndFunction
 
 Function MotorDegToCircleDeg( in number motorDeg, out number deg )
   deg = motorDeg * @wheel_diameter / @robot_diameter
+EndFunction
+
+Function Cm2Degrees(in number cm,out number degrees)
+  degrees = (360*cm) / (Math.Pi*@wheel_diameter)
 EndFunction
 
 Sub Claw
@@ -242,7 +164,7 @@ Sub Claw
 EndSub
 
 'A motor mediu de prindere
-'D motor mare de invartir
+'D motor mare de invartire
 
 sub closeFor2Cubes
   @kpA = 0.2
@@ -256,7 +178,6 @@ sub closeFor2Cubes
   @degA = 500
   wait_claw_specific(300)
 EndSub
-
 
 Sub wait_claw
   Time.Reset1()
@@ -273,43 +194,9 @@ Function wait_claw_specific(in number timp)
   EndWhile
 EndFunction
 
-Sub wait_claw_but_slower
-  Time.Reset1()
-  @stegulet_pervers = 1
-  While Time.Get1() < @TimeBetween
-    
-  EndWhile
-EndSub
-
-sub prepForTwoCubes
-  @degA = 130
-  wait_claw()
-  wait_claw()
-  wait_claw()
-EndSub
-
 sub raiseLift
   @kpD = 5
   @degD = 120
-  wait_claw()
-EndSub
-
-sub raiseLiftLittle
-  @kpD = 5
-  @degD = 145
-  wait_claw()
-EndSub
-
-sub raiseLiftalittle
-  @kpD = 5
-  @degD = @auxD-10
-  wait_claw()
-EndSub
-
-sub aslowaspossible
-  @kpD = 0.3
-  @degD = 200
-  wait_claw()
   wait_claw()
 EndSub
 
@@ -325,86 +212,10 @@ Sub lowerLift
   wait_claw()
 EndSub
 
-Sub lowerLiftslow
-  @kpD = 0.4
- @degA = 90
-  wait_claw()
-  wait_claw()
-  wait_claw()
-EndSub
-
-Sub lowerLiftsLowAndLower
-  @kpD = 0.6
-  @degD = 200
-  wait_claw()
-
-EndSub
-
-sub lowerLiftFor2Cubes
-  @kpD = 0.6
-  @degD = 160 '175 '300
-  wait_claw()
-  wait_claw()
-EndSub
-
-Sub lowerLiftSpecialCube
-  @kpD = 0.6
-  @degD = 153
-  wait_claw()
-EndSub
-
-Sub lowerLiftSpecialCubePut
-  @kpD = 4
-  @degD = 137 'se coboara(*urca acum ca suntem smecheri) la unghiul optim ca sa punem speciala
-  wait_claw()
-EndSub
-
-sub lowerLiftToLittleShip
-  @kpD = 0.4
-  @degD = 190
-  wait_claw()
-  wait_claw()
-  wait_claw()
-
-EndSub
-
 sub lowerLiftToBigShip
   @kpD = 0.6 '0.6
   @degD = 200 '167
   wait_claw()
-  wait_claw()
-EndSub
-
-sub destroyFlagLittleShipOne
-  @kpD = 0.5
-  @degD = 110
-  wait_claw()
-  wait_claw()  
-  'wait_claw()  
-  'wait_claw()   
-EndSub
-
-sub destroyFlagLittleShipTwo
-  @kpD = 1
-  @degD = 143
-  '@degA = 80
-  wait_claw()  
-  wait_claw()  
-  wait_claw()  
-  'wait_claw()  
-  'wait_claw()  
-  'RobotSpin("right",30 ,100, "off", "off", "off")
-  'RobotSpin("left",30 ,100, "off", "off", "on")  
-EndSub
-
-sub resetLift
-  @kpD = 0.5
-  @degD = 0
-  wait_claw()
-EndSub
-
-Sub prepLowerLiftSpecialCube
-  @degA = -120
   wait_claw()
 EndSub
 
@@ -422,93 +233,11 @@ Sub closeClawForSpeciala
   @kdA = 0.1
 EndSub
 
-sub resetArm
-  @degA = 0
-  @degD = 10
-  wait_claw()
-EndSub
-
 sub resetClaw
   @kpA = 0.8
   @degA = 0
   wait_claw()
   @kpA = 0.2
-EndSub
-
-sub clawForWhite
-  
-  @degA = -110
-  wait_claw()
-  
-EndSub
-
-sub TakeTwoCubesUnderYou
-  @kpD = 0.4
-  @degD = 210
-  wait_claw_specific(1000)
-  @kdD = 10
-  reverseMoveSyncCM(10, @speed_movesync - 30, "on", "on", "on")
-  @kpD = 4
-  @degD = 145
-  wait_claw_specific(100)
-  @kpA = 5
-  @degA = 30
-  wait_claw_specific(100)
-  
-  @degD = 170
-  wait_claw_specific(400)
-  
-  @kpA = 5
-  @degA = 250
-  wait_claw_specific(300)
-  raiseLift()  
-EndSub
-
-sub TakecubeUnderYou
-  @kpD = 0.6
-  @kdD = 50
-  @kpA = 5
-  @degA = 190
-  @degD = 220
-  wait_claw_specific(1000)
-  @kdD = 10
-
-  reverseMoveSyncCM(10, @speed_movesync - 30, "on", "on", "on")
-  @kpD = 4
-  @degD = 145
-  wait_claw_specific(100)
-  @kpA = 5
-  @degA = 140
-  wait_claw_specific(100)
-  
-  @degD = 170
-  wait_claw_specific(400)
-  
-  @kpA = 5
-  @degA = 250
-  wait_claw_specific(300)
-  raiseLift()
-EndSub
-
-sub prepForWhite
-  @degA = 140
-  wait_claw()
-EndSub
-
-Sub prepForGreen1
-  @degA = 150
-  wait_claw()
-EndSub
-
-Sub prepForGreen
-  @degA = 125
-  wait_claw()
-EndSub
-
-sub letALittleMore
-  @degA = 115
-  wait_claw()
-  wait_claw()
 EndSub
 
 sub letALittle
@@ -523,18 +252,6 @@ sub letALittleMedium
   wait_claw()
 EndSub
 
-sub letALot
-  @degA = -80
-  wait_claw()
-  wait_claw()
-EndSub
-
-sub letALittleless
-  @degA = 140
-  wait_claw()
-  wait_claw()
-EndSub
-
 sub putGreenOnShip
   @kpD = 0.6
   @degD = 138
@@ -543,34 +260,11 @@ sub putGreenOnShip
  letALittleMedium()
 EndSub
 
-sub GreenCubeFall
-  @kpD = 1
-  @degD = 130
-  wait_claw()
-  wait_claw()
- resetClaw()
-EndSub
-
-sub putWhiteOnShip
-  @kpD = 0.6
-  @degD = 140
-  wait_claw()
-  letALittleMedium()
-EndSub
-
 sub putGreenOnSmallShip
   @kpD = 0.8
   @degD = 138
   wait_claw()
   @degA = 130
-EndSub
-
-sub putWhiteOnSmallShip
-  @kpD = 0.6
-  @degD = 140
-  wait_claw()
-  wait_claw()
-  letALittle()
 EndSub
 
 Function ceSaUrmaresti(in number case, in number a, in number b, in number c, in number d, out number follow)
@@ -620,21 +314,6 @@ Function ceSaUrmaresti(in number case, in number a, in number b, in number c, in
       EndIf  
     EndIf
   EndIf
-EndFunction
-
-Function treiCaz(in number case, in number a, in number b, in number c, in number d, out number follow)
-  'case
-  '1 - 2 verde
-  '2 - 2 albastru
-  '3 - mixt
-  follow = -1
-  if( a == 4 - case AND c == 4 - case)Then
-    follow = 4
-  Else  
-    if( b == 4 - case AND d == 4 - case)Then
-      follow = 5
-    EndIf      
-  EndIf    
 EndFunction
 
 Function stangadreata(in number cm, in number v, in string sens)
@@ -882,8 +561,6 @@ Function lf_intersection(in number speed_max,in string acceleration,in string de
 EndFunction
 
 Function lf_intersection_read_col(in number speed_max,in string acceleration,in string deceleration,in string end_brake,out number type)
-  
-  
   Cm2Degrees(8.5,prim_st) '3.5 +6.5
   Cm2Degrees(10.5,prim_dr)'6
   Cm2Degrees(13.5,doi_st)'8.5
@@ -1026,7 +703,6 @@ Function lf_intersection_read_col(in number speed_max,in string acceleration,in 
 EndFunction
 
 Function lf_cm_read_col(in number speed_max,in number cm,in string acceleration,in string deceleration,in string end_brake,out number type)
-  
   Cm2Degrees(8.5,prim_st)
   Cm2Degrees(11,prim_dr)
   Cm2Degrees(13.5,doi_st)
@@ -1116,7 +792,6 @@ Function lf_cm_read_col(in number speed_max,in number cm,in string acceleration,
 EndFunction
 
 Function lf_cm(in number speed_max,in number cm,in string acceleration,in string deceleration,in string end_brake)
-  
   kp = 0.5
   kd = @kd
   exit_condition = 1
@@ -1165,7 +840,6 @@ Function lf_cm(in number speed_max,in number cm,in string acceleration,in string
 EndFunction
 
 Function lf_cm_cu_cub(in number speed_max,in number cm,in string acceleration,in string deceleration,in string end_brake)
-  
   kp = 0.25
   kd = 0.5
   exit_condition = 1
@@ -1214,7 +888,6 @@ Function lf_cm_cu_cub(in number speed_max,in number cm,in string acceleration,in
 EndFunction
 
 Function lf_cm_cu_nava(in number speed_max,in number cm,in string acceleration,in string deceleration,in string end_brake)
-  
   kp = 1
   kd = 0.5
   exit_condition = 1
@@ -1260,113 +933,6 @@ Function lf_cm_cu_nava(in number speed_max,in number cm,in string acceleration,i
   If end_brake = "on" Then
     Motor.Stop("BC","True")
   EndIf
-EndFunction
-
-Function Cm2Degrees(in number cm,out number degrees)
-  degrees = (360*cm) / (Math.Pi*@wheel_diameter)
-EndFunction
-
-Function RobotSpinGhearaJos(in string direction,in number degrees,in number speed,in string acceleration, in string deceleration, in string end_brake)  
-  
-  V0 = @speed_0
-  if direction = "left" Then
-    kp = 0.5
-    kd = 0.1
-    ki = 0.0005
-    side = 1
-  else 
-    kp = 0.5
-    kd = 0.5
-    ki = 0.0001
-    side = -1
-  EndIf
-  
-  'left is side = 1 and right is side = -1
-  '------
-
-  '------
-  errorOld = 0
-  '------
-  diamAx = @robot_diameter
-  diamRoata = @wheel_diameter
-  circleDegToMotorDegForRotation(degrees, encoder)
-  
-  
-  accelerationEncoder = 100
-  If 0.1 * encoder < accelerationEncoder Then
-    accelerationEncoder = 0.1 * encoder
-  EndIf
-  decelerationEncoder = 250
-  If 0.25 * encoder < decelerationEncoder Then
-    decelerationEncoder = 0.25 * encoder
-  EndIf
-  
-  Motor.ResetCount("BC")
-  
-  exit = 0
-  err_sum = 0
-  While exit <> 1
-   
-    r1 = Motor.GetCount("B")
-    r2 = Motor.GetCount("C")
-   
-    currentEncoder = (Math.Abs(r1) + Math.Abs(r2)) / 2
-    'r1 is the left engine, and r2 is the right engine
-    error = Math.Abs(r2) - Math.Abs(r1)
-    P = kp * error
-    D = kd * (error - errorOld)
-    I = ki * err_sum
-    errorOld = error
-    err_sum = err_sum + error
-    
-    LCD.Clear()
-    LCD.Text(0, 1, 1, 2, currentEncoder)
-    LCD.Update()
-    
-    V = speed
-    If acceleration = "on" AND  currentEncoder < accelerationEncoder Then
-      V = (currentEncoder / accelerationEncoder) * (speed - V0) + V0
-      If V > speed Then
-        V = speed
-      EndIf
-    EndIf
-    If deceleration = "on" Then 
-      If currentEncoder >= encoder - decelerationEncoder Then
-        V = ((encoder - currentEncoder) / decelerationEncoder) * (speed - V0) + V0
-        If V < V0 Then
-          V = V0
-        EndIf
-      EndIf
-    EndIf  
-    
-    
-    motorB = V + (P + D + I)
-    motorC = V - (P + D + I)
-    
-    If exit <> 1 Then
-      Motor.StartPower( "B", motorB * side )
-      Motor.StartPower( "C", motorC * side )
-    EndIf
-    
-    'errorLast = error
-    If currentEncoder >= encoder Then
-      exit = 1
-    EndIf
-   
-  EndWhile
- 
-  If end_brake = "on" Then
-    
-    Motor.Stop("BC", "True")
-    
-  Else  
-    
-    Motor.Stop("BC", "False")
-    
-  EndIf
-  
-  'Program.Delay(200)
- 
 EndFunction
 
 Function RobotSpin(in string direction,in number degrees,in number speed,in string acceleration, in string deceleration, in string end_brake)  
@@ -1469,115 +1035,6 @@ Function RobotSpin(in string direction,in number degrees,in number speed,in stri
  
 EndFunction
 
-Function Rotation2Black(in string direction,in number speed,in string end_break)
-  Sensor.SetMode(1,0)
-  sensor.SetMode(2,0)
-  If direction = "right" Then
-    s2 = sensor.ReadPercent(2)
-    While s2 > @grey_rb
-      Motor.StartSync(@Stop_motor,-speed,-speed)
-      s2 = sensor.ReadPercent(2)
-    EndWhile
-    Motor.Stop(@Stop_motor,"true")
-    Time.Reset1()
-    time = 300
-    error = 0
-    error_old = 0
-    error_sum = 0
-    kp = 1
-    kd = 0.5
-    ki = 0.0001
-    exit_condition = 1
-    While exit_condition = 1
-      s1 = sensor.ReadPercent(1)
-      s2 = sensor.ReadPercent(2)
-      s1=(s1/@MaximumWhiteSensor1)*100
-      s2=(s2/@MaximumWhiteSensor2)*100
-      error = s1 - s2
-      P = kp * error
-      D = kd * (error - error_old)
-      I = ki * error_sum
-      Motor.StartPower(@left_motor,-((P + D + I)))
-      Motor.StartPower(@right_motor,-((P + D + I)))
-      error_old = error
-      error_sum = error_sum + error
-      If Time.Get1() > time Then
-        exit_condition = 0
-      EndIf
-    EndWhile
-    If end_break = "on" Then
-      Motor.Stop(@Stop_motor,"true")
-    EndIf
-  Else
-    s1 = sensor.ReadPercent(1)
-    While s1 > @grey_rb
-      Motor.StartSync(@Stop_motor,speed,speed)
-      s1 = sensor.ReadPercent(1)
-    EndWhile
-    motor.Stop(@Stop_motor,"true")
-    Time.Reset1()
-    time = 300
-    error = 0
-    error_old = 0
-    error_sum = 0
-    kp = 1
-    kd = 0.5
-    ki = 0.0001
-    exit_condition = 1
-    While exit_condition = 1
-      s1 = sensor.ReadPercent(1)
-      s2 = sensor.ReadPercent(2)
-      s1=(s1/@MaximumWhiteSensor1)*100
-      s2=(s2/@MaximumWhiteSensor2)*100
-      error = s2 - s1
-      P = kp * error
-      D = kd * (error - error_old)
-      I = ki * error_sum
-      Motor.StartPower(@left_motor,((P + D + I)))
-      Motor.StartPower(@right_motor,((P + D + I)))
-      error_old = error
-      error_sum = error_sum + error
-      If Time.Get1() > time Then
-        exit_condition = 0
-      EndIf
-    EndWhile
-    If end_break = "on" Then
-      Motor.Stop(@Stop_motor,"true")
-    EndIf
-  EndIf
-EndFunction
-
-'Function MoveSync(in number speed_max,in number cm,in string end_brake)
-  'kp = @kp
-  'kd = @kd
-  'exit_condition = 1
-  'Motor.ResetCount(@stop_motor)
-  'left_encoder = 0
-  'right_encoder = 0
-  'Cm2Degrees(cm,encoder)
-  'error_old = 0
-
-  'While exit_condition = 1
-    'left_encoder = Motor.GetCount(@left_motor)
-    'right_encoder = Motor.GetCount(@right_motor)
-    'current_encoder = ((-1*left_encoder) + right_encoder) / 2
-    'error = left_encoder + right_encoder
-    'P = kp * error
-    'D = kd * (error - error_old)
-    'speed=speed_max
-    'Motor.StartPower(@left_motor,-(speed + (P + D)))
-    'Motor.StartPower(@right_motor,(speed - (P + D)))
-    'error_old = error
-    'If current_encoder > encoder Then
-      'exit_condition = 0
-    'EndIf
-  'EndWhile
-  'If end_brake = "on" Then
-    'Motor.Stop("BC","True")
-  'EndIf
-  
-'EndFunction
-
 Function MoveSyncAcc(in number speed_max,in number cm,in string acceleration,in string deceleration,in string end_brake)
   kp = 0.5
   kd = @kd
@@ -1622,243 +1079,6 @@ Function MoveSyncAcc(in number speed_max,in number cm,in string acceleration,in 
   If end_brake = "on" Then
     Motor.Stop("BC","True")
   EndIf
-EndFunction
-
-Function ReactiveBreakingPerversaDeStangaStraightAlley(in number vit)
-  port[0] = "C"
-  port[1] = "B"
-  
-  side = 0
-  mult = 1
-  enc = 0
-  Time.Reset5()
-  timer = Time.Get5()
-  
-  while timer < 200
-    Motor.StartPower(port[1 - side], vit * mult)
-    Motor.StartPower(port[side], vit * mult)
-    timer = Time.Get5()
-  EndWhile
-  Motor.Stop(port[1 - side], "True")
-  
-  'Motor.Stop("BC", "True")
-  'Program.Delay(1000)
-  
-  Motor.ResetCount(port[side])
-  while enc < 150
-    Motor.StartPower(port[side], vit * mult)
-    enc = Motor.GetCount(port[side])
-  EndWhile
-  
-  'Motor.Stop("BC", "True")
-  'Program.Delay(1000)
-  
-  Sensor.SetMode(2-side, 0)
-  s2 = Sensor.ReadPercent(2-side)
-  while s2 < @grey
-    Motor.StartPower(port[2-side], vit * mult)
-    s2 = Sensor.ReadPercent(2-side)
-  EndWhile
-  
-  Sensor.SetMode(side, 0)
-  s1 = Sensor.ReadPercent(side)
-  while s1 > @grey
-    Motor.StartPower(port[side], vit * mult)
-    s1 = Sensor.ReadPercent(side)
-  EndWhile
-  
-  'Motor.Stop("BC", "True")
-  'Program.Delay(1000)
- 
-  'Sensor.SetMode(side + 1, 0)
-  's1 = Sensor.ReadPercent(side + 1)
-  'while s1 > @grey
-    'Motor.StartPower(port[side], vit * mult)
-    's1 = Sensor.ReadPercent(side + 1)
-  'EndWhile 
-  
-  'Motor.Stop("BC", "True")
-  'Program.Delay(1000)
-  
-EndFunction
-
-Function ReactiveBreakingPerversaDeDreaptaStraightAlley(in number vit)
-  port[0] = "C"
-  port[1] = "B"
-  side = 1
-  mult = -1
-  enc = 0
-  Time.Reset5()
-  timer = Time.Get5()
-  
-  while timer < 100 
-    Motor.StartPower(port[1 - side], vit * mult)
-    Motor.StartPower(port[side], vit * mult)
-    timer = Time.Get5()
-  EndWhile
-  Motor.Stop(port[1 - side], "True")
- 
-  while enc * mult < 300
-    Motor.StartPower(port[side], vit * mult)
-    enc = Motor.GetCount(port[side])
-  EndWhile
-  
-  
-  Sensor.SetMode(2 - side, 0)
-  s2 = Sensor.ReadPercent(2 - side)
-  while s2 < @grey
-    Motor.StartPower(port[side], vit * mult)
-    s2 = Sensor.ReadPercent(2 - side)
-  EndWhile
- 
-  
-  'Sensor.SetMode(2 - side, 0)
-  's2 = Sensor.ReadPercent(2 - side)
-  'while s2 > @grey
-    'Motor.StartPower(port[side], vit * mult)
-    's2 = Sensor.ReadPercent(2 - side)
-  'EndWhile
-  
-  
-  'Sensor.SetMode(side + 1, 0)
-  's1 = Sensor.ReadPercent(side + 1)
-  'while s1 < @grey
-    'Motor.StartPower(port[side], vit * mult)
-    's1 = Sensor.ReadPercent(side + 1)
-  'EndWhile 
-  
-  Sensor.SetMode(side + 1, 0)
-  s1 = Sensor.ReadPercent(side + 1)
-  while s1 > @grey
-    Motor.StartPower(port[side], vit * mult)
-    s1 = Sensor.ReadPercent(side + 1)
-  EndWhile 
-  'Motor.Stop("BC", "True")
-EndFunction
-
-Function ReactiveBreakingIntersectionCuburi(in number vit)
-  port[0] = "C"
-  port[1] = "B"
-  
-  side = 0
-  mult = 1
-  
-  enc = 0
-  Time.Reset5()
-  timer = Time.Get5()
-  
-  while timer < 100
-    Motor.StartPower(port[1 - side], vit * mult)
-    Motor.StartPower(port[side], vit * mult)
-    timer = Time.Get5()
-  EndWhile
-  
-  Motor.Stop(port[1 - side], "True")
-  while enc < 300
-    Motor.StartPower(port[side], vit * mult)
-    enc = Motor.GetCount(port[side])
-  EndWhile
-  
-  Sensor.SetMode(2 - side, 0)
-  s2 = Sensor.ReadPercent(2 - side)
-  while s2 > @grey
-    Motor.StartPower(port[side], vit * mult)
-    s2 = Sensor.ReadPercent(2 - side)
-  EndWhile
-
-EndFunction
-
-Function ReactiveBreakingIntersectionStanga(in number vit)
-  port[0] = "C"
-  port[1] = "B"
-  
-  side = 0
-  mult = 1
-  
-  enc = 0
-  Time.Reset5()
-  timer = Time.Get5()
-  
-  while timer < 10 
-    Motor.StartPower(port[1 - side], vit * mult)
-    Motor.StartPower(port[side], vit * mult)
-    timer = Time.Get5()
-  EndWhile
-  
-  Motor.Stop(port[1 - side], "True")
-  while enc * mult < 300
-    Motor.StartPower(port[side], vit * mult)
-    enc = Motor.GetCount(port[side])
-  EndWhile
-  
-  Sensor.SetMode(2 - side, 0)
-  s2 = Sensor.ReadPercent(2 - side)
-  while s2 < @grey
-    Motor.StartPower(port[side], vit * mult)
-    s2 = Sensor.ReadPercent(2 - side)
-  EndWhile
-  
-  
-  Sensor.SetMode(side + 1, 0)
-  s1 = Sensor.ReadPercent(side + 1)
-  while s1 > @grey
-    Motor.StartPower(port[side], vit * mult)
-    s1 = Sensor.ReadPercent(side + 1)
-  EndWhile
-EndFunction
-
-Function ReactiveBreakingIntersectionDreapta(in number vit)
-  port[0] = "C"
-  port[1] = "B"
-  side = 1
-  mult = -1
-  enc = 0
-  Time.Reset5()
-  timer = Time.Get5()
-  
-  while timer < 10 
-    Motor.StartPower(port[1 - side], vit * mult)
-    Motor.StartPower(port[side], vit * mult)
-    timer = Time.Get5()
-  EndWhile
-  Motor.Stop(port[1 - side], "True")
- 
-  while enc * mult < 150
-    Motor.StartPower(port[side], vit * mult)
-    enc = Motor.GetCount(port[side])
-  EndWhile
-  
-  
-  Sensor.SetMode(2 - side, 0)
-  s2 = Sensor.ReadPercent(2 - side)
-  while s2 < @grey
-    Motor.StartPower(port[side], vit * mult)
-    s2 = Sensor.ReadPercent(2 - side)
-  EndWhile
- 
-  
-  'Sensor.SetMode(2 - side, 0)
-  's2 = Sensor.ReadPercent(2 - side)
-  'while s2 > @grey
-    'Motor.StartPower(port[side], vit * mult)
-    's2 = Sensor.ReadPercent(2 - side)
-  'EndWhile
-  
-  
-  'Sensor.SetMode(side + 1, 0)
-  's1 = Sensor.ReadPercent(side + 1)
-  'while s1 < @grey
-    'Motor.StartPower(port[side], vit * mult)
-    's1 = Sensor.ReadPercent(side + 1)
-  'EndWhile 
-  
-  Sensor.SetMode(side + 1, 0)
-  s1 = Sensor.ReadPercent(side + 1)
-  while s1 > @grey
-    Motor.StartPower(port[side], vit * mult)
-    s1 = Sensor.ReadPercent(side + 1)
-  EndWhile 
-  'Motor.Stop("BC", "True")
 EndFunction
 
 Function spinDegrees(in number Vmax, in string side, in number circleDegrees, in string acceleration, in string deceleration, in string endBrake)
@@ -2149,12 +1369,6 @@ Function StraightAlley(in number speed)
   MoveTillBlack(speed,"false")
   MoveSyncAcc(@speed_movesync,0.5,"on", "on", "on") '--------------------------
 
-EndFunction
-
-Function GayAlley(in number speed)
-  MoveTillWhite(speed,"false")
-  MoveTillBlack(speed,"false")
-  MoveSyncAcc(70, 3, "on", "on", "on") '----------------------------
 EndFunction
 
 Function reverseMoveSyncCM(in number distance, in number Vmax, in string acceleration, in string deceleration, in string end_brake)
@@ -2529,106 +1743,6 @@ Function PerfectLine(in number speed,in string direction)
   RotateTillBlack(speed,direction)
 EndFunction
 
-Function MoveSyncPtArcMove(in number speedLeft, in number speedRight,in number encoder,in string acceleration,in string deceleration,in string end_brake)
-  
-  exit_condition = 1
-  Motor.ResetCount(@stop_motor)
-  left_encoder = 0
-  right_encoder = 0
-  
-  While exit_condition = 1
-    left_encoder = Motor.GetCount(@left_motor)
-    right_encoder = Motor.GetCount(@right_motor)
-    
-    If acceleration = "on" Then
-      speedL=(-left_encoder / @acceleration_encoder) * (speedLeft - @speed_0) + @speed_0
-      speedR=(right_encoder / @acceleration_encoder) * (speedRight - @speed_0) + @speed_0
-      If speedL > speedLeft Then
-        speedL = speedLeft
-      EndIf
-      If speedR > speedRight Then
-        speedR = speedRight
-      EndIf
-    Else  
-      speedL = speedLeft
-      speedR = speedRight
-    EndIf
-    If deceleration = "on" Then
-      if (encoder + left_encoder) <= @deceleration_encoder Then
-        speedL = ((encoder + left_encoder) / @deceleration_encoder) * (speedLeft - @speed_0) + @speed_0
-        If speedL < @speed_0 Then
-          speedL = @speed_0
-        EndIf
-      EndIf
-      if (encoder - right_encoder) <= @deceleration_encoder Then
-        speedR = ((encoder - right_encoder) / @deceleration_encoder) * (speedRight - @speed_0) + @speed_0
-        If speedR < @speed_0 Then
-          speedR = @speed_0
-        EndIf
-      EndIf
-    EndIf
-    
-    Motor.StartPower(@left_motor,-speedL)
-    Motor.StartPower(@right_motor,speedR)
-    
-    If -left_encoder > encoder Or right_encoder > encoder Then
-      exit_condition = 0
-    EndIf
-  EndWhile
-  
-  Motor.Stop("BC","True")
-  
-  if right_encoder < encoder Then
-    Speaker.Note(50, "C5", 1000)
-  EndIf
-  
-  'while -left_encoder < encoder
-    'left_encoder = Motor.GetCount(@left_motor)
-    'If acceleration = "on" Then
-      'speedL=(-left_encoder / @acceleration_encoder) * (speedLeft - @speed_0) + @speed_0
-      'If speedL > speedLeft Then
-        'speedL = speedLeft
-      'EndIf
-    'Else  
-      'speedL = speedLeft
-    'EndIf
-    'If deceleration = "on" Then
-      'if (encoder + left_encoder) <= @deceleration_encoder Then
-        'speedL = ((encoder + left_encoder) / @deceleration_encoder) * (speedLeft - @speed_0) + @speed_0
-        'If speedL < @speed_0 Then
-          'speedL = @speed_0
-        'EndIf
-      'EndIf
-    'EndIf
-    'Motor.StartPower(@left_motor,-speedL)
-  'EndWhile
-  
-  while right_encoder < encoder
-    right_encoder = Motor.GetCount(@right_motor)
-    If acceleration = "on" Then
-      speedR=(right_encoder / @acceleration_encoder) * (speedRight - @speed_0) + @speed_0
-      If speedR > speedRight Then
-        speedR = speedRight
-      EndIf
-    Else  
-      speedR = speedRight
-    EndIf
-    If deceleration = "on" Then
-      if (encoder - right_encoder) <= @deceleration_encoder Then
-        speedR = ((encoder - right_encoder) / @deceleration_encoder) * (speedRight - @speed_0) + @speed_0
-        If speedR < @speed_0 Then
-          speedR = @speed_0
-        EndIf
-      EndIf
-    EndIf
-    Motor.StartPower(@right_motor,speedR)
-  EndWhile
-  
-  If end_brake = "on" Then
-    Motor.Stop("BC","True")
-  EndIf
-EndFunction
-
 Function ArcMove(in number radius, in number degrees, in number speed, in string direction)
   encoder = 2 * (radius + @robot_diameter / 2) / @wheel_diameter * degrees
   
@@ -2643,55 +1757,6 @@ Function ArcMove(in number radius, in number degrees, in number speed, in string
   Motor.MoveSync("BC", speedLeft, speedRight, encoder, "on")
   
 EndFunction  
-
-Function lf_cm_precision(in number speed_max,in number cm,in string acceleration,in string deceleration,in string end_brake)
-  
-  kp = 1'1 4
-  kd = 4
-  exit_condition = 1
-  Motor.ResetCount(@stop_motor)
-  Sensor.SetMode(1,0)
-  Sensor.SetMode(2,0)
-  left_encoder = 0
-  right_encoder = 0
-  Cm2Degrees(cm,encoder)
-  error_old = 0
-  flag = 1
-  While exit_condition = 1
-    left_encoder = Motor.GetCount(@left_motor)
-    right_encoder = Motor.GetCount(@right_motor)
-    left_encoder=left_encoder*-1
-    current_encoder = (left_encoder + right_encoder) / 2
-    s1 = Sensor.ReadPercent(1)
-    s2 = Sensor.ReadPercent(2)
-    error = s1 - s2
-    P = kp * error
-    D = kd * (error - error_old)
-    If acceleration = "on" Then
-      speed=(current_encoder / @acceleration_encoder) * (speed_max - @speed_0) + @speed_0
-      If speed > speed_max Then
-        speed = speed_max
-      EndIf
-    Else  
-      speed = speed_max
-    EndIf
-    If deceleration = "on" And (encoder - current_encoder) <= @deceleration_encoder Then
-      speed = ((encoder - current_encoder) / @deceleration_encoder) * (speed_max - @speed_0) + @speed_0
-      If speed < @speed_0 Then
-        speed = @speed_0
-      EndIf
-    EndIf
-    Motor.StartPower(@left_motor,-(speed + (P + D)))
-    Motor.StartPower(@right_motor,(speed - (P + D)))
-    error_old = error
-    If current_encoder > encoder Then
-      exit_condition = 0
-    EndIf
-  EndWhile
-  If end_brake = "on" Then
-    Motor.Stop("BC","True")
-  EndIf
-EndFunction
 
 Function lf_intersection_cu_cub(in number speed_max,in string acceleration,in string deceleration,in string end_brake)
   
