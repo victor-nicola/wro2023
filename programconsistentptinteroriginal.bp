@@ -96,6 +96,9 @@ error_oldA = 0
 
 
 
+
+'Program.Delay(1000000)
+
 'if luat[1] = 1 and luat[2] = 1 Then
   'preMS = 30
 'ElseIf luat[0] = 1 and luat[1] = 1 Then
@@ -606,7 +609,26 @@ MoveSyncAcc(50,18,"on", "on", "on") 'impingem cuburile
 reverseSpinDegrees(@speed_spindeg, "left", 195, "off", "off", "on")
 reverseSpinDegrees(@speed_spindeg, "right", 105, "off", "off", "on") 'ne pozitionam sa ridicam cuburile
 MoveSyncAcc(50,distms,"on", "on", "on") 'ne apropiem ca sa luam cuburile
-luare2Cuburi()
+lowerLift()
+wait_claw_specific(200) 
+@kpA = 0.3
+@degA = 250 'inchidem clawu'era 300
+wait_claw_specific(500)'era 300
+'@degA = 70
+'wait_claw()
+@kpA = 0.5
+@degA = 400 'apucam cuburile
+wait_claw_specific(300)
+reverseMoveSyncCM(2, @speed_movesync, "off", "off", "on") 'ne dam in spate sa nu dam in zid
+@kpD = 0.4
+@degD = 180
+wait_claw_specific(500)
+@kpD = 5
+@kdD = 10
+@degD = 110
+'ridicam cuburile
+wait_claw()
+wait_claw()
 MoveSyncAcc(@speed_lf,2,"on", "on", "on") 
 stangadreata(6, -60, "left") 'inapoi pe linie
 lf_cm(@speed_lf,12,"on","on","on") 'calibrare
@@ -649,10 +671,14 @@ wait_claw_specific(600)
 wait_claw_specific(600) '1000
 @kpA = 0.5 '5
 @kdA = 10
-@degA = 1000 'prind speciala
-wait_claw_specific(700)
+@degA = 600 'prind speciala
+wait_claw()
+wait_claw()
+wait_claw()
+@kdA = 0.1
+wait_claw_specific(600) '200
 @kpD = 5
-@kdD = 30
+@kdD = 10
 @degD = 125 'ridic speciala
 wait_claw()
 wait_claw()
@@ -670,12 +696,12 @@ EndWhile
 reverseMoveSyncCM(11, @speed_movesync, "off", "off", "on") 'inapoi pe linie
 RobotSpin("right",70, @speed_spin, "on", "on", "on")
 PerfectLine(30, "right") 'cu fata catre crane
-@kpD = 0.8
-@degD = 170
-wait_claw_specific(3000)
+@kpD = 0.4
+@degD = 180
+wait_claw_specific(500)
 @kpD = 5
-@kdD = 30
-@degD = 133 'punem gheara la unghiu bun 'era 139
+@kdD = 10
+@degD = 110 'punem gheara la unghiu bun 'era 139
 wait_claw_specific(500)
 lf_cm(@speed_lf,15,"on","off","off") 'punem speciala 15
 Program.Delay(300)

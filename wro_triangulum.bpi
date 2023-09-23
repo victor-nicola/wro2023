@@ -5,10 +5,10 @@
 @wheel_diameter = 6.24 '6.24
 @wheel_diameterSpecial = 6.1
 @robot_diameter = 17.2 '-0.35 cm
-@white = 75' de modificat 67
-@grey = 15' de modificat 30
+@white = 75' de modificat 67'nu folosim
+@grey = 40' de modificat 30
 @grey_rb = 30
-@black = 10' de modificat 10
+@black = 10' de modificat 10'nu folosim
 @Stop_motor = @left_motor + @right_motor
 @acceleration_encoder = 400
 @deceleration_encoder = 500
@@ -80,7 +80,7 @@ EndFunction
 
 Sub ultimaSecventa
   @kpD = 1
-  @degD = 128 'am pus alba pe nava mare
+  @degD = 126 'am pus alba pe nava mare
   wait_claw()
   resetClaw()
   lowerLiftToBigShip() 'apuc nava mare
@@ -98,7 +98,7 @@ Sub ultimaSecventa
   @kpD = 1  
   @degD = 140 'cobor gheara ca sa fim projection (tiganeasca de la galati)
   
-  Motor.MoveSync("BC", -30, 60, 600, "True") 'facem un fel de arc ca sa intram in box
+  Motor.MoveSync("BC", -30, 60, 650, "True") 'facem un fel de arc ca sa intram in box
   LCD.Clear()
   LCD.Write(20,20,Time.Get3())
 EndSub
@@ -165,6 +165,36 @@ EndSub
 
 'A motor mediu de prindere
 'D motor mare de invartire
+
+sub luare2Cuburi
+@degA = 80
+@kpD = 0.2
+@degD = 180
+wait_claw_specific(700) 
+@kpA = 0.2
+@degA = 500 'inchidem clawu'era 300
+wait_claw_specific(1000)'era 300
+@kpA = 0.8
+@degA = 100
+wait_claw_specific(400)
+@kpA = 0.2
+@degA = 500 
+wait_claw_specific(1000)'era 300
+@kpA = 0.5
+@degA = 400 'apucam cuburile
+wait_claw_specific(300)
+reverseMoveSyncCM(2, @speed_movesync, "off", "off", "on") 'ne dam in spate sa nu dam in zid
+@kpD = 0.4
+@degD = 180
+wait_claw_specific(800)
+@kpD = 5
+@kdD = 10
+@degD = 110
+'ridicam cuburile
+wait_claw()
+wait_claw()
+EndSub
+
 
 sub closeFor2Cubes
   @kpA = 0.2
